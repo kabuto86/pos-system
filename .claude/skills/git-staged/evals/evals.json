@@ -6,32 +6,74 @@
       "name": "langgar-konvensyen-projek",
       "prompt": "Aku baru siap tambah fungsi diskaun untuk troli, dah git add. Cuba tengok dulu sebelum aku commit.",
       "fixture": "fixtures/projek-pos",
-      "expected_output": "Laporan Bahasa Melayu yang mengesan inline CSS (langgar CLAUDE.md) dan console.log tertinggal dalam js/app.js, serta mencadangkan mesej commit feat(...).",
-      "assertions": []
+      "expected_output": "Laporan Bahasa Melayu yang mengesan inline CSS dan console.log, DAN penemuan daripada pembacaan kod sekeliling: fungsi tidak dipanggil sesiapa, formatRM() sedia ada tidak digunakan, mekanisme diskaun sedia ada bertembung.",
+      "assertions": [
+        "Mengesan inline CSS dan mengaitkannya dengan CLAUDE.md",
+        "Mengesan console.log tertinggal",
+        "Mengesan fungsi baharu tidak dipanggil dari mana-mana (kod belum bersambung)",
+        "Mengesan formatRM() sedia ada tidak digunakan sehingga nombor terpapar tanpa pembundaran",
+        "Mengesan mekanisme diskaun RM sedia ada dalam getTotals() bertembung dengan yang baharu",
+        "Mengesan nama 'baki' sudah bermaksud wang baki dalam sistem ini",
+        "Mesej commit format conventional dengan jenis feat",
+        "Tidak commit sendiri"
+      ]
     },
     {
       "id": 1,
       "name": "rahsia-terdedah",
       "prompt": "dah staged modul bayaran billplz ni. ok ke nak commit?",
       "fixture": "fixtures/kedai-online",
-      "expected_output": "Laporan yang menandakan BILLPLZ_API_KEY dan DB_PASSWORD sebagai Kritikal, serta node_modules/ tersalah stage. Tidak commit sendiri.",
-      "assertions": []
+      "expected_output": "BILLPLZ_API_KEY dan DB_PASSWORD ditanda Kritikal, node_modules/ tersalah stage, DAN nasihat pemulihan yang tepat kerana config.php belum pernah di-commit.",
+      "assertions": [
+        "BILLPLZ_API_KEY ditanda Kritikal",
+        "DB_PASSWORD ditanda Kritikal",
+        "node_modules/ dinyatakan tersalah stage",
+        "Menyemak sejarah fail dan menyatakan config.php belum pernah di-commit",
+        "Menyatakan git reset memadai — tidak memberi amaran penulisan semula sejarah yang tidak berkenaan",
+        "Menjawab dengan jelas belum selamat untuk commit",
+        "Tidak commit sendiri"
+      ]
     },
     {
       "id": 2,
       "name": "tiada-apa-staged",
       "prompt": "review perubahan staged aku sekarang",
       "fixture": "fixtures/tempahan",
-      "expected_output": "Beritahu tiada apa-apa staged, senaraikan app.js dan nota.txt yang belum staged, tanya sama ada mahu git add. TIDAK mereka-reka laporan semakan.",
-      "assertions": []
+      "expected_output": "Beritahu tiada apa-apa staged, senaraikan fail belum staged, tanya sama ada mahu git add. TIDAK mereka-reka laporan.",
+      "assertions": [
+        "Menyatakan dengan jelas tiada apa-apa staged",
+        "Menyenaraikan app.js dan nota.txt sebagai belum staged",
+        "TIDAK menghasilkan laporan semakan palsu",
+        "Bertanya atau menawarkan untuk git add"
+      ]
     },
     {
       "id": 3,
       "name": "perubahan-bersih",
-      "prompt": "aku dah tambah null check dalam stock.js sebab kadang2 senarai kosong buat sistem crash. dah git add. summary perubahan boleh?",
-      "fixture": "fixtures/inventori",
-      "expected_output": "Ringkasan tepat perubahan null-check, dan menyatakan dengan jelas tiada isu ditemui — tanpa mencipta isu palsu untuk mengisi ruang.",
-      "assertions": []
+      "prompt": "aku dah kemas kod cukai dalam cart.js, dah git add. summary perubahan boleh?",
+      "fixture": "fixtures/inventori-bersih",
+      "expected_output": "Ringkasan tepat pengekstrakan calculateTax(), pengesahan ketiga-tiga pemanggil dikemas kini, dan pengakuan jelas tiada isu — tanpa mencipta penemuan untuk mengisi ruang.",
+      "assertions": [
+        "Menerangkan pengekstrakan calculateTax() dan pemalar TAX_RATE",
+        "Mengesahkan ketiga-tiga pemanggil (getCartTotal, renderSummary, buildReceipt) sudah dikemas kini — tiada 0.06 tertinggal",
+        "Menyatakan secara eksplisit tiada isu ditemui",
+        "TIDAK membangkitkan penemuan yang tidak dapat ditunjukkan fail dan barisnya",
+        "Mesej commit format conventional dengan jenis refactor"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "dua-kerja-bercampur",
+      "prompt": "dah staged semua. boleh bagi mesej commit?",
+      "fixture": "fixtures/dua-kerja",
+      "expected_output": "Mengenal pasti dua kerja yang tidak berkaitan (pembundaran sen dalam payment.js; tema gelap dalam settings.js + style.css) dan mencadangkan DUA mesej commit berasingan.",
+      "assertions": [
+        "Mengenal pasti dua kerja yang tidak berkaitan dalam staging yang sama",
+        "Mencadangkan DUA mesej commit berasingan, bukan satu",
+        "Menyatakan fail mana untuk commit yang mana",
+        "Mesej pembetulan pembundaran guna jenis fix; mesej tema gelap guna jenis feat",
+        "Menerangkan sebab memecahkan commit berbaloi (revert lebih mudah)"
+      ]
     }
   ]
 }

@@ -1,6 +1,6 @@
 # Senarai Semak Perubahan Staged
 
-Rujukan ini dibaca semasa **Langkah 3 (semakan)**. Tujuannya bukan untuk ditanda satu
+Rujukan ini dibaca semasa **Langkah 4 (semakan isu)**. Tujuannya bukan untuk ditanda satu
 per satu dalam laporan, tetapi untuk memberi anda tempat mencari apabila diff kelihatan
 "okey sahaja" — kebanyakan pepijat yang lolos ke commit datang daripada kategori di bawah.
 
@@ -19,8 +19,27 @@ Jadi ini keutamaan pertama, walaupun ia jarang berlaku.
 - Endpoint dalaman, IP pelayan pengeluaran, nama pangkalan data sebenar
 - Data pelanggan sebenar dalam fail ujian atau seed (nama, no. telefon, no. IC)
 
-Jika anda jumpa: laporkan sebagai **Kritikal**, dan nyatakan bahawa `git reset` sahaja
-tidak memadai jika ia sudah di-push — rahsia itu perlu ditukar (rotate).
+Jika anda jumpa: laporkan sebagai **Kritikal**. Kemudian **semak sejarah fail itu sebelum
+memberi nasihat pemulihan** — kerana nasihatnya berbeza sama sekali bergantung pada satu
+fakta:
+
+```bash
+git log --all --oneline -- <laluan-fail>
+```
+
+- **Tiada output** — fail itu belum pernah masuk mana-mana commit. `git reset` untuk
+  meng-unstage sudah memadai. Katakan begitu dengan jelas. Rahsia itu belum masuk sejarah,
+  jadi tiada penulisan semula diperlukan, dan pengguna boleh bernafas lega.
+- **Ada output** — rahsia itu sudah berada dalam sejarah repo. Unstage tidak membantu; ia
+  kekal dalam commit lama. Nyatakan bahawa rahsia itu perlu ditukar (rotate) di tempat ia
+  dikeluarkan, dan penulisan semula sejarah (`git filter-repo`) diperlukan jika repo sudah
+  dikongsi.
+
+Sebabnya penting: memberi amaran "kunci anda dah bocor selama-lamanya, kena rotate" kepada
+seseorang yang sebenarnya cuma perlu menaip `git reset` adalah nasihat yang menakutkan
+tanpa keperluan, dan ia menghakis kepercayaan terhadap laporan anda. Sebaliknya, gagal
+memberi amaran itu apabila ia **memang** perlu adalah kegagalan yang jauh lebih teruk.
+Semakan satu baris di atas membezakan kedua-duanya, jadi jalankan sahaja.
 
 ## 2. Fail yang tidak sepatutnya staged
 

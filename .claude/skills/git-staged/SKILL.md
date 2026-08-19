@@ -17,7 +17,7 @@ sesuatu masuk ke sejarah repo secara kekal.** Selepas commit dan push, membetulk
 tersalah stage atau rahsia terdedah jauh lebih mahal. Sebab itulah semakan ini berbaloi
 walaupun perubahannya nampak kecil.
 
-Jalankan keempat-empat langkah sampai habis tanpa berhenti bertanya, melainkan tiada
+Jalankan kelima-lima langkah sampai habis tanpa berhenti bertanya, melainkan tiada
 apa-apa yang staged.
 
 ---
@@ -68,14 +68,49 @@ dan satu fail PHP — ketiga-tiganya satu kumpulan, kerana ia satu perubahan.
 
 Untuk setiap kumpulan, tentukan sama ada ia **ciri baharu**, **pembetulan pepijat**,
 **penyusunan semula kod**, **dokumentasi**, atau **kerja penyelenggaraan**. Ini
-diperlukan untuk Langkah 4.
+diperlukan untuk mesej commit di Langkah 5.
 
 Jika sesuatu perubahan tidak jelas tujuannya selepas anda membacanya, jangan reka
 penjelasan yang munasabah — nyatakan dalam laporan bahawa tujuannya tidak jelas dan
 tanya pengguna. Tekaan yang salah lebih memudaratkan daripada mengaku tidak pasti,
 kerana pengguna mungkin mempercayainya.
 
-## Langkah 3 — Semak isu
+## Langkah 3 — Baca kod di sekeliling diff
+
+Ini langkah yang paling mudah dilangkau dan paling banyak memberi pulangan.
+
+Diff ialah lubang kunci. Ia menunjukkan baris yang berubah, tetapi menyembunyikan
+perkara yang menjadikan perubahan itu betul atau salah: sama ada kod ini bersambung
+dengan sistem, sama ada sistem sudah ada cara lain untuk kerja yang sama, dan sama ada
+nama yang dipilih bermaksud sesuatu yang lain di tempat lain. **Pepijat yang paling mahal
+bukan pepijat dalam baris yang berubah — ia percanggahan antara baris baharu dengan kod
+sedia ada yang tidak muncul dalam diff langsung.**
+
+Jadi sebelum menilai apa-apa, buka fail penuh dan selongkar repo. Soalan yang berbaloi
+ditanya (senarai ini bukan borang untuk diisi — pilih yang berkaitan dengan diff di
+hadapan anda):
+
+- **Siapa memanggil kod baharu ini?** Cari namanya di seluruh repo. Jika tiada sesiapa
+  memanggilnya, kerja ini belum bersambung — dan pengguna mungkin tidak sedar.
+- **Adakah repo sudah ada pembantu untuk kerja yang sama?** Pemformatan nombor, tarikh,
+  mata wang, pelarian HTML — jika perubahan ini membuat sendiri sedangkan seluruh
+  codebase memanggil satu fungsi pembantu, hasilnya akan kelihatan berbeza daripada
+  bahagian lain sistem.
+- **Adakah sudah ada mekanisme untuk masalah yang sama?** Dua mekanisme yang tidak kenal
+  satu sama lain akan bertembung, atau salah satunya akan dilupakan.
+- **Adakah nama baharu ini sudah bermaksud sesuatu yang lain dalam sistem ini?** Istilah
+  yang sama membawa dua maksud akan mengelirukan orang seterusnya yang membaca kod itu.
+- **Apa yang berlaku kepada pemanggil sedia ada?** Jika tandatangan fungsi atau bentuk
+  data yang disimpan berubah, cari setiap tempat yang bergantung padanya.
+
+Anda tidak perlu menjawab kesemuanya untuk setiap diff — perubahan satu baris dalam
+fail dokumentasi tidak memerlukan penyiasatan. Gunakan pertimbangan: makin banyak kod
+baharu, makin berbaloi menyelongkar.
+
+Penemuan daripada langkah ini biasanya yang paling bernilai kepada pengguna, kerana ia
+perkara yang mereka sendiri tidak nampak semasa menulis kod itu.
+
+## Langkah 4 — Semak isu
 
 Baca `references/senarai-semak.md` sekarang dan gunakannya terhadap diff.
 
@@ -108,7 +143,7 @@ laporan dengan pemerhatian lemah semata-mata untuk mengisi ruang akan melatih pe
 supaya melangkau bahagian ini — dan mereka akan turut terlepas isu sebenar pada masa
 hadapan.
 
-## Langkah 4 — Tulis laporan
+## Langkah 5 — Tulis laporan
 
 Guna templat ini:
 
