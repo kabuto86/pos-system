@@ -1,0 +1,16 @@
+# Node
+node_modules/
+
+# Log & sementara
+*.log
+tmp/
+temp/
+
+# Sistem fail OS
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Editor
+.idea/
+.vscode/

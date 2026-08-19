@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<!--
+  Rangka HTML untuk panduan pengguna. Salin ke docs/panduan-pengguna.html, kemudian
+  ganti semua teks <!-- GANTI --> dengan kandungan sebenar dan ulang blok "Langkah"
+  sekali bagi setiap langkah.
+
+  Peraturan: tiada CSS inline. Gaya datang daripada Bootstrap + print.css sahaja.
+-->
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<title>Panduan Pengguna — NAMA SISTEM</title>
+<link rel="stylesheet" href="../vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="print.css">
+</head>
+<body class="bg-white">
+<div class="container py-4">
+
+  <!-- ===== MUKA DEPAN ===== -->
+  <section class="cover d-flex flex-column justify-content-center text-center">
+    <div class="display-1 mb-3">📘</div>
+    <h1 class="display-5 fw-bold mb-2">Panduan Pengguna</h1>
+    <p class="fs-3 text-primary fw-semibold mb-4">NAMA SISTEM</p>
+    <p class="fs-5 text-body-secondary mb-5">Subtajuk: apa yang panduan ini ajar</p>
+    <p class="text-body-secondary mb-0">Versi 1.0</p>
+    <p class="text-body-secondary">Kemas kini TARIKH</p>
+  </section>
+
+  <!-- ===== KANDUNGAN ===== -->
+  <section class="page-break">
+    <h2 class="border-bottom pb-2 mb-3">Kandungan</h2>
+    <ol class="mb-0">
+      <li><a href="#pengenalan">Pengenalan</a></li>
+      <li><a href="#antara-muka">Mengenali Antara Muka</a></li>
+      <li><a href="#langkah-1">Langkah 1 — Tajuk langkah</a></li>
+      <li><a href="#petua">Petua Pantas</a></li>
+      <li><a href="#masalah">Masalah Lazim</a></li>
+    </ol>
+  </section>
+
+  <!-- ===== PENGENALAN ===== -->
+  <section class="page-break" id="pengenalan">
+    <h2 class="border-bottom pb-2 mb-3">1. Pengenalan</h2>
+    <p>Apa itu sistem ini, untuk siapa, dan apa yang panduan ini liputi.</p>
+
+    <h5 class="mt-4">Keperluan</h5>
+    <ul>
+      <li>Pelayar web moden (Chrome, Edge, atau Firefox)</li>
+      <li>Alamat sistem, contohnya <code>http://localhost/nama-projek/</code></li>
+    </ul>
+  </section>
+
+  <!-- ===== ANTARA MUKA ===== -->
+  <section class="page-break" id="antara-muka">
+    <h2 class="border-bottom pb-2 mb-3">2. Mengenali Antara Muka</h2>
+    <p>Skrin utama terbahagi kepada beberapa bahagian:</p>
+
+    <table class="table table-bordered table-sm align-middle">
+      <thead class="table-light">
+        <tr><th>Bahagian</th><th>Lokasi</th><th>Fungsi</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Bar Atas</strong></td><td>Paling atas</td><td>Fungsi bar atas</td></tr>
+      </tbody>
+    </table>
+
+    <figure class="doc-figure text-center">
+      <img src="images/01-halaman-utama.png" alt="Antara muka utama" class="img-fluid border rounded">
+      <figcaption class="text-body-secondary mt-2">Antara muka utama sistem</figcaption>
+    </figure>
+  </section>
+
+  <!-- ===== BLOK LANGKAH (ulang bagi setiap langkah) ===== -->
+  <section class="page-break" id="langkah-1">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 1 — Kata kerja + objek</h2>
+    <p>Arahan ringkas: apa yang pengguna perlu tekan dan apa yang akan berlaku.</p>
+    <p>Contoh konkrit menggunakan data sebenar daripada sistem.</p>
+
+    <figure class="doc-figure text-center">
+      <img src="images/02-nama-langkah.png" alt="Kapsyen bermakna" class="img-fluid border rounded">
+      <figcaption class="text-body-secondary mt-2">Kapsyen menerangkan apa yang berlaku dalam gambar</figcaption>
+    </figure>
+
+    <div class="alert alert-info mb-0">
+      <strong>Nota:</strong> Perkara yang pengguna mudah tersilap pada langkah ini.
+    </div>
+  </section>
+
+  <!-- ===== PETUA PANTAS ===== -->
+  <section class="page-break" id="petua">
+    <h2 class="border-bottom pb-2 mb-3">Petua Pantas</h2>
+    <ul>
+      <li>Pintasan atau tabiat kerja yang mempercepatkan tugas harian.</li>
+    </ul>
+  </section>
+
+  <!-- ===== MASALAH LAZIM ===== -->
+  <section class="page-break" id="masalah">
+    <h2 class="border-bottom pb-2 mb-3">Masalah Lazim</h2>
+    <table class="table table-bordered table-sm align-middle">
+      <thead class="table-light">
+        <tr><th>Masalah</th><th>Sebab</th><th>Penyelesaian</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Butang tidak boleh ditekan</td><td>Syarat belum dipenuhi</td><td>Langkah pembetulan</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+</div>
+</body>
+</html>

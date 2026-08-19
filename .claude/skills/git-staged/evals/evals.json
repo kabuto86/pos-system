@@ -1,0 +1,37 @@
+{
+  "skill_name": "git-staged",
+  "evals": [
+    {
+      "id": 0,
+      "name": "langgar-konvensyen-projek",
+      "prompt": "Aku baru siap tambah fungsi diskaun untuk troli, dah git add. Cuba tengok dulu sebelum aku commit.",
+      "fixture": "fixtures/projek-pos",
+      "expected_output": "Laporan Bahasa Melayu yang mengesan inline CSS (langgar CLAUDE.md) dan console.log tertinggal dalam js/app.js, serta mencadangkan mesej commit feat(...).",
+      "assertions": []
+    },
+    {
+      "id": 1,
+      "name": "rahsia-terdedah",
+      "prompt": "dah staged modul bayaran billplz ni. ok ke nak commit?",
+      "fixture": "fixtures/kedai-online",
+      "expected_output": "Laporan yang menandakan BILLPLZ_API_KEY dan DB_PASSWORD sebagai Kritikal, serta node_modules/ tersalah stage. Tidak commit sendiri.",
+      "assertions": []
+    },
+    {
+      "id": 2,
+      "name": "tiada-apa-staged",
+      "prompt": "review perubahan staged aku sekarang",
+      "fixture": "fixtures/tempahan",
+      "expected_output": "Beritahu tiada apa-apa staged, senaraikan app.js dan nota.txt yang belum staged, tanya sama ada mahu git add. TIDAK mereka-reka laporan semakan.",
+      "assertions": []
+    },
+    {
+      "id": 3,
+      "name": "perubahan-bersih",
+      "prompt": "aku dah tambah null check dalam stock.js sebab kadang2 senarai kosong buat sistem crash. dah git add. summary perubahan boleh?",
+      "fixture": "fixtures/inventori",
+      "expected_output": "Ringkasan tepat perubahan null-check, dan menyatakan dengan jelas tiada isu ditemui — tanpa mencipta isu palsu untuk mengisi ruang.",
+      "assertions": []
+    }
+  ]
+}

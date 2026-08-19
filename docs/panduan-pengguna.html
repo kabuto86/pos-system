@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<title>Panduan Pengguna — KedaiPOS</title>
+<link rel="stylesheet" href="../vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="print.css">
+</head>
+<body class="bg-white">
+<div class="container py-4">
+
+  <!-- ===== MUKA DEPAN ===== -->
+  <section class="cover d-flex flex-column justify-content-center text-center">
+    <div class="display-1 mb-3">🛒</div>
+    <h1 class="display-5 fw-bold mb-2">Panduan Pengguna</h1>
+    <p class="fs-3 text-primary fw-semibold mb-4">KedaiPOS — Sistem Jualan</p>
+    <p class="fs-5 text-body-secondary mb-5">Cara Membuat Pesanan dan Menerima Bayaran</p>
+    <p class="text-body-secondary mb-0">Versi 1.0</p>
+    <p class="text-body-secondary">Kemas kini 17 Ogos 2026</p>
+  </section>
+
+  <!-- ===== PENGENALAN ===== -->
+  <section class="page-break">
+    <h2 class="border-bottom pb-2 mb-3">1. Pengenalan</h2>
+    <p>
+      KedaiPOS ialah sistem jualan (Point of Sale) untuk kedai makan. Sistem ini membolehkan
+      juruwang menerima pesanan, memilih variasi makanan seperti jenis lauk dan saiz minuman,
+      mengira cukai dan diskaun, menerima bayaran tunai, serta mencetak resit.
+    </p>
+    <p>
+      Panduan ini menerangkan proses lengkap dari memilih menu sehingga bayaran selesai.
+      Setiap langkah disertakan gambar skrin sebenar daripada sistem.
+    </p>
+
+    <h5 class="mt-4">Keperluan</h5>
+    <ul>
+      <li>Pelayar web moden (Chrome, Edge, atau Firefox)</li>
+      <li>Sistem dibuka melalui pelayan tempatan, contohnya <code>http://localhost/claude-learn1/</code></li>
+    </ul>
+
+    <h2 class="border-bottom pb-2 mb-3 mt-5">2. Mengenali Antara Muka</h2>
+    <p>Skrin utama terbahagi kepada tiga bahagian:</p>
+
+    <table class="table table-bordered align-middle">
+      <thead class="table-light">
+        <tr><th>Bahagian</th><th>Lokasi</th><th>Fungsi</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="fw-semibold">Bar Atas</td>
+          <td>Paling atas</td>
+          <td>Papar jam semasa, butang <strong>Variasi</strong> dan butang <strong>Sejarah</strong></td>
+        </tr>
+        <tr>
+          <td class="fw-semibold">Panel Produk</td>
+          <td>Kiri (besar)</td>
+          <td>Medan carian, butang kategori, dan senarai kad produk</td>
+        </tr>
+        <tr>
+          <td class="fw-semibold">Panel Troli</td>
+          <td>Kanan</td>
+          <td>Senarai pesanan semasa, subjumlah, cukai, diskaun, jumlah dan butang <strong>Bayar</strong></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <figure class="doc-figure text-center my-4">
+      <img src="images/01-halaman-utama.png" class="img-fluid border rounded" alt="Antara muka utama KedaiPOS">
+      <figcaption class="small text-body-secondary mt-2">Rajah 1 — Antara muka utama KedaiPOS</figcaption>
+    </figure>
+
+    <h5 class="mt-4">Maklumat pada setiap kad produk</h5>
+    <ul>
+      <li>Ikon dan nama produk</li>
+      <li>Harga — dipapar sebagai <code>dari RM x.xx</code> jika produk mempunyai pilihan variasi</li>
+      <li>Baki stok</li>
+      <li>Label <strong>Ada pilihan</strong> di penjuru kanan atas bagi produk yang mempunyai variasi</li>
+      <li>Produk yang kehabisan stok dipaparkan kelabu dan berlabel <strong>Habis</strong> — ia tidak boleh diklik</li>
+    </ul>
+  </section>
+
+  <!-- ===== LANGKAH 1 ===== -->
+  <section class="page-break">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 1 — Buka Sistem</h2>
+    <p>
+      Buka pelayar web dan layari alamat sistem. Skrin utama akan memaparkan semua produk
+      yang tersedia. Troli bermula dalam keadaan kosong dengan mesej
+      <em>"Troli masih kosong"</em>.
+    </p>
+    <figure class="doc-figure text-center my-4">
+      <img src="images/01-halaman-utama.png" class="img-fluid border rounded" alt="Skrin permulaan">
+      <figcaption class="small text-body-secondary mt-2">Rajah 2 — Skrin permulaan dengan troli kosong</figcaption>
+    </figure>
+    <div class="alert alert-secondary">
+      <strong>Nota:</strong> Butang <strong>Bayar</strong> dilumpuhkan selagi troli kosong.
+    </div>
+  </section>
+
+  <!-- ===== LANGKAH 2 ===== -->
+  <section class="page-break">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 2 — Tapis Produk Mengikut Kategori</h2>
+    <p>
+      Untuk mempercepat pencarian, tekan butang kategori di bawah medan carian:
+      <strong>Semua</strong>, <strong>Makanan</strong>, <strong>Minuman</strong>, atau
+      <strong>Snek</strong>.
+    </p>
+    <p>Contoh di bawah menunjukkan kategori <strong>Minuman</strong> dipilih — hanya produk minuman dipaparkan.</p>
+    <figure class="doc-figure text-center my-4">
+      <img src="images/02-tapis-kategori.png" class="img-fluid border rounded" alt="Tapisan kategori Minuman">
+      <figcaption class="small text-body-secondary mt-2">Rajah 3 — Tapisan kategori Minuman</figcaption>
+    </figure>
+    <p>Tekan <strong>Semua</strong> untuk kembali memaparkan keseluruhan menu.</p>
+  </section>
+
+  <!-- ===== LANGKAH 3 ===== -->
+  <section class="page-break">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 3 — Cari Produk</h2>
+    <p>
+      Jika menu terlalu banyak, taip nama produk dalam medan <strong>Cari produk...</strong>
+      di bahagian atas. Senarai akan ditapis secara langsung semasa anda menaip.
+    </p>
+    <p>Contoh: menaip <code>nasi</code> memaparkan hanya produk <strong>Nasi Lemak</strong>.</p>
+    <figure class="doc-figure text-center my-4">
+      <img src="images/03-cari-produk.png" class="img-fluid border rounded" alt="Carian produk">
+      <figcaption class="small text-body-secondary mt-2">Rajah 4 — Hasil carian "nasi"</figcaption>
+    </figure>
+    <p>Kosongkan medan carian untuk memaparkan semula semua produk.</p>
+  </section>
+
+  <!-- ===== LANGKAH 4 ===== -->
+  <section class="page-break">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 4 — Tambah Produk Biasa ke Troli</h2>
+    <p>
+      Produk tanpa variasi memaparkan butang <strong>+ Tambah</strong>. Cukup tekan kad produk
+      sekali dan item terus masuk ke troli.
+    </p>
+    <p>Contoh: menekan <strong>Roti Canai</strong> menambah satu unit pada harga RM 2.00.</p>
+    <figure class="doc-figure text-center my-4">
+      <img src="images/04-tambah-produk-biasa.png" class="img-fluid border rounded" alt="Roti Canai ditambah ke troli">
+      <figcaption class="small text-body-secondary mt-2">Rajah 5 — Roti Canai masuk ke troli</figcaption>
+    </figure>
+    <div class="alert alert-secondary">
+      <strong>Petua:</strong> Tekan kad produk yang sama berulang kali untuk menambah kuantiti.
+      Sistem akan menggabungkannya dalam satu baris troli, bukan mencipta baris baharu.
+    </div>
+  </section>
+
+  <!-- ===== LANGKAH 5 ===== -->
+  <section class="page-break">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 5 — Buka Produk Berpilihan</h2>
+    <p>
+      Produk yang mempunyai label <strong>Ada pilihan</strong> memaparkan butang
+      <strong>Pilih pilihan</strong>. Menekan kad produk ini akan membuka tetingkap variasi.
+    </p>
+    <p>
+      Contoh: menekan <strong>Nasi Lemak</strong> membuka tetingkap dengan tiga kumpulan
+      pilihan — <strong>Lauk</strong>, <strong>Kepedasan</strong>, dan <strong>Tambahan</strong>.
+    </p>
+    <figure class="doc-figure text-center my-4">
+      <img src="images/05-modal-variasi.png" class="img-fluid border rounded" alt="Tetingkap variasi Nasi Lemak">
+      <figcaption class="small text-body-secondary mt-2">Rajah 6 — Tetingkap variasi Nasi Lemak</figcaption>
+    </figure>
+
+    <h5 class="mt-4">Maksud tanda pada tetingkap</h5>
+    <table class="table table-bordered align-middle">
+      <thead class="table-light">
+        <tr><th>Tanda</th><th>Maksud</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="fw-semibold text-danger">*</td><td>Kumpulan wajib — mesti dipilih sebelum boleh tambah</td></tr>
+        <tr><td><code>pilih satu</code></td><td>Hanya satu pilihan dibenarkan (butang bulat)</td></tr>
+        <tr><td><code>pilih berbilang</code></td><td>Boleh pilih lebih daripada satu (kotak semak)</td></tr>
+        <tr><td><code>+RM 3.00</code></td><td>Harga tambahan bagi pilihan tersebut</td></tr>
+        <tr><td><code>−RM 0.20</code></td><td>Potongan harga bagi pilihan tersebut</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ===== LANGKAH 6 ===== -->
+  <section class="page-break">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 6 — Pilih Variasi Produk</h2>
+    <p>
+      Tekan pilihan yang dikehendaki. Pilihan yang aktif akan bertukar warna biru, dan
+      harga pada butang <strong>Tambah</strong> di bahagian bawah dikemas kini serta-merta.
+    </p>
+    <p>
+      Contoh pilihan: <strong>Ayam goreng</strong> (+RM 3.00), <strong>Extra pedas</strong>
+      (+RM 0.30), dan <strong>Telur mata</strong> (+RM 1.50).
+    </p>
+    <figure class="doc-figure text-center my-4">
+      <img src="images/06-pilih-variasi.png" class="img-fluid border rounded" alt="Variasi dipilih">
+      <figcaption class="small text-body-secondary mt-2">Rajah 7 — Tiga variasi dipilih, harga dikemas kini</figcaption>
+    </figure>
+
+    <h5>Pengiraan harga seunit</h5>
+<pre class="bg-body-tertiary border rounded p-3">Harga asas         RM 4.50
+Ayam goreng      + RM 3.00
+Extra pedas      + RM 0.30
+Telur mata       + RM 1.50
+─────────────────────────
+Harga seunit       RM 9.30</pre>
+  </section>
+
+  <!-- ===== LANGKAH 7 ===== -->
+  <section class="page-break">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 7 — Tetapkan Kuantiti Sebelum Tambah</h2>
+    <p>
+      Di bahagian bawah tetingkap variasi terdapat kawalan <strong>Kuantiti</strong>.
+      Tekan <strong>+</strong> untuk menambah atau <strong>−</strong> untuk mengurangkan
+      sebelum memasukkan item ke troli.
+    </p>
+    <p>Contoh: kuantiti ditetapkan kepada <strong>2</strong>, menjadikan jumlah RM 18.60 (RM 9.30 × 2).</p>
+    <figure class="doc-figure text-center my-4">
+      <img src="images/07-kuantiti-modal.png" class="img-fluid border rounded" alt="Tetapkan kuantiti dalam tetingkap variasi">
+      <figcaption class="small text-body-secondary mt-2">Rajah 8 — Kuantiti ditetapkan kepada 2</figcaption>
+    </figure>
+    <p>
+      Tekan butang biru <strong>Tambah — RM 18.60</strong> untuk memasukkan ke troli.
+      Tekan <strong>Batal</strong> jika ingin membatalkan.
+    </p>
+  </section>
+
+  <!-- ===== LANGKAH 8 ===== -->
+  <section class="page-break">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 8 — Semak Troli</h2>
+    <p>
+      Setiap item yang ditambah muncul di panel troli sebelah kanan. Bagi item bervariasi,
+      pilihan dipaparkan dalam tulisan condong di bawah nama produk.
+    </p>
+    <figure class="doc-figure text-center my-4">
+      <img src="images/08-semak-troli.png" class="img-fluid border rounded" alt="Troli dengan tiga menu">
+      <figcaption class="small text-body-secondary mt-2">Rajah 9 — Troli mengandungi tiga menu</figcaption>
+    </figure>
+    <p>Panel bawah troli memaparkan pengiraan automatik:</p>
+    <ul>
+      <li><strong>Subjumlah</strong> — jumlah semua item sebelum cukai</li>
+      <li><strong>Cukai (6%)</strong> — dikira daripada subjumlah</li>
+      <li><strong>Diskaun</strong> — medan yang boleh diisi sendiri</li>
+      <li><strong>Jumlah</strong> — amaun akhir yang perlu dibayar</li>
+    </ul>
+  </section>
+
+  <!-- ===== LANGKAH 9 ===== -->
+  <section class="page-break">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 9 — Laras Kuantiti atau Buang Item</h2>
+    <p>Pada setiap baris troli terdapat tiga kawalan:</p>
+    <table class="table table-bordered align-middle">
+      <thead class="table-light">
+        <tr><th>Butang</th><th>Fungsi</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="fw-semibold">−</td><td>Kurangkan kuantiti sebanyak satu</td></tr>
+        <tr><td class="fw-semibold">+</td><td>Tambah kuantiti sebanyak satu</td></tr>
+        <tr><td class="fw-semibold">✕</td><td>Buang item tersebut terus dari troli</td></tr>
+      </tbody>
+    </table>
+    <p>Contoh: kuantiti <strong>Roti Canai</strong> dinaikkan kepada 2, menjadikan RM 4.00.</p>
+    <figure class="doc-figure text-center my-4">
+      <img src="images/09-laras-kuantiti.png" class="img-fluid border rounded" alt="Laras kuantiti dalam troli">
+      <figcaption class="small text-body-secondary mt-2">Rajah 10 — Kawalan kuantiti pada baris troli</figcaption>
+    </figure>
+    <p>
+      Untuk mengosongkan keseluruhan troli, tekan pautan merah <strong>Kosongkan</strong>
+      di penjuru kanan atas panel troli.
+    </p>
+    <div class="alert alert-secondary">
+      <strong>Nota:</strong> Item bervariasi yang berbeza pilihan dikira sebagai baris berasingan.
+      Contohnya Teh Tarik <em>Besar, Ais</em> dan Teh Tarik <em>Kecil, Panas</em> akan muncul
+      sebagai dua baris.
+    </div>
+  </section>
+
+  <!-- ===== LANGKAH 10 ===== -->
+  <section class="page-break">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 10 — Masukkan Diskaun</h2>
+    <p>
+      Jika pelanggan layak mendapat potongan, taip amaun dalam medan <strong>Diskaun</strong>
+      (dalam Ringgit). Jumlah akhir dikemas kini secara langsung.
+    </p>
+    <p>Contoh: diskaun RM 2.50 menurunkan jumlah daripada RM 27.67 kepada RM 25.17.</p>
+    <figure class="doc-figure text-center my-4">
+      <img src="images/10-diskaun.png" class="img-fluid border rounded" alt="Diskaun dimasukkan">
+      <figcaption class="small text-body-secondary mt-2">Rajah 11 — Diskaun RM 2.50 dimasukkan</figcaption>
+    </figure>
+    <h5>Formula pengiraan</h5>
+<pre class="bg-body-tertiary border rounded p-3">Jumlah = Subjumlah + Cukai (6%) − Diskaun
+       = RM 26.10  + RM 1.57    − RM 2.50
+       = RM 25.17</pre>
+    <p>Biarkan medan diskaun pada <code>0</code> jika tiada potongan.</p>
+  </section>
+
+  <!-- ===== LANGKAH 11 ===== -->
+  <section class="page-break">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 11 — Tekan Butang Bayar</h2>
+    <p>
+      Setelah pesanan lengkap, tekan butang biru <strong>Bayar</strong> di bahagian bawah troli.
+      Tetingkap pembayaran akan terbuka dan memaparkan <strong>Jumlah Perlu Dibayar</strong>.
+    </p>
+    <figure class="doc-figure text-center my-4">
+      <img src="images/11-modal-bayaran.png" class="img-fluid border rounded" alt="Tetingkap pembayaran">
+      <figcaption class="small text-body-secondary mt-2">Rajah 12 — Tetingkap pembayaran dibuka</figcaption>
+    </figure>
+  </section>
+
+  <!-- ===== LANGKAH 12 ===== -->
+  <section class="page-break">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 12 — Masukkan Wang Diterima</h2>
+    <p>
+      Taip amaun tunai yang diterima daripada pelanggan dalam medan
+      <strong>Wang Diterima (RM)</strong>. Baki akan dikira secara automatik dan dipapar
+      dalam warna hijau.
+    </p>
+    <p>Contoh: pelanggan membayar RM 30.00 bagi jumlah RM 25.17, maka baki ialah RM 4.83.</p>
+    <figure class="doc-figure text-center my-4">
+      <img src="images/12-wang-baki.png" class="img-fluid border rounded" alt="Wang diterima dan baki">
+      <figcaption class="small text-body-secondary mt-2">Rajah 13 — Baki dikira secara automatik</figcaption>
+    </figure>
+    <div class="alert alert-secondary">
+      <strong>Nota:</strong> Butang <strong>Sahkan Bayaran</strong> hanya berfungsi apabila
+      wang yang dimasukkan mencukupi. Jika kurang daripada jumlah, sistem akan memaparkan amaran.
+    </div>
+  </section>
+
+  <!-- ===== LANGKAH 13 ===== -->
+  <section class="page-break">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 13 — Sahkan Bayaran dan Cetak Resit</h2>
+    <p>
+      Tekan <strong>Sahkan Bayaran</strong>. Resit rasmi akan dipaparkan dengan maklumat
+      penuh transaksi.
+    </p>
+    <figure class="doc-figure text-center my-4">
+      <img src="images/13-resit.png" class="img-fluid border rounded" alt="Resit rasmi">
+      <figcaption class="small text-body-secondary mt-2">Rajah 14 — Resit rasmi transaksi</figcaption>
+    </figure>
+    <p>Resit mengandungi:</p>
+    <ul>
+      <li>Nama kedai, tarikh dan masa transaksi</li>
+      <li>Senarai item beserta kuantiti dan variasi yang dipilih</li>
+      <li>Subjumlah, cukai, diskaun dan jumlah akhir</li>
+      <li>Amaun tunai diterima dan baki</li>
+    </ul>
+    <h5 class="mt-4">Pilihan pada resit</h5>
+    <ul>
+      <li><strong>🖨️ Cetak</strong> — buka dialog cetakan pelayar untuk mencetak resit</li>
+      <li><strong>Selesai</strong> — tutup resit dan kembali ke skrin utama</li>
+    </ul>
+    <h5 class="mt-4">Selepas bayaran disahkan, sistem akan:</h5>
+    <ol>
+      <li>Mengosongkan troli secara automatik</li>
+      <li>Menetapkan semula medan diskaun kepada <code>0</code></li>
+      <li>Menolak stok setiap produk yang dijual</li>
+      <li>Menyimpan rekod ke dalam sejarah transaksi</li>
+    </ol>
+  </section>
+
+  <!-- ===== LANGKAH 14 ===== -->
+  <section class="page-break">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 14 — Semak Sejarah Transaksi</h2>
+    <p>
+      Tekan butang <strong>📜 Sejarah</strong> pada bar atas untuk melihat rekod jualan
+      yang lepas.
+    </p>
+    <figure class="doc-figure text-center my-4">
+      <img src="images/14-sejarah.png" class="img-fluid border rounded" alt="Sejarah transaksi">
+      <figcaption class="small text-body-secondary mt-2">Rajah 15 — Rekod sejarah transaksi</figcaption>
+    </figure>
+    <p>
+      Setiap rekod memaparkan nombor rujukan transaksi, jumlah bayaran, tarikh dan masa,
+      bilangan item, serta senarai ringkas item berserta variasinya.
+    </p>
+  </section>
+
+  <!-- ===== PETUA & MASALAH ===== -->
+  <section class="page-break">
+    <h2 class="border-bottom pb-2 mb-3">Petua Pantas</h2>
+    <table class="table table-bordered align-middle">
+      <thead class="table-light">
+        <tr><th>Situasi</th><th>Tindakan</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Pelanggan tukar fikiran pasal satu item</td><td>Tekan <strong>✕</strong> pada baris item tersebut</td></tr>
+        <tr><td>Pelanggan batalkan keseluruhan pesanan</td><td>Tekan <strong>Kosongkan</strong> di atas panel troli</td></tr>
+        <tr><td>Nak tambah item sama dengan variasi berbeza</td><td>Tekan kad produk semula dan pilih variasi baharu</td></tr>
+        <tr><td>Nak cari produk dengan pantas</td><td>Taip dalam medan carian, jangan skrol</td></tr>
+        <tr><td>Tersalah masuk amaun tunai</td><td>Padam dan taip semula — baki dikira semula automatik</td></tr>
+        <tr><td>Nak batalkan sebelum sahkan bayaran</td><td>Tekan <strong>Batal</strong> pada tetingkap pembayaran</td></tr>
+      </tbody>
+    </table>
+
+    <h2 class="border-bottom pb-2 mb-3 mt-5">Masalah Lazim</h2>
+
+    <h5>Butang Bayar tidak boleh ditekan</h5>
+    <p>Troli masih kosong. Tambah sekurang-kurangnya satu item terlebih dahulu.</p>
+
+    <h5>Butang Tambah dalam tetingkap variasi tidak berfungsi</h5>
+    <p>
+      Ada kumpulan wajib (bertanda <code>*</code>) yang belum dipilih. Semak kumpulan seperti
+      <strong>Lauk</strong> atau <strong>Saiz</strong> dan pastikan satu pilihan telah dibuat.
+    </p>
+
+    <h5>Produk kelihatan kelabu dan tidak boleh ditekan</h5>
+    <p>Stok produk tersebut telah habis. Kad akan memaparkan label <strong>Habis</strong>.</p>
+
+    <h5>Sistem tidak benarkan sahkan bayaran</h5>
+    <p>Wang yang dimasukkan kurang daripada jumlah perlu dibayar. Semak semula amaun tunai.</p>
+
+    <h5>Sejarah transaksi kosong selepas kosongkan data pelayar</h5>
+    <p>
+      Sejarah disimpan dalam storan setempat pelayar. Membersihkan data pelayar akan
+      memadamkan rekod tersebut.
+    </p>
+
+    <hr class="my-4">
+    <p class="small text-body-secondary text-center mb-0">
+      Dokumen ini dijana secara automatik menggunakan Playwright.
+      Semua gambar skrin diambil daripada sistem yang sedang berjalan.
+    </p>
+  </section>
+
+</div>
+</body>
+</html>

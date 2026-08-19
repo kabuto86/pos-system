@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<title>Panduan Pengguna — Modul Variasi KedaiPOS</title>
+<link rel="stylesheet" href="../../vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="print.css">
+</head>
+<body class="bg-white">
+<div class="container py-4">
+
+  <!-- ===== MUKA DEPAN ===== -->
+  <section class="cover d-flex flex-column justify-content-center text-center">
+    <div class="display-1 mb-3">🍛</div>
+    <h1 class="display-5 fw-bold mb-2">Panduan Pengguna</h1>
+    <p class="fs-3 text-primary fw-semibold mb-4">Modul Variasi — KedaiPOS</p>
+    <p class="fs-5 text-body-secondary mb-5">
+      Cara memilih variasi produk semasa jualan dan cara mengurus senarai variasi itu sendiri
+    </p>
+    <p class="text-body-secondary mb-0">Versi 1.0</p>
+    <p class="text-body-secondary">Kemas kini 17 Ogos 2026</p>
+  </section>
+
+  <!-- ===== KANDUNGAN ===== -->
+  <section class="page-break">
+    <h2 class="border-bottom pb-2 mb-3">Kandungan</h2>
+
+    <h5 class="mt-3">Bahagian A — Menjual produk yang ada variasi</h5>
+    <ol class="mb-4">
+      <li><a href="#pengenalan">Pengenalan</a></li>
+      <li><a href="#antara-muka">Mengenali Antara Muka</a></li>
+      <li><a href="#langkah-1">Langkah 1 — Kenal pasti produk yang ada variasi</a></li>
+      <li><a href="#langkah-2">Langkah 2 — Buka tetingkap pilihan</a></li>
+      <li><a href="#langkah-3">Langkah 3 — Pilih pilihan wajib</a></li>
+      <li><a href="#langkah-4">Langkah 4 — Tambah pilihan tambahan</a></li>
+      <li><a href="#langkah-5">Langkah 5 — Tetapkan kuantiti</a></li>
+      <li><a href="#langkah-6">Langkah 6 — Tambah ke troli</a></li>
+      <li><a href="#langkah-7">Langkah 7 — Kombinasi berbeza menjadi baris berasingan</a></li>
+      <li><a href="#langkah-8">Langkah 8 — Kombinasi sama bergabung menjadi satu baris</a></li>
+      <li><a href="#langkah-9">Langkah 9 — Semak variasi pada resit</a></li>
+      <li><a href="#langkah-10">Langkah 10 — Semak variasi dalam sejarah transaksi</a></li>
+    </ol>
+
+    <h5>Bahagian B — Mengurus variasi produk</h5>
+    <ol class="mb-0" start="13">
+      <li><a href="#langkah-11">Langkah 11 — Buka panel Urus Variasi Produk</a></li>
+      <li><a href="#langkah-12">Langkah 12 — Pilih produk yang hendak diberi variasi</a></li>
+      <li><a href="#langkah-13">Langkah 13 — Tambah kumpulan variasi</a></li>
+      <li><a href="#langkah-14">Langkah 14 — Isi nama pilihan dan harga tambahan</a></li>
+      <li><a href="#langkah-15">Langkah 15 — Tambah kumpulan jenis "Pilih berbilang"</a></li>
+      <li><a href="#langkah-16">Langkah 16 — Simpan perubahan</a></li>
+      <li><a href="#langkah-17">Langkah 17 — Uji variasi baharu di skrin jualan</a></li>
+      <li><a href="#langkah-18">Langkah 18 — Buang pilihan atau kumpulan</a></li>
+      <li><a href="#langkah-19">Langkah 19 — Reset semua variasi ke asal</a></li>
+      <li><a href="#petua">Petua Pantas</a></li>
+      <li><a href="#masalah">Masalah Lazim</a></li>
+    </ol>
+  </section>
+
+  <!-- ===== PENGENALAN ===== -->
+  <section class="page-break" id="pengenalan">
+    <h2 class="border-bottom pb-2 mb-3">1. Pengenalan</h2>
+    <p>
+      KedaiPOS ialah sistem jualan (Point of Sale) untuk kedai makan. <strong>Modul variasi</strong>
+      ialah bahagian yang membenarkan satu produk dijual dalam beberapa bentuk berbeza —
+      contohnya Nasi Lemak dengan lauk ayam goreng, atau Teh Tarik saiz besar dengan ais.
+    </p>
+    <p>
+      Setiap pilihan boleh menambah atau mengurangkan harga. Sistem mengira harga akhir secara
+      automatik, mencatat pilihan itu pada baris troli, dan mencetaknya pada resit supaya dapur
+      tahu apa yang perlu disediakan.
+    </p>
+    <p>Panduan ini dibahagikan kepada dua bahagian:</p>
+    <ul>
+      <li><strong>Bahagian A</strong> untuk juruwang — cara memilih variasi semasa membuat jualan.</li>
+      <li><strong>Bahagian B</strong> untuk penyelia atau pemilik kedai — cara menambah, mengubah
+        dan membuang variasi melalui panel <strong>⚙️ Variasi</strong>.</li>
+    </ul>
+
+    <h5 class="mt-4">Keperluan</h5>
+    <ul class="mb-0">
+      <li>Pelayar web moden (Chrome, Edge, atau Firefox)</li>
+      <li>Alamat sistem: <code>http://localhost/claude-learn1/</code></li>
+      <li>Tiada log masuk diperlukan — panel <strong>⚙️ Variasi</strong> terbuka kepada sesiapa
+        yang menggunakan komputer itu</li>
+    </ul>
+  </section>
+
+  <!-- ===== ANTARA MUKA ===== -->
+  <section class="page-break" id="antara-muka">
+    <h2 class="border-bottom pb-2 mb-3">2. Mengenali Antara Muka</h2>
+    <p>Skrin utama terbahagi kepada tiga bahagian yang berkaitan dengan modul variasi:</p>
+
+    <table class="table table-bordered table-sm align-middle">
+      <thead class="table-light">
+        <tr><th>Bahagian</th><th>Lokasi</th><th>Fungsi</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Bar atas</strong></td><td>Paling atas</td>
+          <td>Mengandungi butang <strong>⚙️ Variasi</strong> (urus variasi) dan <strong>📜 Sejarah</strong></td>
+        </tr>
+        <tr>
+          <td><strong>Panel produk</strong></td><td>Kiri dan tengah</td>
+          <td>Memaparkan kad produk; produk bervariasi ditanda lencana <strong>Ada pilihan</strong></td>
+        </tr>
+        <tr>
+          <td><strong>Panel troli</strong></td><td>Kanan</td>
+          <td>Memaparkan setiap baris jualan berserta pilihan variasi yang dipilih</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <figure class="doc-figure text-center">
+      <img src="images/01-produk-ada-pilihan.png" alt="Skrin utama KedaiPOS dengan lencana Ada pilihan" class="img-fluid border rounded">
+      <figcaption class="text-body-secondary mt-2">Skrin utama KedaiPOS dengan lencana <strong>Ada pilihan</strong> pada beberapa produk</figcaption>
+    </figure>
+
+    <p class="mb-1">Maklumat penting pada skrin ini:</p>
+    <ul class="mb-0">
+      <li>Lencana <strong>Ada pilihan</strong> bermaksud produk itu mempunyai variasi.</li>
+      <li>Harga produk bervariasi ditulis <strong>dari RM 4.50</strong> — "dari" bermaksud itu
+        harga terendah, sebelum sebarang pilihan berbayar ditambah.</li>
+      <li>Butang pada kad bertukar daripada <strong>+ Tambah</strong> kepada
+        <strong>Pilih pilihan</strong> bagi produk bervariasi.</li>
+      <li>Nombor <strong>Stok</strong> dikongsi oleh semua variasi produk yang sama. Nasi Lemak
+        berlauk ayam dan berlauk rendang mengambil stok daripada kolam yang sama.</li>
+    </ul>
+  </section>
+
+  <!-- ===== LANGKAH 1 ===== -->
+  <section class="page-break" id="langkah-1">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 1 — Kenal pasti produk yang ada variasi</h2>
+    <p>
+      Sebelum menekan apa-apa, lihat kad produk. Produk biasa terus masuk ke troli apabila
+      ditekan. Produk bervariasi pula membuka tetingkap pilihan terlebih dahulu.
+    </p>
+    <p>
+      Contoh: kad <strong>Nasi Lemak</strong> memaparkan lencana <strong>Ada pilihan</strong>,
+      harga <strong>dari RM 4.50</strong>, dan butang <strong>Pilih pilihan</strong>.
+    </p>
+
+    <figure class="doc-figure text-center">
+      <img src="images/02-kad-nasi-lemak.png" alt="Kad Nasi Lemak dengan lencana Ada pilihan" class="img-fluid border rounded">
+      <figcaption class="text-body-secondary mt-2">Kad Nasi Lemak dengan lencana <strong>Ada pilihan</strong> dan butang <strong>Pilih pilihan</strong></figcaption>
+    </figure>
+
+    <p>Pada data asal sistem, empat produk mempunyai variasi:</p>
+    <table class="table table-bordered table-sm align-middle">
+      <thead class="table-light">
+        <tr><th>Produk</th><th>Harga asas</th><th>Kumpulan variasi</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>🍛 Nasi Lemak</td><td>RM 4.50</td><td>Lauk, Kepedasan, Tambahan</td></tr>
+        <tr><td>🍔 Burger</td><td>RM 7.00</td><td>Jenis Patty, Tambahan</td></tr>
+        <tr><td>🍵 Teh Tarik</td><td>RM 2.20</td><td>Saiz, Suhu, Tambahan</td></tr>
+        <tr><td>☕ Kopi O</td><td>RM 1.80</td><td>Saiz, Paras Gula</td></tr>
+      </tbody>
+    </table>
+
+    <div class="alert alert-info mb-0">
+      <strong>Nota:</strong> Produk yang kehabisan stok memaparkan butang <strong>Habis</strong>
+      dan tidak boleh ditekan, walaupun ia mempunyai variasi.
+    </div>
+  </section>
+
+  <!-- ===== LANGKAH 2 ===== -->
+  <section class="page-break" id="langkah-2">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 2 — Buka tetingkap pilihan</h2>
+    <p>
+      Tekan kad produk. Tetingkap pilihan akan terbuka dengan nama produk, harga asas, dan baki
+      stok pada bahagian atas.
+    </p>
+    <p>
+      Contoh: menekan <strong>Nasi Lemak</strong> membuka tetingkap bertajuk <em>Nasi Lemak</em>,
+      dengan subtajuk <em>Harga asas RM 4.50 • Stok 20</em>, dan tiga kumpulan pilihan —
+      <strong>Lauk</strong>, <strong>Kepedasan</strong>, dan <strong>Tambahan</strong>.
+    </p>
+
+    <figure class="doc-figure text-center">
+      <img src="images/03-modal-variasi-nasi-lemak.png" alt="Tetingkap pilihan Nasi Lemak" class="img-fluid border rounded">
+      <figcaption class="text-body-secondary mt-2">Tetingkap pilihan Nasi Lemak dengan tiga kumpulan variasi</figcaption>
+    </figure>
+
+    <p>Setiap kumpulan mempunyai dua penanda yang perlu difahami:</p>
+    <table class="table table-bordered table-sm align-middle">
+      <thead class="table-light">
+        <tr><th>Penanda</th><th>Maksud</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Bintang merah <code>*</code> selepas nama kumpulan</td><td>Kumpulan itu <strong>wajib</strong> — mesti ada sekurang-kurangnya satu pilihan</td></tr>
+        <tr><td>Lencana <strong>pilih satu</strong></td><td>Hanya satu pilihan boleh dipilih (bulatan)</td></tr>
+        <tr><td>Lencana <strong>pilih berbilang</strong></td><td>Boleh pilih seberapa banyak pilihan (kotak semak)</td></tr>
+        <tr><td><strong>+RM 3.00</strong> di sebelah kanan pilihan</td><td>Harga tambahan bagi pilihan itu</td></tr>
+        <tr><td><strong>−RM 0.20</strong> di sebelah kanan pilihan</td><td>Potongan harga bagi pilihan itu</td></tr>
+      </tbody>
+    </table>
+
+    <div class="alert alert-info mb-0">
+      <strong>Nota:</strong> Bagi kumpulan wajib jenis <strong>pilih satu</strong>, sistem terus
+      memilih pilihan pertama untuk anda. Anda hanya perlu menukarnya jika pelanggan mahu yang lain.
+    </div>
+  </section>
+
+  <!-- ===== LANGKAH 3 ===== -->
+  <section class="page-break" id="langkah-3">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 3 — Pilih pilihan wajib</h2>
+    <p>
+      Tekan pilihan yang dikehendaki pelanggan bagi setiap kumpulan bertanda <code>*</code>.
+      Harga pada butang biru di bawah akan berubah serta-merta.
+    </p>
+    <p>
+      Contoh: pilih <strong>Ayam goreng</strong> (+RM 3.00) dalam kumpulan <strong>Lauk</strong>
+      dan <strong>Extra pedas</strong> (+RM 0.30) dalam kumpulan <strong>Kepedasan</strong>.
+      Butang bertukar menjadi <strong>Tambah — RM 7.80</strong>, iaitu RM 4.50 + RM 3.00 + RM 0.30.
+    </p>
+
+    <figure class="doc-figure text-center">
+      <img src="images/04-pilih-wajib.png" alt="Butang Tambah memaparkan RM 7.80" class="img-fluid border rounded">
+      <figcaption class="text-body-secondary mt-2">Butang <strong>Tambah</strong> memaparkan RM 7.80 selepas Ayam goreng dan Extra pedas dipilih</figcaption>
+    </figure>
+
+    <div class="alert alert-success mb-0">
+      <strong>Petua:</strong> Sahkan harga pada butang <strong>Tambah</strong> bersama pelanggan
+      sebelum meneruskan. Itu harga sebenar bagi satu unit dengan pilihan semasa.
+    </div>
+  </section>
+
+  <!-- ===== LANGKAH 4 ===== -->
+  <section class="page-break" id="langkah-4">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 4 — Tambah pilihan tambahan</h2>
+    <p>
+      Kumpulan jenis <strong>pilih berbilang</strong> membenarkan lebih daripada satu pilihan pada
+      masa yang sama. Tekan setiap kotak semak yang dikehendaki; tekan sekali lagi untuk
+      membatalkannya.
+    </p>
+    <p>
+      Contoh: dalam kumpulan <strong>Tambahan</strong>, tandakan <strong>Telur mata</strong>
+      (+RM 1.50) dan <strong>Sambal extra</strong> (+RM 1.00). Butang kini memaparkan
+      <strong>Tambah — RM 10.30</strong>.
+    </p>
+
+    <figure class="doc-figure text-center">
+      <img src="images/05-pilih-tambahan.png" alt="Kumpulan Tambahan dengan dua pilihan ditandakan" class="img-fluid border rounded">
+      <figcaption class="text-body-secondary mt-2">Kumpulan Tambahan dengan Telur mata dan Sambal extra ditandakan</figcaption>
+    </figure>
+
+    <div class="alert alert-info mb-0">
+      <strong>Nota:</strong> Kumpulan <strong>Tambahan</strong> tidak bertanda <code>*</code>, jadi
+      ia boleh dibiarkan kosong. Pilihan seperti <strong>Tanpa timun</strong> berharga RM 0.00 —
+      ia hanya arahan kepada dapur, bukan caj.
+    </div>
+  </section>
+
+  <!-- ===== LANGKAH 5 ===== -->
+  <section class="page-break" id="langkah-5">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 5 — Tetapkan kuantiti</h2>
+    <p>
+      Guna butang <strong>−</strong> dan <strong>+</strong> di bahagian bawah tetingkap untuk
+      menetapkan bilangan unit dengan kombinasi pilihan yang sama.
+    </p>
+    <p>
+      Contoh: tekan <strong>+</strong> sekali sehingga kuantiti menjadi <strong>2</strong>. Butang
+      bertukar menjadi <strong>Tambah — RM 20.60</strong>, iaitu RM 10.30 × 2.
+    </p>
+
+    <figure class="doc-figure text-center">
+      <img src="images/06-kuantiti-dua.png" alt="Kuantiti ditetapkan kepada 2" class="img-fluid border rounded">
+      <figcaption class="text-body-secondary mt-2">Kuantiti ditetapkan kepada 2 dan butang memaparkan RM 20.60</figcaption>
+    </figure>
+
+    <div class="alert alert-info mb-0">
+      <strong>Nota:</strong> Kuantiti tidak boleh kurang daripada 1. Untuk membatalkan sepenuhnya,
+      tekan <strong>Batal</strong>.
+    </div>
+  </section>
+
+  <!-- ===== LANGKAH 6 ===== -->
+  <section class="page-break" id="langkah-6">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 6 — Tambah ke troli</h2>
+    <p>
+      Tekan butang <strong>Tambah — RM 20.60</strong>. Tetingkap akan tertutup dan barisan baharu
+      muncul dalam troli.
+    </p>
+    <p>
+      Baris troli memaparkan tiga maklumat: nama produk, senarai pilihan dalam tulisan condong,
+      dan pengiraan <code>harga seunit × kuantiti</code>.
+    </p>
+
+    <figure class="doc-figure text-center">
+      <img src="images/07-troli-dengan-variasi.png" alt="Troli memaparkan Nasi Lemak berserta pilihan" class="img-fluid border rounded">
+      <figcaption class="text-body-secondary mt-2">Troli memaparkan Nasi Lemak berserta senarai pilihan yang dipilih</figcaption>
+    </figure>
+
+    <div class="alert alert-info mb-0">
+      <strong>Nota:</strong> Jika senarai pilihan terlalu panjang, ia dipendekkan dengan tanda
+      <code>…</code> dalam troli. Senarai penuh tetap dicetak pada resit.
+    </div>
+  </section>
+
+  <!-- ===== LANGKAH 7 ===== -->
+  <section class="page-break" id="langkah-7">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 7 — Kombinasi berbeza menjadi baris berasingan</h2>
+    <p>
+      Setiap kombinasi pilihan yang berlainan menjadi baris troli tersendiri, walaupun produknya
+      sama. Ini membolehkan harga dan arahan dapur kekal betul bagi setiap pesanan.
+    </p>
+    <p>
+      Contoh: tambah <strong>Nasi Lemak</strong> sekali lagi, kali ini dengan
+      <strong>Rendang daging</strong> (+RM 4.50) dan <strong>Sederhana</strong>. Troli kini
+      mempunyai dua baris Nasi Lemak — satu RM 10.30 seunit, satu lagi RM 9.00 seunit.
+    </p>
+
+    <figure class="doc-figure text-center">
+      <img src="images/08-dua-baris-berasingan.png" alt="Dua baris Nasi Lemak dengan kombinasi berbeza" class="img-fluid border rounded">
+      <figcaption class="text-body-secondary mt-2">Dua baris Nasi Lemak dengan kombinasi pilihan berbeza dalam troli</figcaption>
+    </figure>
+
+    <div class="alert alert-success mb-0">
+      <strong>Petua:</strong> Guna butang <strong>−</strong> dan <strong>+</strong> pada baris troli
+      untuk melaraskan kuantiti tanpa membuka semula tetingkap pilihan. Butang <strong>✕</strong>
+      membuang baris itu sahaja.
+    </div>
+  </section>
+
+  <!-- ===== LANGKAH 8 ===== -->
+  <section class="page-break" id="langkah-8">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 8 — Kombinasi sama bergabung menjadi satu baris</h2>
+    <p>
+      Jika anda menambah produk dengan kombinasi pilihan yang <strong>sama persis</strong>, sistem
+      tidak membuat baris baharu. Ia hanya menambah kuantiti pada baris sedia ada.
+    </p>
+    <p>
+      Contoh: tambah semula Nasi Lemak dengan <strong>Ayam goreng, Extra pedas, Telur mata, Sambal
+      extra</strong>. Baris pertama bertukar daripada kuantiti 2 kepada <strong>3</strong>, dan
+      jumlahnya menjadi RM 30.90.
+    </p>
+
+    <figure class="doc-figure text-center">
+      <img src="images/09-kombinasi-sama-digabung.png" alt="Baris pertama bertukar kepada kuantiti 3" class="img-fluid border rounded">
+      <figcaption class="text-body-secondary mt-2">Baris pertama bertukar kepada kuantiti 3 selepas kombinasi sama ditambah semula</figcaption>
+    </figure>
+
+    <div class="alert alert-info mb-0">
+      <strong>Nota:</strong> Susunan pilihan tidak penting. <strong>Telur mata + Sambal extra</strong>
+      dikira sama dengan <strong>Sambal extra + Telur mata</strong>.
+    </div>
+  </section>
+
+  <!-- ===== LANGKAH 9 ===== -->
+  <section class="page-break" id="langkah-9">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 9 — Semak variasi pada resit</h2>
+    <p>
+      Selesaikan jualan seperti biasa: tekan <strong>Bayar</strong>, masukkan wang yang diterima,
+      kemudian tekan <strong>Sahkan Bayaran</strong>. Resit akan terbuka.
+    </p>
+    <p>
+      Pada resit, pilihan variasi dicetak dalam baris kecil di bawah nama produk. Bahagian dapur
+      dan pelanggan boleh mengesahkan pesanan daripada baris ini.
+    </p>
+
+    <figure class="doc-figure text-center">
+      <img src="images/10-resit-variasi.png" alt="Resit memaparkan pilihan variasi" class="img-fluid border rounded">
+      <figcaption class="text-body-secondary mt-2">Resit memaparkan pilihan variasi di bawah setiap item</figcaption>
+    </figure>
+
+    <p>
+      Contoh di atas: <code>Nasi Lemak x3</code> dengan <em>Ayam goreng, Extra pedas, Telur mata,
+      Sambal extra</em> berjumlah RM 30.90, dan <code>Nasi Lemak x1</code> dengan <em>Rendang
+      daging, Sederhana</em> berjumlah RM 9.00. Cukai 6% dikira ke atas subjumlah selepas variasi.
+    </p>
+
+    <div class="alert alert-warning mb-0">
+      <strong>Amaran:</strong> Transaksi yang telah disahkan tidak boleh dibatalkan. Semak pilihan
+      variasi pada troli sebelum menekan <strong>Sahkan Bayaran</strong>.
+    </div>
+  </section>
+
+  <!-- ===== LANGKAH 10 ===== -->
+  <section class="page-break" id="langkah-10">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 10 — Semak variasi dalam sejarah transaksi</h2>
+    <p>
+      Tekan <strong>📜 Sejarah</strong> pada bar atas untuk melihat transaksi lepas. Setiap rekod
+      menyenaraikan item berserta pilihan variasi dalam kurungan.
+    </p>
+
+    <figure class="doc-figure text-center">
+      <img src="images/11-sejarah-variasi.png" alt="Sejarah transaksi memaparkan pilihan variasi" class="img-fluid border rounded">
+      <figcaption class="text-body-secondary mt-2">Sejarah transaksi memaparkan pilihan variasi dalam kurungan</figcaption>
+    </figure>
+
+    <div class="alert alert-info mb-0">
+      <strong>Nota:</strong> Sejarah menyimpan 50 transaksi terkini dalam pelayar komputer itu
+      sahaja. Ia tidak dikongsi antara komputer.
+    </div>
+  </section>
+
+  <!-- ===== LANGKAH 11 ===== -->
+  <section class="page-break" id="langkah-11">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 11 — Buka panel Urus Variasi Produk</h2>
+    <p>
+      Tekan butang <strong>⚙️ Variasi</strong> pada bar atas. Tetingkap
+      <strong>⚙️ Urus Variasi Produk</strong> akan terbuka.
+    </p>
+
+    <table class="table table-bordered table-sm align-middle">
+      <thead class="table-light">
+        <tr><th>Lajur</th><th>Kandungan</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Kiri</strong></td><td>Senarai semua produk, dengan kiraan <strong>N kumpulan</strong> atau label <strong>tiada variasi</strong></td></tr>
+        <tr><td><strong>Kanan</strong></td><td>Editor bagi produk yang sedang dipilih — nama produk, harga asas, dan semua kumpulan variasinya</td></tr>
+      </tbody>
+    </table>
+
+    <figure class="doc-figure text-center">
+      <img src="images/12-urus-variasi.png" alt="Panel Urus Variasi Produk" class="img-fluid border rounded">
+      <figcaption class="text-body-secondary mt-2">Panel Urus Variasi Produk memaparkan variasi Nasi Lemak</figcaption>
+    </figure>
+
+    <div class="alert alert-info mb-0">
+      <strong>Nota:</strong> Perubahan yang anda buat di sini <strong>belum</strong> disimpan
+      sehingga butang <strong>Simpan</strong> ditekan. Menutup tetingkap dengan <strong>✕</strong>
+      membatalkan semua perubahan.
+    </div>
+  </section>
+
+  <!-- ===== LANGKAH 12 ===== -->
+  <section class="page-break" id="langkah-12">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 12 — Pilih produk yang hendak diberi variasi</h2>
+    <p>
+      Tekan nama produk pada lajur kiri. Editor di sebelah kanan akan bertukar kepada produk itu.
+    </p>
+    <p>
+      Contoh: tekan <strong>🫓 Roti Canai</strong>. Kerana produk ini belum mempunyai variasi,
+      editor memaparkan mesej <em>Tiada variasi. Produk ini terus masuk troli bila ditekan.</em>
+    </p>
+
+    <figure class="doc-figure text-center">
+      <img src="images/13-produk-tiada-variasi.png" alt="Editor memaparkan mesej tiada variasi" class="img-fluid border rounded">
+      <figcaption class="text-body-secondary mt-2">Editor memaparkan mesej tiada variasi bagi Roti Canai</figcaption>
+    </figure>
+  </section>
+
+  <!-- ===== LANGKAH 13 ===== -->
+  <section class="page-break" id="langkah-13">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 13 — Tambah kumpulan variasi</h2>
+    <p>
+      Tekan butang <strong>+ Tambah Kumpulan Variasi</strong> di bahagian bawah editor. Satu
+      kumpulan baharu akan muncul dengan nilai lalai: nama <em>Kumpulan baharu</em>, jenis
+      <strong>Pilih satu</strong>, kotak <strong>Wajib</strong> bertanda, dan satu pilihan bernama
+      <em>Pilihan 1</em> berharga RM 0.
+    </p>
+
+    <figure class="doc-figure text-center">
+      <img src="images/14-kumpulan-baharu.png" alt="Kumpulan baharu dengan nilai lalai" class="img-fluid border rounded">
+      <figcaption class="text-body-secondary mt-2">Kumpulan baharu muncul dengan nilai lalai</figcaption>
+    </figure>
+
+    <p>Tetapkan tiga perkara pada baris atas kumpulan:</p>
+    <table class="table table-bordered table-sm align-middle">
+      <thead class="table-light">
+        <tr><th>Medan</th><th>Fungsi</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Nama kumpulan</strong></td><td>Tajuk yang dilihat juruwang, contohnya <code>Jenis Roti</code> atau <code>Saiz</code></td></tr>
+        <tr><td>Senarai <strong>Pilih satu / Pilih berbilang</strong></td><td>Menentukan sama ada pilihan dipaparkan sebagai bulatan atau kotak semak</td></tr>
+        <tr><td>Kotak <strong>Wajib</strong></td><td>Jika bertanda, juruwang mesti memilih sekurang-kurangnya satu pilihan</td></tr>
+      </tbody>
+    </table>
+
+    <p class="mb-0">
+      Contoh: tukar nama kumpulan kepada <strong>Jenis Roti</strong>, kekalkan
+      <strong>Pilih satu</strong>, dan kekalkan kotak <strong>Wajib</strong> bertanda.
+    </p>
+  </section>
+
+  <!-- ===== LANGKAH 14 ===== -->
+  <section class="page-break" id="langkah-14">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 14 — Isi nama pilihan dan harga tambahan</h2>
+    <p>
+      Setiap pilihan mempunyai dua medan: nama pilihan di kiri, dan harga tambahan dalam kotak
+      <strong>RM</strong> di kanan. Tekan <strong>+ Tambah pilihan</strong> untuk menambah baris
+      pilihan baharu.
+    </p>
+
+    <figure class="doc-figure text-center">
+      <img src="images/15-tambah-pilihan.png" alt="Baris pilihan baharu muncul" class="img-fluid border rounded">
+      <figcaption class="text-body-secondary mt-2">Baris pilihan baharu muncul selepas menekan <strong>+ Tambah pilihan</strong></figcaption>
+    </figure>
+
+    <p>Contoh: bina kumpulan <strong>Jenis Roti</strong> dengan tiga pilihan.</p>
+    <table class="table table-bordered table-sm align-middle">
+      <thead class="table-light">
+        <tr><th>Nama pilihan</th><th>Harga tambahan</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Kosong</td><td>0</td></tr>
+        <tr><td>Telur</td><td>1.50</td></tr>
+        <tr><td>Bawang</td><td>1.00</td></tr>
+      </tbody>
+    </table>
+
+    <figure class="doc-figure text-center">
+      <img src="images/16-kumpulan-jenis-roti.png" alt="Kumpulan Jenis Roti lengkap" class="img-fluid border rounded">
+      <figcaption class="text-body-secondary mt-2">Kumpulan Jenis Roti lengkap dengan tiga pilihan</figcaption>
+    </figure>
+
+    <div class="alert alert-success mb-0">
+      <strong>Petua:</strong> Isikan harga tambahan sahaja, bukan harga penuh. Sistem menambahnya
+      kepada harga asas produk. Untuk potongan harga, masukkan nilai negatif seperti
+      <code>-0.20</code>.
+    </div>
+  </section>
+
+  <!-- ===== LANGKAH 15 ===== -->
+  <section class="page-break" id="langkah-15">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 15 — Tambah kumpulan jenis "Pilih berbilang"</h2>
+    <p>
+      Ulang <strong>+ Tambah Kumpulan Variasi</strong> untuk kumpulan kedua, kemudian tukar senarai
+      jenis kepada <strong>Pilih berbilang</strong>. Juruwang kemudiannya boleh memilih lebih
+      daripada satu pilihan dalam kumpulan itu.
+    </p>
+    <p>
+      Contoh: bina kumpulan <strong>Kuah</strong> dengan jenis <strong>Pilih berbilang</strong> dan
+      kotak <strong>Wajib</strong> bertanda, mengandungi <strong>Kuah dhal</strong> (0),
+      <strong>Kuah kari ayam</strong> (0.50) dan <strong>Sambal</strong> (0.50).
+    </p>
+
+    <figure class="doc-figure text-center">
+      <img src="images/17-kumpulan-kuah-berbilang.png" alt="Kumpulan Kuah jenis Pilih berbilang" class="img-fluid border rounded">
+      <figcaption class="text-body-secondary mt-2">Kumpulan Kuah ditetapkan sebagai <strong>Pilih berbilang</strong> dan <strong>Wajib</strong></figcaption>
+    </figure>
+
+    <div class="alert alert-info mb-0">
+      <strong>Nota:</strong> Kumpulan <strong>Pilih berbilang</strong> yang ditandakan
+      <strong>Wajib</strong> memaksa juruwang memilih sekurang-kurangnya satu pilihan. Kesannya
+      dilihat pada <a href="#langkah-17">Langkah 17</a>.
+    </div>
+  </section>
+
+  <!-- ===== LANGKAH 16 ===== -->
+  <section class="page-break" id="langkah-16">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 16 — Simpan perubahan</h2>
+    <p>
+      Tekan butang <strong>Simpan</strong>. Sistem menyemak semua produk terlebih dahulu, dan
+      menolak simpanan jika ada medan yang tidak lengkap.
+    </p>
+    <p>
+      Contoh ralat: jika nama kumpulan dibiarkan kosong, mesej <em>Kumpulan variasi dalam "Roti
+      Canai" tiada nama</em> muncul di bahagian bawah skrin dan tetingkap kekal terbuka.
+    </p>
+
+    <figure class="doc-figure text-center">
+      <img src="images/18-ralat-nama-kumpulan.png" alt="Mesej ralat nama kumpulan kosong" class="img-fluid border rounded">
+      <figcaption class="text-body-secondary mt-2">Mesej ralat kerana nama kumpulan dibiarkan kosong</figcaption>
+    </figure>
+
+    <p>Tiga pemeriksaan yang dilakukan sebelum simpanan diterima:</p>
+    <table class="table table-bordered table-sm align-middle">
+      <thead class="table-light">
+        <tr><th>Pemeriksaan</th><th>Mesej yang dipaparkan</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Nama kumpulan kosong</td><td>Kumpulan variasi dalam "<em>produk</em>" tiada nama</td></tr>
+        <tr><td>Kumpulan tanpa sebarang pilihan</td><td>Kumpulan "<em>nama</em>" dalam "<em>produk</em>" tiada pilihan</td></tr>
+        <tr><td>Nama pilihan kosong</td><td>Ada pilihan tanpa nama dalam kumpulan "<em>nama</em>"</td></tr>
+      </tbody>
+    </table>
+
+    <p>
+      Betulkan medan yang disebut, kemudian tekan <strong>Simpan</strong> semula. Mesej
+      <strong>Variasi disimpan</strong> akan muncul, tetingkap tertutup, dan kad produk dikemas
+      kini serta-merta.
+    </p>
+
+    <figure class="doc-figure text-center">
+      <img src="images/19-variasi-disimpan.png" alt="Roti Canai kini ada lencana Ada pilihan" class="img-fluid border rounded">
+      <figcaption class="text-body-secondary mt-2">Roti Canai kini memaparkan lencana <strong>Ada pilihan</strong> selepas variasi disimpan</figcaption>
+    </figure>
+
+    <div class="alert alert-info mb-0">
+      <strong>Nota:</strong> Variasi disimpan dalam storan pelayar komputer itu sahaja. Komputer
+      lain di kedai yang sama tidak menerima perubahan ini secara automatik.
+    </div>
+  </section>
+
+  <!-- ===== LANGKAH 17 ===== -->
+  <section class="page-break" id="langkah-17">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 17 — Uji variasi baharu di skrin jualan</h2>
+    <p>Tekan kad produk yang baru diubah untuk mengesahkan variasinya betul.</p>
+    <p>
+      Contoh: menekan <strong>Roti Canai</strong> kini membuka tetingkap dengan dua kumpulan.
+      Kumpulan <strong>Jenis Roti</strong> sudah terpilih <strong>Kosong</strong> secara automatik,
+      tetapi kumpulan <strong>Kuah</strong> masih kosong — jadi butang bawah dilumpuhkan dan
+      bertukar menjadi <strong>Sila pilih pilihan wajib</strong>.
+    </p>
+
+    <figure class="doc-figure text-center">
+      <img src="images/20-wajib-belum-dipilih.png" alt="Butang dilumpuhkan dengan mesej Sila pilih pilihan wajib" class="img-fluid border rounded">
+      <figcaption class="text-body-secondary mt-2">Butang dilumpuhkan dengan mesej <strong>Sila pilih pilihan wajib</strong></figcaption>
+    </figure>
+
+    <p>
+      Selepas <strong>Kuah dhal</strong> dan <strong>Sambal</strong> ditandakan, butang menjadi
+      aktif dan memaparkan <strong>Tambah — RM 2.50</strong>, iaitu RM 2.00 + RM 0.00 + RM 0.50.
+    </p>
+
+    <figure class="doc-figure text-center">
+      <img src="images/21-wajib-lengkap.png" alt="Butang aktif memaparkan Tambah RM 2.50" class="img-fluid border rounded">
+      <figcaption class="text-body-secondary mt-2">Butang aktif memaparkan <strong>Tambah — RM 2.50</strong> selepas kuah dipilih</figcaption>
+    </figure>
+
+    <div class="alert alert-success mb-0">
+      <strong>Petua:</strong> Jika butang kekal dilumpuhkan, cari kumpulan bertanda <code>*</code>
+      yang belum mempunyai sebarang pilihan bertanda.
+    </div>
+  </section>
+
+  <!-- ===== LANGKAH 18 ===== -->
+  <section class="page-break" id="langkah-18">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 18 — Buang pilihan atau kumpulan</h2>
+    <p>
+      Dalam panel <strong>⚙️ Variasi</strong>, setiap baris pilihan dan setiap kepala kumpulan
+      mempunyai butang <strong>✕</strong> merah.
+    </p>
+    <ul>
+      <li><strong>✕</strong> pada baris pilihan membuang pilihan itu sahaja.</li>
+      <li><strong>✕</strong> pada baris nama kumpulan membuang seluruh kumpulan berserta semua
+        pilihannya.</li>
+    </ul>
+    <p>
+      Contoh: membuang pilihan <strong>Bawang</strong> meninggalkan <strong>Kosong</strong> dan
+      <strong>Telur</strong> dalam kumpulan <strong>Jenis Roti</strong>.
+    </p>
+
+    <figure class="doc-figure text-center">
+      <img src="images/22-buang-pilihan.png" alt="Kumpulan Jenis Roti tinggal dua pilihan" class="img-fluid border rounded">
+      <figcaption class="text-body-secondary mt-2">Kumpulan Jenis Roti tinggal dua pilihan selepas Bawang dibuang</figcaption>
+    </figure>
+
+    <div class="alert alert-warning mb-0">
+      <strong>Amaran:</strong> Pembuangan berlaku serta-merta tanpa soalan pengesahan. Jika
+      tersilap buang, tutup tetingkap dengan <strong>✕</strong> tanpa menekan
+      <strong>Simpan</strong> — semua perubahan yang belum disimpan akan dibatalkan.
+    </div>
+  </section>
+
+  <!-- ===== LANGKAH 19 ===== -->
+  <section class="page-break" id="langkah-19">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 19 — Reset semua variasi ke asal</h2>
+    <p>
+      Butang <strong>Reset ke asal</strong> memulihkan senarai variasi kepada tetapan asal sistem
+      bagi <strong>semua</strong> produk sekali gus.
+    </p>
+    <p>
+      Tekan <strong>Reset ke asal</strong>, kemudian tekan <strong>OK</strong> pada soalan
+      pengesahan <em>Reset semua variasi kepada tetapan asal? Perubahan tersimpan akan hilang.</em>
+    </p>
+    <p>
+      Mesej <strong>Variasi direset kepada asal</strong> akan muncul. Dalam contoh ini,
+      <strong>Roti Canai</strong> kembali berlabel <em>tiada variasi</em> dan variasi asal Nasi
+      Lemak dipaparkan semula.
+    </p>
+
+    <figure class="doc-figure text-center">
+      <img src="images/23-reset-ke-asal.png" alt="Senarai produk selepas reset" class="img-fluid border rounded">
+      <figcaption class="text-body-secondary mt-2">Senarai produk selepas reset — Roti Canai kembali <em>tiada variasi</em></figcaption>
+    </figure>
+
+    <div class="alert alert-warning mb-0">
+      <strong>Amaran:</strong> Reset membuang semua variasi yang pernah anda simpan, bukan hanya
+      perubahan terakhir. Ia tidak boleh diundur.
+    </div>
+  </section>
+
+  <!-- ===== PETUA PANTAS ===== -->
+  <section class="page-break" id="petua">
+    <h2 class="border-bottom pb-2 mb-3">Petua Pantas</h2>
+    <ul class="mb-0">
+      <li>Tekan kad produk bervariasi berulang kali dengan pilihan yang sama untuk menambah
+        kuantiti — baris troli akan bergabung secara automatik.</li>
+      <li>Untuk pesanan berlainan bagi produk yang sama, buka tetingkap pilihan sekali bagi setiap
+        kombinasi. Jangan laraskan kuantiti pada baris sedia ada.</li>
+      <li>Namakan pilihan mengikut cara pelanggan bercakap (<code>Extra pedas</code>,
+        <code>Tanpa ais</code>) supaya juruwang tidak perlu menterjemah pesanan.</li>
+      <li>Guna pilihan berharga RM 0 untuk arahan dapur seperti <strong>Tanpa timun</strong> atau
+        <strong>Kurang manis</strong>.</li>
+      <li>Gunakan nilai negatif seperti <code>-0.20</code> untuk pilihan yang memberi potongan,
+        contohnya <strong>Tanpa ais</strong> pada Teh Tarik.</li>
+      <li>Sebelum mengubah variasi pada waktu sibuk, ingat bahawa perubahan hanya berkuat kuasa
+        pada komputer yang anda gunakan.</li>
+    </ul>
+  </section>
+
+  <!-- ===== MASALAH LAZIM ===== -->
+  <section class="page-break" id="masalah">
+    <h2 class="border-bottom pb-2 mb-3">Masalah Lazim</h2>
+    <table class="table table-bordered table-sm align-middle">
+      <thead class="table-light">
+        <tr><th>Masalah</th><th>Sebab</th><th>Penyelesaian</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Butang bawah tertulis <strong>Sila pilih pilihan wajib</strong> dan tidak boleh ditekan</td>
+          <td>Ada kumpulan bertanda <code>*</code> yang belum dipilih</td>
+          <td>Tandakan sekurang-kurangnya satu pilihan dalam setiap kumpulan bertanda <code>*</code></td>
+        </tr>
+        <tr>
+          <td>Menekan kad produk terus masuk troli tanpa tetingkap pilihan</td>
+          <td>Produk itu tiada variasi</td>
+          <td>Tambah kumpulan variasi melalui <strong>⚙️ Variasi</strong> (<a href="#langkah-13">Langkah 13</a>)</td>
+        </tr>
+        <tr>
+          <td>Mesej <strong>Stok "Nasi Lemak" tidak mencukupi</strong></td>
+          <td>Semua variasi produk berkongsi kolam stok yang sama</td>
+          <td>Kurangkan kuantiti, atau kemas kini stok produk</td>
+        </tr>
+        <tr>
+          <td>Troli menunjukkan dua baris untuk produk yang nampak sama</td>
+          <td>Kombinasi pilihannya berbeza</td>
+          <td>Bandingkan baris kecil condong di bawah nama produk</td>
+        </tr>
+        <tr>
+          <td>Senarai pilihan dalam troli terpotong dengan <code>…</code></td>
+          <td>Ruang panel troli terhad</td>
+          <td>Rujuk resit atau <strong>📜 Sejarah</strong> untuk senarai penuh</td>
+        </tr>
+        <tr>
+          <td>Perubahan variasi hilang selepas tetingkap ditutup</td>
+          <td>Butang <strong>Simpan</strong> tidak ditekan</td>
+          <td>Tekan <strong>Simpan</strong> sebelum menutup tetingkap</td>
+        </tr>
+        <tr>
+          <td>Mesej <em>Kumpulan "..." tiada pilihan</em> semasa menyimpan</td>
+          <td>Kumpulan itu tiada baris pilihan</td>
+          <td>Tekan <strong>+ Tambah pilihan</strong>, atau buang kumpulan itu dengan <strong>✕</strong></td>
+        </tr>
+        <tr>
+          <td>Variasi baharu tidak kelihatan pada komputer lain</td>
+          <td>Variasi disimpan dalam storan pelayar setempat</td>
+          <td>Ulang tetapan pada komputer berkenaan</td>
+        </tr>
+        <tr>
+          <td>Semua variasi tersuai hilang</td>
+          <td>Butang <strong>Reset ke asal</strong> telah ditekan</td>
+          <td>Bina semula variasi — reset tidak boleh diundur</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KedaiPOS — Sistem Jualan</title>
+<link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="css/style.css?v=2">
+</head>
+<body class="bg-body-tertiary">
+
+<div class="pos-shell d-flex flex-column">
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand bg-dark flex-shrink-0" data-bs-theme="dark">
+    <div class="container-fluid px-3">
+      <span class="navbar-brand mb-0 h1 fw-semibold">
+        <span class="me-1">🛒</span>Kedai<span class="text-primary-emphasis">POS</span>
+      </span>
+      <div class="d-flex align-items-center gap-3">
+        <span id="clock" class="navbar-text small d-none d-md-inline text-body-secondary"></span>
+        <button id="adminBtn" class="btn btn-sm btn-outline-light">
+          <span class="me-1">⚙️</span>Variasi
+        </button>
+        <button id="historyBtn" class="btn btn-sm btn-outline-light">
+          <span class="me-1">📜</span>Sejarah
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- KANDUNGAN UTAMA -->
+  <div class="pos-body flex-grow-1 d-flex">
+
+    <!-- PANEL PRODUK -->
+    <main class="pos-products flex-grow-1 d-flex flex-column p-3">
+
+      <div class="input-group mb-3 flex-shrink-0">
+        <span class="input-group-text bg-white border-end-0">🔍</span>
+        <input type="text" id="searchInput" class="form-control border-start-0 ps-0"
+               placeholder="Cari produk...">
+      </div>
+
+      <div class="d-flex flex-wrap gap-2 mb-3 flex-shrink-0" id="categoryList">
+        <!-- butang kategori dijana oleh JS -->
+      </div>
+
+      <div class="product-grid flex-grow-1" id="productGrid">
+        <!-- produk dijana oleh JS -->
+      </div>
+    </main>
+
+    <!-- PANEL TROLI -->
+    <aside class="pos-cart bg-white border-start d-flex flex-column flex-shrink-0">
+
+      <div class="d-flex justify-content-between align-items-center px-3 pt-3 pb-2 flex-shrink-0">
+        <h2 class="h6 mb-0 fw-semibold">🧾 Troli</h2>
+        <button id="clearCartBtn" class="btn btn-sm btn-link text-danger text-decoration-none p-0">
+          Kosongkan
+        </button>
+      </div>
+
+      <div class="cart-items flex-grow-1 px-3" id="cartItems">
+        <p class="text-body-secondary text-center small mt-5" id="emptyCartMsg">
+          Troli masih kosong
+        </p>
+      </div>
+
+      <div class="border-top px-3 py-3 flex-shrink-0">
+        <div class="d-flex justify-content-between small text-body-secondary mb-2">
+          <span>Subjumlah</span>
+          <span id="subtotalValue">RM 0.00</span>
+        </div>
+        <div class="d-flex justify-content-between small text-body-secondary mb-2">
+          <span>Cukai (6%)</span>
+          <span id="taxValue">RM 0.00</span>
+        </div>
+        <div class="d-flex justify-content-between align-items-center small text-body-secondary mb-2">
+          <span>Diskaun</span>
+          <div class="input-group input-group-sm discount-group">
+            <span class="input-group-text">RM</span>
+            <input type="number" id="discountInput" class="form-control text-end" min="0" value="0">
+          </div>
+        </div>
+        <div class="d-flex justify-content-between align-items-center border-top pt-2 mt-2">
+          <span class="fw-semibold">Jumlah</span>
+          <span class="fs-4 fw-bold text-primary" id="totalValue">RM 0.00</span>
+        </div>
+
+        <button id="checkoutBtn" class="btn btn-primary btn-lg w-100 mt-3">
+          Bayar
+        </button>
+      </div>
+    </aside>
+
+  </div>
+</div>
+
+<!-- ===== MODAL PILIHAN VARIASI ===== -->
+<div class="modal fade" id="variationModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h5 class="modal-title fw-semibold" id="variationTitle">Produk</h5>
+          <div class="small text-body-secondary" id="variationSubtitle"></div>
+        </div>
+        <button type="button" class="btn-close" id="closeVariationBtn"
+                data-bs-dismiss="modal" aria-label="Tutup"></button>
+      </div>
+
+      <div class="modal-body">
+        <div id="variationGroups" class="d-flex flex-column gap-3">
+          <!-- kumpulan variasi dijana oleh JS -->
+        </div>
+      </div>
+
+      <div class="modal-footer flex-column align-items-stretch gap-2">
+        <div class="d-flex justify-content-between align-items-center w-100">
+          <span class="fw-semibold small">Kuantiti</span>
+          <div class="btn-group" role="group">
+            <button id="varQtyMinus" class="btn btn-outline-secondary btn-sm px-3">−</button>
+            <span id="varQtyValue" class="btn btn-outline-secondary btn-sm disabled px-3">1</span>
+            <button id="varQtyPlus" class="btn btn-outline-secondary btn-sm px-3">+</button>
+          </div>
+        </div>
+        <div class="d-flex gap-2 w-100">
+          <button id="cancelVariationBtn" class="btn btn-outline-secondary flex-fill"
+                  data-bs-dismiss="modal">Batal</button>
+          <button id="addVariationBtn" class="btn btn-primary flex-fill">Tambah</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL ADMIN VARIASI ===== -->
+<div class="modal fade" id="adminModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fw-semibold">⚙️ Urus Variasi Produk</h5>
+        <button type="button" class="btn-close" id="closeAdminBtn"
+                data-bs-dismiss="modal" aria-label="Tutup"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="admin-layout d-flex gap-3">
+          <div class="admin-product-list list-group list-group-flush border rounded flex-shrink-0"
+               id="adminProductList">
+            <!-- senarai produk dijana oleh JS -->
+          </div>
+          <div class="admin-editor flex-grow-1" id="adminEditor">
+            <!-- editor variasi dijana oleh JS -->
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button id="resetVariationsBtn" class="btn btn-outline-danger">Reset ke asal</button>
+        <button id="saveVariationsBtn" class="btn btn-primary">Simpan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL PEMBAYARAN ===== -->
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fw-semibold">💵 Pembayaran</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="d-flex justify-content-between align-items-center bg-body-tertiary rounded p-3 mb-3">
+          <span class="text-body-secondary">Jumlah Perlu Dibayar</span>
+          <span class="fs-4 fw-bold text-primary" id="modalTotal">RM 0.00</span>
+        </div>
+
+        <label class="form-label small text-body-secondary" for="cashInput">Wang Diterima (RM)</label>
+        <input type="number" id="cashInput" class="form-control form-control-lg mb-3"
+               min="0" placeholder="0.00">
+
+        <div class="d-flex justify-content-between align-items-center">
+          <span class="text-body-secondary">Baki</span>
+          <span class="fs-5 fw-semibold text-success" id="changeValue">RM 0.00</span>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button id="cancelPaymentBtn" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+        <button id="confirmPaymentBtn" class="btn btn-primary">Sahkan Bayaran</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL RESIT ===== -->
+<div class="modal fade" id="receiptModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-sm modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div id="receiptContent" class="receipt">
+          <!-- resit dijana oleh JS -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="printReceiptBtn" class="btn btn-outline-secondary btn-sm">🖨️ Cetak</button>
+        <button id="closeReceiptBtn" class="btn btn-primary btn-sm" data-bs-dismiss="modal">Selesai</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL SEJARAH ===== -->
+<div class="modal fade" id="historyModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fw-semibold">📜 Sejarah Transaksi</h5>
+        <button type="button" class="btn-close" id="closeHistoryBtn"
+                data-bs-dismiss="modal" aria-label="Tutup"></button>
+      </div>
+      <div class="modal-body">
+        <div id="historyList" class="d-flex flex-column gap-2">
+          <!-- sejarah dijana oleh JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3">
+  <div class="toast align-items-center text-bg-dark border-0" id="toast" role="alert">
+    <div class="d-flex">
+      <div class="toast-body" id="toastBody"></div>
+    </div>
+  </div>
+</div>
+
+<script src="vendor/bootstrap/bootstrap.bundle.min.js"></script>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script src="js/admin.js?v=2"></script>
+</body>
+</html>

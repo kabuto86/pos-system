@@ -1,0 +1,277 @@
+/* ============================================================
+   KedaiPOS — gaya tersuai DI ATAS Bootstrap 5.3
+   Hanya perkara yang Bootstrap tidak sediakan diletak di sini.
+   Warna guna pemboleh ubah Bootstrap (--bs-*) supaya konsisten.
+   ============================================================ */
+
+/* ===== RANGKA APLIKASI (skrin penuh, panel berskrol sendiri) ===== */
+.pos-shell {
+  height: 100vh;
+}
+
+.pos-body {
+  overflow: hidden;
+}
+
+.pos-products {
+  overflow: hidden;
+  min-width: 0;
+}
+
+.pos-cart {
+  width: 380px;
+}
+
+.cart-items {
+  overflow-y: auto;
+}
+
+.discount-group {
+  width: 120px;
+}
+
+/* ===== GRID PRODUK ===== */
+.product-grid {
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(158px, 1fr));
+  gap: 0.85rem;
+  align-content: start;
+  padding-bottom: 0.5rem;
+}
+
+.product-card {
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+}
+
+.product-card:not(.disabled):hover {
+  transform: translateY(-3px);
+  border-color: var(--bs-primary);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+.product-card.disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.product-icon {
+  font-size: 2.25rem;
+  line-height: 1;
+}
+
+/* Lencana "Ada pilihan" di penjuru kad */
+.variation-badge {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  font-size: 0.62rem;
+}
+
+/* ===== TROLI ===== */
+/* Bootstrap 5.3 tiada utiliti ini — perlu supaya anak flex boleh dipotong */
+.min-w-0 {
+  min-width: 0;
+}
+
+.cart-item-variant {
+  font-size: 0.74rem;
+  font-style: italic;
+  line-height: 1.3;
+}
+
+/* Potong teks panjang supaya susun atur troli tidak pecah */
+.cart-item-name,
+.cart-item-variant {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ===== MODAL VARIASI ===== */
+/* Baris pilihan: seluruh baris boleh diklik, diserlah bila dipilih */
+.variation-option {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+  cursor: pointer;
+  transition: border-color 0.12s ease, background-color 0.12s ease;
+}
+
+.variation-option:hover {
+  border-color: var(--bs-primary);
+  background-color: var(--bs-tertiary-bg);
+}
+
+.variation-option:has(input:checked) {
+  border-color: var(--bs-primary);
+  background-color: rgba(var(--bs-primary-rgb), 0.08);
+}
+
+.variation-option input {
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.variation-option-label {
+  flex: 1;
+  font-size: 0.88rem;
+}
+
+/* ===== PANEL ADMIN ===== */
+.admin-product-list {
+  width: 210px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.admin-editor {
+  max-height: 60vh;
+  overflow-y: auto;
+  min-width: 0;
+}
+
+.admin-options {
+  border-left: 3px solid var(--bs-border-color);
+  padding-left: 0.7rem;
+}
+
+/* Baris pilihan dibenarkan membaluk. Bila tetingkap disempitkan, medan harga
+   turun ke baris bawah dan kekal penuh, bukan dihimpit sampai nombor terpotong. */
+.opt-row {
+  flex-wrap: wrap;
+}
+
+/* Nama pilihan yang mengecut bila ruang berkurang, bukan medan harga. */
+.opt-row .opt-label {
+  flex: 1 1 9rem;
+  min-width: 0;
+}
+
+/* Cukup lebar untuk 4 digit + 2 perpuluhan berserta tanda negatif (cth. −1234.50)
+   dan anak panah spinner — 84px dahulu memotong nombor. */
+.opt-delta {
+  flex: 0 0 9.5rem;
+  width: 9.5rem;
+}
+
+.grp-name {
+  min-width: 120px;
+}
+
+/* ===== RESIT ===== */
+.receipt {
+  font-family: "Courier New", ui-monospace, monospace;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.receipt hr {
+  border-top: 1px dashed var(--bs-secondary-color);
+  opacity: 1;
+  margin: 0.6rem 0;
+}
+
+.receipt-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.receipt-item-name {
+  flex: 1;
+}
+
+.receipt-variant {
+  padding-left: 0.9rem;
+  font-size: 0.74rem;
+  color: var(--bs-secondary-color);
+}
+
+/* ===== SKROLBAR HALUS ===== */
+.product-grid::-webkit-scrollbar,
+.cart-items::-webkit-scrollbar,
+.admin-product-list::-webkit-scrollbar,
+.admin-editor::-webkit-scrollbar,
+.modal-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.product-grid::-webkit-scrollbar-thumb,
+.cart-items::-webkit-scrollbar-thumb,
+.admin-product-list::-webkit-scrollbar-thumb,
+.admin-editor::-webkit-scrollbar-thumb,
+.modal-body::-webkit-scrollbar-thumb {
+  background: var(--bs-border-color);
+  border-radius: 4px;
+}
+
+/* ===== RESPONSIF ===== */
+@media (max-width: 991.98px) {
+  /* Di bawah lg: susun menegak dan biarkan halaman berskrol biasa */
+  .pos-shell {
+    height: auto;
+    min-height: 100vh;
+  }
+  .pos-body {
+    flex-direction: column;
+    overflow: visible;
+  }
+  .pos-products {
+    overflow: visible;
+  }
+  .product-grid {
+    overflow-y: visible;
+  }
+  .pos-cart {
+    width: 100%;
+    border-start: none;
+    border-top: 1px solid var(--bs-border-color);
+  }
+  .cart-items {
+    overflow-y: visible;
+    min-height: 90px;
+  }
+
+  /* Panel admin runtuh jadi satu lajur */
+  .admin-layout {
+    flex-direction: column;
+  }
+  .admin-product-list {
+    width: 100%;
+    max-height: 150px;
+  }
+  .admin-editor {
+    max-height: none;
+  }
+}
+
+/* ===== CETAK — hanya resit dicetak ===== */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #receiptContent,
+  #receiptContent * {
+    visibility: visible;
+  }
+  #receiptContent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+  .modal {
+    position: absolute !important;
+    display: block !important;
+  }
+  .modal-backdrop,
+  .modal-footer {
+    display: none !important;
+  }
+}
