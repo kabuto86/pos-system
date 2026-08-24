@@ -2,7 +2,7 @@
 
 **Cara Membuat Pesanan dan Menerima Bayaran**
 
-Versi 1.0 · Kemas kini 17 Ogos 2026
+Versi 1.1 · Kemas kini 21 Ogos 2026
 
 ---
 
@@ -21,11 +21,14 @@ Versi 1.0 · Kemas kini 17 Ogos 2026
 11. [Langkah 9 — Laras Kuantiti atau Buang Item](#langkah-9--laras-kuantiti-atau-buang-item)
 12. [Langkah 10 — Masukkan Diskaun](#langkah-10--masukkan-diskaun)
 13. [Langkah 11 — Tekan Butang Bayar](#langkah-11--tekan-butang-bayar)
-14. [Langkah 12 — Masukkan Wang Diterima](#langkah-12--masukkan-wang-diterima)
-15. [Langkah 13 — Sahkan Bayaran dan Cetak Resit](#langkah-13--sahkan-bayaran-dan-cetak-resit)
-16. [Langkah 14 — Semak Sejarah Transaksi](#langkah-14--semak-sejarah-transaksi)
-17. [Petua Pantas](#petua-pantas)
-18. [Masalah Lazim](#masalah-lazim)
+14. [Langkah 12 — Pilih Kaedah Pembayaran](#langkah-12--pilih-kaedah-pembayaran)
+15. [Langkah 13 — Bayaran Tunai](#langkah-13--bayaran-tunai)
+16. [Langkah 14 — Bayaran Kad](#langkah-14--bayaran-kad)
+17. [Langkah 15 — Bayaran QR Code](#langkah-15--bayaran-qr-code)
+18. [Langkah 16 — Sahkan Bayaran dan Cetak Resit](#langkah-16--sahkan-bayaran-dan-cetak-resit)
+19. [Langkah 17 — Semak Sejarah Transaksi](#langkah-17--semak-sejarah-transaksi)
+20. [Petua Pantas](#petua-pantas)
+21. [Masalah Lazim](#masalah-lazim)
 
 ---
 
@@ -33,7 +36,8 @@ Versi 1.0 · Kemas kini 17 Ogos 2026
 
 KedaiPOS ialah sistem jualan (Point of Sale) untuk kedai makan. Sistem ini membolehkan
 juruwang menerima pesanan, memilih variasi makanan seperti jenis lauk dan saiz minuman,
-mengira cukai dan diskaun, menerima bayaran tunai, serta mencetak resit.
+mengira cukai dan diskaun, menerima bayaran secara **tunai, kad atau QR Code**,
+serta mencetak resit.
 
 Panduan ini menerangkan proses lengkap dari memilih menu sehingga bayaran selesai.
 Setiap langkah disertakan gambar skrin sebenar daripada sistem.
@@ -245,32 +249,99 @@ Tetingkap pembayaran akan terbuka dan memaparkan **Jumlah Perlu Dibayar**.
 
 ---
 
-## Langkah 12 — Masukkan Wang Diterima
+## Langkah 12 — Pilih Kaedah Pembayaran
 
-Taip amaun tunai yang diterima daripada pelanggan dalam medan **Wang Diterima (RM)**.
-Baki akan dikira secara automatik dan dipapar dalam warna hijau.
+Di bawah jumlah bayaran terdapat baris **Kaedah Pembayaran** dengan tiga pilihan.
+Tekan salah satu butang mengikut cara pelanggan membayar. **Tunai** dipilih secara
+lalai setiap kali tetingkap dibuka.
 
-Contoh: pelanggan membayar RM 30.00 bagi jumlah RM 25.17, maka baki ialah RM 4.83.
+![Baris kaedah pembayaran](images/12-kaedah-bayaran.png)
 
-![Wang diterima dan baki](images/12-wang-baki.png)
+| Kaedah | Bila digunakan | Apa yang berlaku pada skrin |
+|---|---|---|
+| **💵 Tunai** | Pelanggan bayar dengan wang tunai | Medan **Wang Diterima (RM)**, butang wang pantas dan pengiraan **Baki** dipaparkan |
+| **💳 Kad** | Pelanggan bayar dengan kad debit atau kredit | Medan tunai disembunyikan; skrin memaparkan **Amaun Dicaj** sahaja |
+| **📱 QR Code** | Pelanggan imbas kod QR (e-dompet / DuitNow) | Medan tunai disembunyikan; skrin memaparkan **Amaun Dicaj** sahaja |
 
-> **Nota:** Butang **Sahkan Bayaran** hanya berfungsi apabila wang yang dimasukkan
-> mencukupi. Jika kurang daripada jumlah, sistem akan memaparkan amaran.
+> **Nota:** Kaedah boleh ditukar seberapa kerap yang perlu sebelum bayaran disahkan.
+> Jumlah perlu dibayar tidak berubah walau apa pun kaedah yang dipilih.
 
 ---
 
-## Langkah 13 — Sahkan Bayaran dan Cetak Resit
+## Langkah 13 — Bayaran Tunai
 
-Tekan **Sahkan Bayaran**. Resit rasmi akan dipaparkan dengan maklumat penuh transaksi.
+Pastikan butang **💵 Tunai** dipilih, kemudian taip amaun tunai yang diterima daripada
+pelanggan dalam medan **Wang Diterima (RM)**. Baki dikira secara automatik dan dipapar
+dalam warna hijau.
 
-![Resit rasmi](images/13-resit.png)
+![Wang diterima dan baki](images/13-wang-baki.png)
+
+**Butang wang pantas** di bawah medan tersebut memasukkan amaun lazim dengan satu tekanan
+sahaja — contohnya `RM 25.20`, `RM 26.00`, `RM 30.00` dan `RM 40.00` bagi jumlah RM 25.17.
+Ia hanya cadangan; anda masih boleh taip amaun lain secara manual.
+
+Contoh: pelanggan membayar RM 30.00 bagi jumlah RM 25.17, maka baki ialah RM 4.83.
+
+> **Nota:** Butang **Sahkan Bayaran** hanya berfungsi apabila wang yang dimasukkan
+> mencukupi. Jika kurang daripada jumlah, butang tersebut kekal kelabu.
+
+---
+
+## Langkah 14 — Bayaran Kad
+
+Tekan butang **💳 Kad**. Medan wang tunai akan hilang dan digantikan dengan arahan
+ringkas beserta **Amaun Dicaj**, iaitu jumlah penuh yang perlu dicaj pada terminal kad.
+
+![Bayaran menggunakan kad](images/14-bayaran-kad.png)
+
+Urutan kerja yang betul:
+
+1. Caj amaun yang dipaparkan pada terminal kad.
+2. Tunggu terminal mengesahkan bayaran berjaya.
+3. Barulah tekan **Sahkan Bayaran** dalam KedaiPOS.
+
+> **Amaran:** Jangan tekan **Sahkan Bayaran** sebelum terminal kad mengesahkan transaksi
+> berjaya. Sistem tidak berhubung dengan terminal kad — ia hanya merekod kaedah yang anda pilih.
+
+---
+
+## Langkah 15 — Bayaran QR Code
+
+Tekan butang **📱 QR Code**. Skrin memaparkan arahan supaya pelanggan mengimbas kod QR
+kedai, berserta **Amaun Dicaj**.
+
+![Bayaran menggunakan QR Code](images/15-bayaran-qrcode.png)
+
+Urutan kerja yang betul:
+
+1. Tunjukkan kod QR kedai kepada pelanggan (pelekat kaunter atau aplikasi bank).
+2. Minta pelanggan tunjukkan skrin **bukti bayaran berjaya**.
+3. Barulah tekan **Sahkan Bayaran**.
+
+> **Nota:** Bagi kaedah Kad dan QR Code, tiada baki dikira kerana amaun yang dicaj
+> sentiasa sama tepat dengan jumlah perlu dibayar.
+
+---
+
+## Langkah 16 — Sahkan Bayaran dan Cetak Resit
+
+Tekan **Sahkan Bayaran**. Resit rasmi akan dipaparkan dengan maklumat penuh transaksi,
+termasuk **Kaedah Bayaran** yang digunakan.
+
+![Resit bayaran tunai](images/16-resit-tunai.png)
 
 Resit mengandungi:
 
 - Nama kedai, tarikh dan masa transaksi
 - Senarai item beserta kuantiti dan variasi yang dipilih
 - Subjumlah, cukai, diskaun dan jumlah akhir
-- Amaun tunai diterima dan baki
+- **Kaedah Bayaran** — Tunai, Kad atau QR Code
+- Amaun tunai diterima dan baki (bayaran tunai sahaja)
+
+Bagi bayaran **Kad** dan **QR Code**, baris *Tunai* dan *Baki* digantikan dengan satu
+baris **Dibayar** sahaja:
+
+![Resit bayaran kad](images/17-resit-kad.png)
 
 **Pilihan pada resit:**
 
@@ -282,18 +353,21 @@ Selepas bayaran disahkan, sistem akan:
 1. Mengosongkan troli secara automatik
 2. Menetapkan semula medan diskaun kepada `0`
 3. Menolak stok setiap produk yang dijual
-4. Menyimpan rekod ke dalam sejarah transaksi
+4. Menyimpan rekod ke dalam sejarah transaksi berserta kaedah bayarannya
 
 ---
 
-## Langkah 14 — Semak Sejarah Transaksi
+## Langkah 17 — Semak Sejarah Transaksi
 
 Tekan butang **📜 Sejarah** pada bar atas untuk melihat rekod jualan yang lepas.
 
-![Sejarah transaksi](images/14-sejarah.png)
+![Sejarah transaksi](images/18-sejarah.png)
 
 Setiap rekod memaparkan nombor rujukan transaksi, jumlah bayaran, tarikh dan masa,
-bilangan item, serta senarai ringkas item berserta variasinya.
+bilangan item, **lencana kaedah bayaran**, serta senarai ringkas item berserta variasinya.
+
+Lencana kaedah memudahkan penyesuaian wang tunai pada hujung hari — kira hanya rekod
+berlencana **💵 Tunai**, manakala **💳 Kad** dan **📱 QR Code** disemak melalui penyata bank.
 
 ---
 
@@ -306,6 +380,9 @@ bilangan item, serta senarai ringkas item berserta variasinya.
 | Nak tambah item sama dengan variasi berbeza | Tekan kad produk semula dan pilih variasi baharu |
 | Nak cari produk dengan pantas | Taip dalam medan carian, jangan skrol |
 | Tersalah masuk amaun tunai | Padam dan taip semula — baki dikira semula automatik |
+| Nak isi amaun tunai dengan pantas | Tekan salah satu butang wang pantas di bawah medan tunai |
+| Pelanggan tukar daripada tunai kepada kad | Tekan butang **💳 Kad** — medan tunai hilang serta-merta |
+| Terminal kad gagal, pelanggan bayar tunai | Tekan semula butang **💵 Tunai** dan masukkan wang diterima |
 | Nak batalkan sebelum sahkan bayaran | Tekan **Batal** pada tetingkap pembayaran |
 
 ---
@@ -323,7 +400,17 @@ Ada kumpulan wajib (bertanda `*`) yang belum dipilih. Semak kumpulan seperti
 Stok produk tersebut telah habis. Kad akan memaparkan label **Habis**.
 
 **Sistem tidak benarkan sahkan bayaran**
-Wang yang dimasukkan kurang daripada jumlah perlu dibayar. Semak semula amaun tunai.
+Kaedah **Tunai** dipilih tetapi wang yang dimasukkan kurang daripada jumlah perlu
+dibayar. Semak semula amaun tunai, atau tukar kepada kaedah **Kad** / **QR Code**
+yang tidak memerlukan medan tunai.
+
+**Medan Wang Diterima hilang dari skrin**
+Kaedah **Kad** atau **QR Code** sedang dipilih. Tekan butang **💵 Tunai** untuk
+memaparkannya semula.
+
+**Tersalah pilih kaedah bayaran selepas resit dicetak**
+Rekod yang telah disahkan tidak boleh disunting. Catat pembetulan secara manual dan
+laporkan kepada penyelia.
 
 **Sejarah transaksi kosong selepas kosongkan data pelayar**
 Sejarah disimpan dalam storan setempat pelayar. Membersihkan data pelayar akan
@@ -331,5 +418,5 @@ memadamkan rekod tersebut.
 
 ---
 
-*Dokumen ini dijana secara automatik menggunakan Playwright. Semua gambar skrin
-diambil daripada sistem yang sedang berjalan.*
+*Dokumen ini dijana secara automatik menggunakan pelayar tanpa kepala (headless Chrome).
+Semua gambar skrin diambil daripada sistem yang sedang berjalan.*

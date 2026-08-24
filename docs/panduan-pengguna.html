@@ -15,8 +15,8 @@
     <h1 class="display-5 fw-bold mb-2">Panduan Pengguna</h1>
     <p class="fs-3 text-primary fw-semibold mb-4">KedaiPOS — Sistem Jualan</p>
     <p class="fs-5 text-body-secondary mb-5">Cara Membuat Pesanan dan Menerima Bayaran</p>
-    <p class="text-body-secondary mb-0">Versi 1.0</p>
-    <p class="text-body-secondary">Kemas kini 17 Ogos 2026</p>
+    <p class="text-body-secondary mb-0">Versi 1.1</p>
+    <p class="text-body-secondary">Kemas kini 21 Ogos 2026</p>
   </section>
 
   <!-- ===== PENGENALAN ===== -->
@@ -25,7 +25,8 @@
     <p>
       KedaiPOS ialah sistem jualan (Point of Sale) untuk kedai makan. Sistem ini membolehkan
       juruwang menerima pesanan, memilih variasi makanan seperti jenis lauk dan saiz minuman,
-      mengira cukai dan diskaun, menerima bayaran tunai, serta mencetak resit.
+      mengira cukai dan diskaun, menerima bayaran secara <strong>tunai, kad atau QR Code</strong>,
+      serta mencetak resit.
     </p>
     <p>
       Panduan ini menerangkan proses lengkap dari memilih menu sehingga bayaran selesai.
@@ -304,41 +305,144 @@ Harga seunit       RM 9.30</pre>
 
   <!-- ===== LANGKAH 12 ===== -->
   <section class="page-break">
-    <h2 class="border-bottom pb-2 mb-3">Langkah 12 — Masukkan Wang Diterima</h2>
+    <h2 class="border-bottom pb-2 mb-3">Langkah 12 — Pilih Kaedah Pembayaran</h2>
     <p>
-      Taip amaun tunai yang diterima daripada pelanggan dalam medan
-      <strong>Wang Diterima (RM)</strong>. Baki akan dikira secara automatik dan dipapar
-      dalam warna hijau.
+      Di bawah jumlah bayaran terdapat baris <strong>Kaedah Pembayaran</strong> dengan tiga
+      pilihan. Tekan salah satu butang mengikut cara pelanggan membayar.
+      <strong>Tunai</strong> dipilih secara lalai setiap kali tetingkap dibuka.
     </p>
-    <p>Contoh: pelanggan membayar RM 30.00 bagi jumlah RM 25.17, maka baki ialah RM 4.83.</p>
     <figure class="doc-figure text-center my-4">
-      <img src="images/12-wang-baki.png" class="img-fluid border rounded" alt="Wang diterima dan baki">
-      <figcaption class="small text-body-secondary mt-2">Rajah 13 — Baki dikira secara automatik</figcaption>
+      <img src="images/12-kaedah-bayaran.png" class="img-fluid border rounded" alt="Baris kaedah pembayaran">
+      <figcaption class="small text-body-secondary mt-2">Rajah 13 — Tiga kaedah pembayaran</figcaption>
     </figure>
+    <table class="table table-bordered align-middle">
+      <thead class="table-light">
+        <tr><th>Kaedah</th><th>Bila digunakan</th><th>Apa yang berlaku pada skrin</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="fw-semibold">💵 Tunai</td>
+          <td>Pelanggan bayar dengan wang tunai</td>
+          <td>Medan <strong>Wang Diterima (RM)</strong>, butang wang pantas dan pengiraan <strong>Baki</strong> dipaparkan</td>
+        </tr>
+        <tr>
+          <td class="fw-semibold">💳 Kad</td>
+          <td>Pelanggan bayar dengan kad debit atau kredit</td>
+          <td>Medan tunai disembunyikan; skrin memaparkan <strong>Amaun Dicaj</strong> sahaja</td>
+        </tr>
+        <tr>
+          <td class="fw-semibold">📱 QR Code</td>
+          <td>Pelanggan imbas kod QR (e-dompet / DuitNow)</td>
+          <td>Medan tunai disembunyikan; skrin memaparkan <strong>Amaun Dicaj</strong> sahaja</td>
+        </tr>
+      </tbody>
+    </table>
     <div class="alert alert-secondary">
-      <strong>Nota:</strong> Butang <strong>Sahkan Bayaran</strong> hanya berfungsi apabila
-      wang yang dimasukkan mencukupi. Jika kurang daripada jumlah, sistem akan memaparkan amaran.
+      <strong>Nota:</strong> Kaedah boleh ditukar seberapa kerap yang perlu sebelum bayaran
+      disahkan. Jumlah perlu dibayar tidak berubah walau apa pun kaedah yang dipilih.
     </div>
   </section>
 
   <!-- ===== LANGKAH 13 ===== -->
   <section class="page-break">
-    <h2 class="border-bottom pb-2 mb-3">Langkah 13 — Sahkan Bayaran dan Cetak Resit</h2>
+    <h2 class="border-bottom pb-2 mb-3">Langkah 13 — Bayaran Tunai</h2>
     <p>
-      Tekan <strong>Sahkan Bayaran</strong>. Resit rasmi akan dipaparkan dengan maklumat
-      penuh transaksi.
+      Pastikan butang <strong>💵 Tunai</strong> dipilih, kemudian taip amaun tunai yang
+      diterima daripada pelanggan dalam medan <strong>Wang Diterima (RM)</strong>. Baki
+      dikira secara automatik dan dipapar dalam warna hijau.
     </p>
     <figure class="doc-figure text-center my-4">
-      <img src="images/13-resit.png" class="img-fluid border rounded" alt="Resit rasmi">
-      <figcaption class="small text-body-secondary mt-2">Rajah 14 — Resit rasmi transaksi</figcaption>
+      <img src="images/13-wang-baki.png" class="img-fluid border rounded" alt="Wang diterima dan baki">
+      <figcaption class="small text-body-secondary mt-2">Rajah 14 — Baki dikira secara automatik</figcaption>
+    </figure>
+    <p>
+      <strong>Butang wang pantas</strong> di bawah medan tersebut memasukkan amaun lazim
+      dengan satu tekanan sahaja — contohnya <code>RM 25.20</code>, <code>RM 26.00</code>,
+      <code>RM 30.00</code> dan <code>RM 40.00</code> bagi jumlah RM 25.17. Ia hanya
+      cadangan; anda masih boleh taip amaun lain secara manual.
+    </p>
+    <p>Contoh: pelanggan membayar RM 30.00 bagi jumlah RM 25.17, maka baki ialah RM 4.83.</p>
+    <div class="alert alert-secondary">
+      <strong>Nota:</strong> Butang <strong>Sahkan Bayaran</strong> hanya berfungsi apabila
+      wang yang dimasukkan mencukupi. Jika kurang daripada jumlah, butang tersebut kekal kelabu.
+    </div>
+  </section>
+
+  <!-- ===== LANGKAH 14 ===== -->
+  <section class="page-break">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 14 — Bayaran Kad</h2>
+    <p>
+      Tekan butang <strong>💳 Kad</strong>. Medan wang tunai akan hilang dan digantikan
+      dengan arahan ringkas beserta <strong>Amaun Dicaj</strong>, iaitu jumlah penuh yang
+      perlu dicaj pada terminal kad.
+    </p>
+    <figure class="doc-figure text-center my-4">
+      <img src="images/14-bayaran-kad.png" class="img-fluid border rounded" alt="Bayaran menggunakan kad">
+      <figcaption class="small text-body-secondary mt-2">Rajah 15 — Kaedah Kad dipilih</figcaption>
+    </figure>
+    <h5 class="mt-4">Urutan kerja yang betul</h5>
+    <ol>
+      <li>Caj amaun yang dipaparkan pada terminal kad.</li>
+      <li>Tunggu terminal mengesahkan bayaran berjaya.</li>
+      <li>Barulah tekan <strong>Sahkan Bayaran</strong> dalam KedaiPOS.</li>
+    </ol>
+    <div class="alert alert-warning">
+      <strong>Amaran:</strong> Jangan tekan <strong>Sahkan Bayaran</strong> sebelum terminal
+      kad mengesahkan transaksi berjaya. Sistem tidak berhubung dengan terminal kad — ia
+      hanya merekod kaedah yang anda pilih.
+    </div>
+  </section>
+
+  <!-- ===== LANGKAH 15 ===== -->
+  <section class="page-break">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 15 — Bayaran QR Code</h2>
+    <p>
+      Tekan butang <strong>📱 QR Code</strong>. Skrin memaparkan arahan supaya pelanggan
+      mengimbas kod QR kedai, berserta <strong>Amaun Dicaj</strong>.
+    </p>
+    <figure class="doc-figure text-center my-4">
+      <img src="images/15-bayaran-qrcode.png" class="img-fluid border rounded" alt="Bayaran menggunakan QR Code">
+      <figcaption class="small text-body-secondary mt-2">Rajah 16 — Kaedah QR Code dipilih</figcaption>
+    </figure>
+    <h5 class="mt-4">Urutan kerja yang betul</h5>
+    <ol>
+      <li>Tunjukkan kod QR kedai kepada pelanggan (pelekat kaunter atau aplikasi bank).</li>
+      <li>Minta pelanggan tunjukkan skrin <strong>bukti bayaran berjaya</strong>.</li>
+      <li>Barulah tekan <strong>Sahkan Bayaran</strong>.</li>
+    </ol>
+    <div class="alert alert-secondary">
+      <strong>Nota:</strong> Bagi kaedah Kad dan QR Code, tiada baki dikira kerana amaun
+      yang dicaj sentiasa sama tepat dengan jumlah perlu dibayar.
+    </div>
+  </section>
+
+  <!-- ===== LANGKAH 16 ===== -->
+  <section class="page-break">
+    <h2 class="border-bottom pb-2 mb-3">Langkah 16 — Sahkan Bayaran dan Cetak Resit</h2>
+    <p>
+      Tekan <strong>Sahkan Bayaran</strong>. Resit rasmi akan dipaparkan dengan maklumat
+      penuh transaksi, termasuk <strong>Kaedah Bayaran</strong> yang digunakan.
+    </p>
+    <figure class="doc-figure text-center my-4">
+      <img src="images/16-resit-tunai.png" class="img-fluid border rounded" alt="Resit bayaran tunai">
+      <figcaption class="small text-body-secondary mt-2">Rajah 17 — Resit bagi bayaran tunai</figcaption>
     </figure>
     <p>Resit mengandungi:</p>
     <ul>
       <li>Nama kedai, tarikh dan masa transaksi</li>
       <li>Senarai item beserta kuantiti dan variasi yang dipilih</li>
       <li>Subjumlah, cukai, diskaun dan jumlah akhir</li>
-      <li>Amaun tunai diterima dan baki</li>
+      <li><strong>Kaedah Bayaran</strong> — Tunai, Kad atau QR Code</li>
+      <li>Amaun tunai diterima dan baki (bayaran tunai sahaja)</li>
     </ul>
+    <p>
+      Bagi bayaran <strong>Kad</strong> dan <strong>QR Code</strong>, baris <em>Tunai</em> dan
+      <em>Baki</em> digantikan dengan satu baris <strong>Dibayar</strong> sahaja:
+    </p>
+    <figure class="doc-figure text-center my-4">
+      <img src="images/17-resit-kad.png" class="img-fluid border rounded" alt="Resit bayaran kad">
+      <figcaption class="small text-body-secondary mt-2">Rajah 18 — Resit bagi bayaran kad</figcaption>
+    </figure>
     <h5 class="mt-4">Pilihan pada resit</h5>
     <ul>
       <li><strong>🖨️ Cetak</strong> — buka dialog cetakan pelayar untuk mencetak resit</li>
@@ -349,24 +453,30 @@ Harga seunit       RM 9.30</pre>
       <li>Mengosongkan troli secara automatik</li>
       <li>Menetapkan semula medan diskaun kepada <code>0</code></li>
       <li>Menolak stok setiap produk yang dijual</li>
-      <li>Menyimpan rekod ke dalam sejarah transaksi</li>
+      <li>Menyimpan rekod ke dalam sejarah transaksi berserta kaedah bayarannya</li>
     </ol>
   </section>
 
-  <!-- ===== LANGKAH 14 ===== -->
+  <!-- ===== LANGKAH 17 ===== -->
   <section class="page-break">
-    <h2 class="border-bottom pb-2 mb-3">Langkah 14 — Semak Sejarah Transaksi</h2>
+    <h2 class="border-bottom pb-2 mb-3">Langkah 17 — Semak Sejarah Transaksi</h2>
     <p>
       Tekan butang <strong>📜 Sejarah</strong> pada bar atas untuk melihat rekod jualan
       yang lepas.
     </p>
     <figure class="doc-figure text-center my-4">
-      <img src="images/14-sejarah.png" class="img-fluid border rounded" alt="Sejarah transaksi">
-      <figcaption class="small text-body-secondary mt-2">Rajah 15 — Rekod sejarah transaksi</figcaption>
+      <img src="images/18-sejarah.png" class="img-fluid border rounded" alt="Sejarah transaksi">
+      <figcaption class="small text-body-secondary mt-2">Rajah 19 — Rekod sejarah transaksi</figcaption>
     </figure>
     <p>
       Setiap rekod memaparkan nombor rujukan transaksi, jumlah bayaran, tarikh dan masa,
-      bilangan item, serta senarai ringkas item berserta variasinya.
+      bilangan item, <strong>lencana kaedah bayaran</strong>, serta senarai ringkas item
+      berserta variasinya.
+    </p>
+    <p>
+      Lencana kaedah memudahkan penyesuaian wang tunai pada hujung hari — kira hanya rekod
+      berlencana <strong>💵 Tunai</strong>, manakala <strong>💳 Kad</strong> dan
+      <strong>📱 QR Code</strong> disemak melalui penyata bank.
     </p>
   </section>
 
@@ -383,6 +493,9 @@ Harga seunit       RM 9.30</pre>
         <tr><td>Nak tambah item sama dengan variasi berbeza</td><td>Tekan kad produk semula dan pilih variasi baharu</td></tr>
         <tr><td>Nak cari produk dengan pantas</td><td>Taip dalam medan carian, jangan skrol</td></tr>
         <tr><td>Tersalah masuk amaun tunai</td><td>Padam dan taip semula — baki dikira semula automatik</td></tr>
+        <tr><td>Nak isi amaun tunai dengan pantas</td><td>Tekan salah satu butang wang pantas di bawah medan tunai</td></tr>
+        <tr><td>Pelanggan tukar daripada tunai kepada kad</td><td>Tekan butang <strong>💳 Kad</strong> — medan tunai hilang serta-merta</td></tr>
+        <tr><td>Terminal kad gagal, pelanggan bayar tunai</td><td>Tekan semula butang <strong>💵 Tunai</strong> dan masukkan wang diterima</td></tr>
         <tr><td>Nak batalkan sebelum sahkan bayaran</td><td>Tekan <strong>Batal</strong> pada tetingkap pembayaran</td></tr>
       </tbody>
     </table>
@@ -402,7 +515,23 @@ Harga seunit       RM 9.30</pre>
     <p>Stok produk tersebut telah habis. Kad akan memaparkan label <strong>Habis</strong>.</p>
 
     <h5>Sistem tidak benarkan sahkan bayaran</h5>
-    <p>Wang yang dimasukkan kurang daripada jumlah perlu dibayar. Semak semula amaun tunai.</p>
+    <p>
+      Kaedah <strong>Tunai</strong> dipilih tetapi wang yang dimasukkan kurang daripada jumlah
+      perlu dibayar. Semak semula amaun tunai, atau tukar kepada kaedah <strong>Kad</strong> /
+      <strong>QR Code</strong> yang tidak memerlukan medan tunai.
+    </p>
+
+    <h5>Medan Wang Diterima hilang dari skrin</h5>
+    <p>
+      Kaedah <strong>Kad</strong> atau <strong>QR Code</strong> sedang dipilih. Tekan butang
+      <strong>💵 Tunai</strong> untuk memaparkannya semula.
+    </p>
+
+    <h5>Tersalah pilih kaedah bayaran selepas resit dicetak</h5>
+    <p>
+      Rekod yang telah disahkan tidak boleh disunting. Catat pembetulan secara manual dan
+      laporkan kepada penyelia.
+    </p>
 
     <h5>Sejarah transaksi kosong selepas kosongkan data pelayar</h5>
     <p>
@@ -412,7 +541,7 @@ Harga seunit       RM 9.30</pre>
 
     <hr class="my-4">
     <p class="small text-body-secondary text-center mb-0">
-      Dokumen ini dijana secara automatik menggunakan Playwright.
+      Dokumen ini dijana secara automatik menggunakan pelayar tanpa kepala (headless Chrome).
       Semua gambar skrin diambil daripada sistem yang sedang berjalan.
     </p>
   </section>

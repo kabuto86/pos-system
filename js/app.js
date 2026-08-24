@@ -8,6 +8,9 @@ let cart = [];
 let activeCategory = "Semua";
 let searchTerm = "";
 
+// State modal bayaran
+let paymentMethodId = "cash";
+
 // State modal variasi
 let currentVariationProduct = null;
 let variationSelections = {};   // { [groupId]: [optionId, ...] }
@@ -38,8 +41,16 @@ const addVariationBtn = document.getElementById("addVariationBtn");
 
 const paymentModal = document.getElementById("paymentModal");
 const modalTotalEl = document.getElementById("modalTotal");
+const paymentMethodGroupEl = document.getElementById("paymentMethodGroup");
+const cashSectionEl = document.getElementById("cashSection");
+const quickCashGroupEl = document.getElementById("quickCashGroup");
 const cashInputEl = document.getElementById("cashInput");
 const changeValueEl = document.getElementById("changeValue");
+const cashlessSectionEl = document.getElementById("cashlessSection");
+const cashlessIconEl = document.getElementById("cashlessIcon");
+const cashlessTitleEl = document.getElementById("cashlessTitle");
+const cashlessNoteEl = document.getElementById("cashlessNote");
+const cashlessAmountEl = document.getElementById("cashlessAmount");
 const confirmPaymentBtn = document.getElementById("confirmPaymentBtn");
 
 const receiptModal = document.getElementById("receiptModal");
@@ -424,8 +435,81 @@ function openPaymentModal() {
   modalTotalEl.textContent = formatRM(total);
   cashInputEl.value = "";
   changeValueEl.textContent = formatRM(0);
-  confirmPaymentBtn.disabled = true;
+  paymentMethodId = "cash";
+  renderPaymentMethods();
+  renderQuickCash(total);
+  updatePaymentMethodUI();
   showModal(paymentModal);
+}
+
+// Butang kaedah bayaran dijana daripada PAYMENT_METHODS supaya
+// menambah kaedah baharu cukup dengan menyunting data.js sahaja.
+function renderPaymentMethods() {
+  paymentMethodGroupEl.innerHTML = "";
+
+  PAYMENT_METHODS.forEach(method => {
+    const inputId = "paymentMethod_" + method.id;
+
+    const input = document.createElement("input");
+    input.type = "radio";
+    input.className = "btn-check";
+    input.name = "paymentMethod";
+    input.id = inputId;
+    input.value = method.id;
+    input.autocomplete = "off";
+    input.checked = method.id === paymentMethodId;
+    input.addEventListener("change", () => selectPaymentMethod(method.id));
+
+    const label = document.createElement("label");
+    label.className = "btn btn-outline-primary";
+    label.setAttribute("for", inputId);
+    label.innerHTML = `<span class="me-1">${method.icon}</span>${escapeHtml(method.label)}`;
+
+    paymentMethodGroupEl.appendChild(input);
+    paymentMethodGroupEl.appendChild(label);
+  });
+}
+
+// Butang wang pantas — tekan sekali untuk isi medan tunai.
+function renderQuickCash(total) {
+  quickCashGroupEl.innerHTML = "";
+
+  suggestCashAmounts(total).forEach(amount => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "btn btn-sm btn-outline-secondary flex-grow-1";
+    btn.textContent = formatRM(amount);
+    btn.addEventListener("click", () => {
+      cashInputEl.value = amount.toFixed(2);
+      updateChange();
+    });
+    quickCashGroupEl.appendChild(btn);
+  });
+}
+
+function selectPaymentMethod(id) {
+  paymentMethodId = getPaymentMethod(id).id;
+  updatePaymentMethodUI();
+}
+
+// Tunai perlukan medan wang & baki; Kad/QR Code hanya perlu pengesahan.
+function updatePaymentMethodUI() {
+  const method = getPaymentMethod(paymentMethodId);
+  const { total } = getTotals();
+
+  cashSectionEl.classList.toggle("d-none", !method.needsCash);
+  cashlessSectionEl.classList.toggle("d-none", method.needsCash);
+
+  if (method.needsCash) {
+    updateChange();
+    cashInputEl.focus();
+  } else {
+    cashlessIconEl.textContent = method.icon;
+    cashlessTitleEl.textContent = method.label;
+    cashlessNoteEl.textContent = method.note;
+    cashlessAmountEl.textContent = formatRM(total);
+    confirmPaymentBtn.disabled = false;
+  }
 }
 
 function updateChange() {
@@ -438,9 +522,12 @@ function updateChange() {
 
 function confirmPayment() {
   const { subtotal, tax, discount, total } = getTotals();
-  const cash = parseFloat(cashInputEl.value) || 0;
+  const method = getPaymentMethod(paymentMethodId);
 
-  if (cash < total) {
+  // Kad & QR Code sentiasa dicaj tepat jumlah bayaran — tiada baki.
+  const cash = method.needsCash ? (parseFloat(cashInputEl.value) || 0) : total;
+
+  if (method.needsCash && cash < total) {
     showToast("Wang diterima tidak mencukupi");
     return;
   }
@@ -456,6 +543,9 @@ function confirmPayment() {
     date: new Date().toISOString(),
     items: cart.map(i => ({ ...i })),
     subtotal, tax, discount, total,
+    paymentMethod: method.id,
+    paymentLabel: method.label,
+    paymentIcon: method.icon,
     cash, change: cash - total
   };
 
@@ -475,6 +565,18 @@ function confirmPayment() {
 // ===== RESIT =====
 function showReceipt(transaction) {
   const dateStr = new Date(transaction.date).toLocaleString("ms-MY");
+  const method = getPaymentMethod(transaction.paymentMethod);
+
+  // Baris wang & baki hanya bermakna bagi bayaran tunai.
+  const paymentHtml = method.needsCash
+    ? `
+      <div class="receipt-line"><span>Tunai</span><span>${formatRM(transaction.cash)}</span></div>
+      <div class="receipt-line"><span>Baki</span><span>${formatRM(transaction.change)}</span></div>
+    `
+    : `
+      <div class="receipt-line"><span>Dibayar</span><span>${formatRM(transaction.total)}</span></div>
+    `;
+
   let itemsHtml = "";
   transaction.items.forEach(item => {
     itemsHtml += `
@@ -500,8 +602,10 @@ function showReceipt(transaction) {
     <div class="receipt-line"><span>Diskaun</span><span>-${formatRM(transaction.discount)}</span></div>
     <div class="receipt-line"><strong>Jumlah</strong><strong>${formatRM(transaction.total)}</strong></div>
     <hr>
-    <div class="receipt-line"><span>Tunai</span><span>${formatRM(transaction.cash)}</span></div>
-    <div class="receipt-line"><span>Baki</span><span>${formatRM(transaction.change)}</span></div>
+    <div class="receipt-line">
+      <span>Kaedah Bayaran</span><span>${method.icon} ${escapeHtml(method.label)}</span>
+    </div>
+    ${paymentHtml}
     <hr>
     <div class="text-center">Terima kasih atas pembelian anda!</div>
   `;
@@ -537,6 +641,7 @@ function renderHistory() {
   history.forEach(t => {
     const dateStr = new Date(t.date).toLocaleString("ms-MY");
     const itemCount = t.items.reduce((sum, i) => sum + i.qty, 0);
+    const method = getPaymentMethod(t.paymentMethod);
     const itemLines = t.items.map(i =>
       `${escapeHtml(i.name)} ×${i.qty}` +
       (i.variantLabel ? ` <em class="text-body-tertiary">(${escapeHtml(i.variantLabel)})</em>` : "")
@@ -550,6 +655,9 @@ function renderHistory() {
         <span class="text-primary">${formatRM(t.total)}</span>
       </div>
       <div class="text-body-secondary" style="font-size:.74rem">${dateStr} • ${itemCount} item</div>
+      <div class="mt-1">
+        <span class="badge text-bg-light fw-normal">${method.icon} ${escapeHtml(method.label)}</span>
+      </div>
       <div class="border-top mt-2 pt-2 text-body-secondary" style="font-size:.74rem; line-height:1.5">
         ${itemLines}
       </div>
@@ -585,7 +693,9 @@ variationModal.addEventListener("hidden.bs.modal", () => {
 
 confirmPaymentBtn.addEventListener("click", confirmPayment);
 cashInputEl.addEventListener("input", updateChange);
-paymentModal.addEventListener("shown.bs.modal", () => cashInputEl.focus());
+paymentModal.addEventListener("shown.bs.modal", () => {
+  if (getPaymentMethod(paymentMethodId).needsCash) cashInputEl.focus();
+});
 
 printReceiptBtn.addEventListener("click", () => window.print());
 historyBtn.addEventListener("click", openHistoryModal);

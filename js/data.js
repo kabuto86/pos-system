@@ -6,6 +6,43 @@ const TAX_RATE = 0.06;
 const HISTORY_KEY = "pos_transaction_history";
 const VARIATIONS_KEY = "pos_variations_v1";
 
+// ===== KAEDAH PEMBAYARAN =====
+// `needsCash` = perlu medan wang diterima & kiraan baki.
+// `quickCash` = cadangan not wang bagi butang pantas (kaedah tunai sahaja).
+const PAYMENT_METHODS = [
+  {
+    id: "cash", label: "Tunai", icon: "💵", needsCash: true,
+    note: "Terima wang tunai daripada pelanggan dan masukkan amaun di bawah."
+  },
+  {
+    id: "card", label: "Kad", icon: "💳", needsCash: false,
+    note: "Sila proses bayaran pada terminal kad, kemudian tekan Sahkan Bayaran."
+  },
+  {
+    id: "qr", label: "QR Code", icon: "📱", needsCash: false,
+    note: "Minta pelanggan imbas kod QR kedai dan tunjukkan bukti bayaran berjaya."
+  }
+];
+
+const QUICK_CASH_NOTES = [1, 5, 10, 20, 50, 100];
+
+// Pulangkan kaedah bayaran mengikut id; jatuh balik kepada Tunai jika tidak dijumpai
+// (rekod lama dalam localStorage mungkin tiada medan ini).
+function getPaymentMethod(id) {
+  return PAYMENT_METHODS.find(m => m.id === id) || PAYMENT_METHODS[0];
+}
+
+// Cadangan amaun tunai: not yang cukup besar untuk menampung jumlah bayaran.
+function suggestCashAmounts(total) {
+  const rounded = Math.ceil(total * 20) / 20;   // bundarkan ke 5 sen terdekat
+  const amounts = [rounded];
+  QUICK_CASH_NOTES.forEach(note => {
+    const value = Math.ceil(total / note) * note;
+    if (value > 0 && !amounts.includes(value)) amounts.push(value);
+  });
+  return amounts.filter(v => v >= total).sort((a, b) => a - b).slice(0, 4);
+}
+
 // ===== KATALOG PRODUK =====
 // `variations` adalah pilihan. Produk tanpa `variations` terus masuk troli.
 const PRODUCTS = [
