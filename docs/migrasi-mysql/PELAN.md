@@ -216,7 +216,36 @@ Peraturan muat naik (`core/Uploader.php`):
 | Sejarah dalam localStorage | **Buang** — data demo sahaja |
 | Kategori (Makanan/Minuman/Snek) | 3 baris dalam `categories` |
 
-## 9. Logik sedia ada yang boleh dipindah terus
+## 9. Persediaan mesin pembangunan baharu
+
+Repo ini mungkin di-clone pada mesin lain (contoh: laptop rumah Sufi). Nilai
+dalam dokumen ini dirakam dari mesin pejabat — **jangan andaikan ia sama**.
+Semak dahulu sebelum mula:
+
+| Perkara | Nilai di mesin pejabat | Semak di mesin baharu |
+|---|---|---|
+| Laluan projek | `C:\xampp\htdocs\claude-learn1` | Boleh berbeza — guna laluan sebenar |
+| PHP | 8.2.12 | `php -v` — minimum 8.0 (kod guna sintaks moden) |
+| MariaDB/MySQL | 10.4.32 (XAMPP) | `mysql --version` |
+| Kata laluan `root` | Tiada | Mungkin ada di mesin lain |
+| DB projek lain | `tuisyen` wujud | Mungkin tiada — jangan risau kalau tiada |
+
+Langkah pemasangan pada mesin baharu:
+
+1. Pastikan Apache + MySQL berjalan dalam XAMPP Control Panel
+2. Cipta pangkalan data dan pengguna:
+   `CREATE DATABASE pos_system CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`
+   kemudian cipta `pos_user` dan beri akses ke `pos_system` sahaja
+3. Import: `mysql -u root pos_system < database/schema.sql` diikuti `seed.sql`
+4. Salin `config/database.example.php` → `config/database.php`, isi kredensial
+   (fail sebenar tiada dalam Git — memang sengaja)
+5. Buka `http://localhost/{nama-folder}/cashier/` dan log masuk
+
+> `config/database.php` dalam `.gitignore`, jadi setiap mesin ada kredensial
+> sendiri. Kalau halaman putih atau ralat sambungan — fail itu yang pertama
+> perlu disemak.
+
+## 10. Logik sedia ada yang boleh dipindah terus
 
 Fungsi berikut dalam [../../js/data.js](../../js/data.js) ialah fungsi tulen dan
 boleh disalin hampir baris demi baris ke job class PHP. **Jangan tulis semula

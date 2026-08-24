@@ -47,10 +47,127 @@
 ## Session 2 — Cetakan + Bahagian Admin
 
 ### Fasa 4 — Resit termal
-- [ ] `css/receipt-58mm.css`, `css/receipt-80mm.css`
-- [ ] Halaman cetak resit berasingan (lebar ikut `settings.paper_width`)
-- [ ] Cetak semula resit lama
-- [ ] Sahkan: pratonton cetak betul pada kedua-dua lebar
+
+> **Fasa ini tukar pendekatan cetak, bukan tampal CSS.** Baca sebab di bawah
+> sebelum mula — kalau tidak, mudah tersilap sangka kerja ini kecil.
+
+**Kenapa cara sekarang tidak boleh dikekalkan**
+
+Blok `@media print` dalam `css/style.css` guna helah `visibility: hidden`.
+Untuk A4 ia menjadi. Untuk printer termal ia gagal atas tiga sebab:
+
+1. **Tiada `@page size`** — driver andaikan A4, jadi resit 58mm dicetak di sudut
+   kertas maya A4. Pada gulungan termal, kertas keluar panjang berjela.
+2. **`visibility: hidden` tidak membuang ruang** — elemen tersorok masih
+   menduduki tempat. Pada gulungan termal ini bermakna **kertas terbuang
+   setiap kali jual**.
+3. **Bootstrap masih dimuatkan** — `text-primary` (biru) pada printer termal
+   monokrom keluar kelabu cair atau hilang. Baris JUMLAH tidak boleh ambil
+   risiko itu.
+
+**Keputusan: halaman cetak berasingan**
+
+`print/receipt.php?id=123` — halaman kosong tanpa Bootstrap, tanpa navbar,
+tanpa modal. Hanya resit. Tiga sebab ia lebih baik daripada cetak dari modal:
+
+- Tiada sisa elemen → tiada halaman kosong, tiada kertas terbuang
+- Dibaca dari **DB**, bukan dari state JS — resit asal dan cetakan semula
+  dijana oleh kod yang sama, jadi mustahil ia berbeza
+- Admin guna halaman yang sama untuk cetak semula di Fasa 6 — tidak ditulis dua kali
+
+Juruwang tekan Cetak → JS muatkan halaman ini dalam `iframe` tersembunyi →
+`iframe.contentWindow.print()`. Skrin POS tidak berkelip, tiada tetingkap
+baharu, tiada masalah popup blocker.
+
+**Senarai kerja**
+
+- [ ] `print/receipt.php` — dijana pelayan melalui `GetReceiptJob`
+- [ ] `css/receipt-58mm.css` — `@page { size: 58mm auto; margin: 0 }`, 9pt monospace
+- [ ] `css/receipt-80mm.css` — sama, 80mm, 10pt
+- [ ] `cashier/js/print.js` — cetak melalui iframe tersembunyi
+- [ ] Luaskan `GetReceiptJob` — tambah nama kedai, alamat, juruwang, kaunter,
+      footer (semua dari `settings`, bukan pemalar dalam kod)
+- [ ] Tandaan resit: **SALINAN** / **BATAL** / **PEMULANGAN**
+- [ ] **Buang** blok `@media print` lama dari `css/style.css` — jangan tinggal
+      dua mekanisme cetak yang bersaing
+- [ ] Dokumen langkah tetapan printer Windows untuk Sufi
+
+> Fail `.css` berasingan, bukan `style="..."` — peraturan "jangan inline CSS"
+> dalam CLAUDE.md masih dipatuhi. Bootstrap memang tidak menyediakan
+> `@page size`; fail sendiri satu-satunya jalan.
+
+**Bentuk resit selepas Fasa 4**
+
+Sekarang nama kedai ditulis terus dalam `js/app.js` (`KEDAI POS`). Selepas ini
+semuanya dari DB, dan tiga baris baharu ditambah kerana wujudnya syif dan
+kaunter dinamik:
+
+```
+        {shop_name}              <- settings
+       {shop_address}            <- settings
+-----------------------------
+No. Resit : K1-20260824-0042     <- BAHARU (dulu Date.now)
+Tarikh    : 24/08/2026 14:32
+Juruwang  : Ali bin Abu          <- BAHARU (perlu, sebab ada syif)
+Kaunter   : Kaunter 1            <- BAHARU (perlu, sebab kaunter dinamik)
+-----------------------------
+Nasi Lemak x2            18.60
+  Rendang daging, Extra pedas
+Teh Tarik x1              3.00
+  Besar, Ais
+-----------------------------
+Subjumlah                21.60
+Cukai (6%)                1.30   <- kadar dari settings
+Diskaun                  -0.00
+JUMLAH                   22.90
+Tunai                    25.00
+Baki                      2.10
+-----------------------------
+      {receipt_footer}           <- settings
+```
+
+**Tandaan SALINAN adalah keperluan audit, bukan hiasan.** Tanpa label,
+juruwang boleh cetak resit kedua dan serahkan sebagai asal. Transaksi yang
+dibatalkan mesti tercetak **BATAL** dengan jelas.
+
+**Cara pengesahan**
+
+Boleh disahkan sendiri dengan Playwright:
+
+- [ ] `page.emulateMedia({ media: 'print' })` → ukur lebar sebenar `body`.
+      Mesti 58mm (~219px pada 96dpi), bukan lebih
+- [ ] Tiada limpahan mendatar — teks tidak terpotong di tepi
+- [ ] **Kes terburuk dari data sebenar**: `Nasi Lemak` +
+      `Rendang daging, Extra pedas, Telur mata, Sambal extra` — 48 aksara pada
+      lebar 32 aksara. Mesti membalut ke baris baharu, bukan terpotong
+- [ ] Cetak ke PDF → bilangan halaman = 1, tiada halaman kosong di hujung
+- [ ] Ulang untuk 58mm dan 80mm
+
+**Sufi kena sahkan sekali dengan printer sebenar.** Tiada jalan lain — kod
+boleh dipastikan betul, tetapi hanya kertas sebenar membuktikan driver
+berkelakuan seperti dijangka.
+
+**Tiga perangkap yang dijangka**
+
+1. **Saiz kertas dalam Printer Properties Windows.** `@page { size: 58mm auto }`
+   hanyalah cadangan; sesetengah driver abaikan dan ikut tetapan printer.
+   Sufi mungkin perlu set saiz kertas 58mm sekali sahaja dalam Windows. Ini
+   **langkah pemasangan, bukan pepijat kod**.
+2. **Margin dialog cetak Chrome.** Lalai "Default" tambah ~10mm. Perlu tukar ke
+   "None". Kalau menyusahkan pada mesin kaunter sebenar, lancarkan Chrome
+   dengan `--kiosk-printing` — dialog hilang, resit terus keluar.
+3. **Emoji pada resit termal.** Ikon selalunya keluar sebagai kotak hitam pada
+   driver termal murah. Cadangan: **buang emoji dari resit bercetak, kekalkan
+   pada skrin**. Skrin dan kertas ada keperluan berbeza.
+
+**Dua keputusan diperlukan dari Sufi sebelum Fasa 4 bermula**
+
+- [ ] **Lebar lalai — 58mm atau 80mm?** 58mm lebih murah dan biasa untuk kedai
+      makan; 80mm lebih lega untuk nama produk panjang. Kedua-dua akan dibina,
+      cuma perlu tahu yang mana jadi lalai dalam `settings`
+- [ ] **Emoji pada resit bercetak — buang atau kekal?** Cadangan: buang. Kalau
+      Sufi nak kekalkan, jadikan tetapan hidup/mati supaya boleh diuji dengan
+      printer sebenar
 
 ### Fasa 5 — Admin: katalog
 - [ ] Rangka `admin/` — login, sidebar, semak peranan pada setiap halaman
