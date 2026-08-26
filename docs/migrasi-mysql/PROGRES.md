@@ -28,11 +28,12 @@
 kepada `cp850`, merosakkan emoji semasa import `seed.sql` **tanpa sebarang
 amaran**. Resepi pembetulan dalam PELAN.md 15.1 — baca sebelum Fasa 1.
 
-**Struktur:** 16 fasa merentas 6 session.
+**Struktur:** 17 fasa merentas 6 session.
 
 Sejarah skop:
 9 fasa/3 session → 13 fasa/5 session (dua jenis perniagaan, waiter, meja)
-→ **16 fasa/6 session** (SaaS multi-tenant, 26 Ogos 2026).
+→ 16 fasa/6 session (SaaS multi-tenant)
+→ **17 fasa/6 session** (modul promosi & diskaun, 26 Ogos 2026).
 
 ---
 
@@ -56,9 +57,16 @@ ia ditulis, bukan enam session kemudian.
 ### Fasa 1 — Skema & teras
 - [ ] Cipta pangkalan data `pos_saas` (utf8mb4_unicode_ci)
 - [ ] Cipta pengguna MySQL `pos_user` (akses `pos_saas` sahaja)
-- [ ] `database/schema.sql` — 22 jadual, `vendor_id` pada setiap jadual
+- [ ] `database/schema.sql` — **25 jadual**, `vendor_id` pada setiap jadual
       perniagaan, setiap UNIQUE jadi unik per vendor (PELAN.md 3.5),
       setiap indeks bermula dengan `vendor_id` (PELAN.md 3.6)
+- [ ] Jadual promosi wujud sejak sekarang walaupun UI dibina di Fasa 10:
+      `promotions`, `promotion_products`, `promotion_categories`,
+      `transaction_promotions`
+- [ ] Lajur produk penuh: `cost_price`, `unit`, `min_stock`, `is_tax_exempt`
+- [ ] Lajur diskaun pada `transactions`: `promo_discount`, `manual_discount`,
+      `discount_tax_mode`; pada `transaction_items`: `promotion_id`,
+      `promotion_name`, `discount_amount`
 - [ ] `database/seed.sql` — **DUA vendor**: KEDAI01 (retail), KEDAI02
       (restaurant), setiap satu dengan 18 produk, kategori, kaedah bayaran,
       tetapan, admin, kaunter; KEDAI02 dapat meja contoh
@@ -88,6 +96,10 @@ ia ditulis, bukan enam session kemudian.
 ### Fasa 3 — POS kaunter (jualan penuh)
 - [ ] `jobs/Product/ListProductsJob.php` (produk + variasi + stok)
 - [ ] `jobs/Cart/CalculateCartJob.php` (port `calcUnitPrice` + `getTotals`)
+- [ ] **Lubang penilaian promosi dalam `CalculateCartJob`** — ikut susunan
+      pengiraan PELAN.md 7.5, dan baca `discount_tax_mode` dari tetapan.
+      `ApplyPromotionsJob` boleh pulangkan kosong buat masa ini; yang penting
+      susunan dan titik masuknya betul sekarang, bukan ditampal di Fasa 10
 - [ ] `jobs/Order/OpenOrderJob.php`, `AddOrderItemJob.php`, `CloseOrderJob.php`
 - [ ] `jobs/Stock/DeductStockJob.php` (`SELECT ... FOR UPDATE`)
 - [ ] `jobs/Transaction/CreateTransactionJob.php` (DB transaction,
@@ -151,7 +163,7 @@ tanpa modal. Hanya resit. Tiga sebab ia lebih baik daripada cetak dari modal:
 - Tiada sisa elemen → tiada halaman kosong, tiada kertas terbuang
 - Dibaca dari **DB**, bukan dari state JS — resit asal dan cetakan semula
   dijana oleh kod yang sama, jadi mustahil ia berbeza
-- Admin guna halaman yang sama untuk cetak semula di Fasa 10
+- Admin guna halaman yang sama untuk cetak semula di Fasa 11
 
 Juruwang tekan Cetak → JS muatkan halaman ini dalam `iframe` tersembunyi →
 `iframe.contentWindow.print()`. Skrin POS tidak berkelip, tiada tetingkap
@@ -243,7 +255,11 @@ dijangka.
       setiap halaman
 - [ ] `admin/index.php` — dashboard (jualan hari ini, transaksi, top produk,
       stok rendah) — **vendor semasa sahaja**
-- [ ] `admin/products.php` — CRUD + gambar + barcode/SKU
+- [ ] `admin/products.php` — CRUD + gambar + barcode/SKU +
+      **harga kos, unit, stok minimum, dikecualikan cukai**
+- [ ] **Import CSV pukal** (`ImportProductsCsvJob`) — kedai runcit dengan
+      2,000 barang tidak mungkin taip satu per satu melalui borang
+- [ ] Amaran stok rendah pada dashboard guna `min_stock` (bukan nombor tetap)
 - [ ] `admin/categories.php`
 - [ ] `admin/variations.php` — pindah editor dari js/admin.js jadi halaman penuh
 - [ ] `assets/img/product-default.png` + `uploads/.htaccess`
@@ -303,9 +319,51 @@ Uji sebagai vendor **KEDAI02** (restaurant).
 
 ---
 
-## Session 4 — Operasi & Admin Penuh (Fasa 10–12)
+## Session 4 — Promosi, Operasi & Admin Penuh (Fasa 10–13)
 
-### Fasa 10 — Stok, transaksi, void & refund
+### Fasa 10 — Promosi & diskaun
+
+> Jadual sudah wujud sejak Fasa 1 dan titik masuk sudah ada dalam
+> `CalculateCartJob` sejak Fasa 3. Fasa ini membina enjin dan UI.
+> Baca PELAN.md 7.4–7.8 sebelum mula — empat peraturan di sana sudah
+> diputuskan Sufi dan tidak boleh diubah sambil lalu.
+
+- [ ] `jobs/Promotion/SavePromotionJob.php`, `ListPromotionsJob.php`,
+      `TogglePromotionJob.php`, `ActivePromotionsJob.php`
+- [ ] `jobs/Promotion/ApplyPromotionsJob.php` — enjin sebenar, dipanggil
+      oleh `CalculateCartJob`
+- [ ] Enam jenis: `product_price`, `product_percent`, `category_percent`,
+      `bill_percent`, `bill_fixed`, `buy_x_get_y`
+- [ ] Julat tarikh ikut `business_day`; happy hour ikut jam dinding (7.7)
+- [ ] `days_of_week` mask — promosi hujung minggu sahaja, dan sebagainya
+- [ ] Konflik: `priority` menurun, satu promosi satu item, kecuali
+      `is_stackable` (7.6)
+- [ ] `admin/promotions.php` — CRUD, pilih produk/kategori, kalendar tarikh
+- [ ] `admin/settings.php` tambah **`discount_tax_mode`** (sebelum/selepas
+      cukai) + had diskaun manual
+- [ ] Promosi disalin ke `transaction_promotions` dan
+      `transaction_items.promotion_name`
+- [ ] Resit papar baris diskaun dan nama promosi
+- [ ] Laporan promosi: berapa kali digunakan, berapa jumlah diskaun diberi
+
+**Pengesahan**
+
+- [ ] Tukar `discount_tax_mode` → jumlah cukai berubah mengikut mod, dan
+      **transaksi lama tidak berubah** (mod disimpan pada setiap transaksi)
+- [ ] Promosi item **sentiasa** menjejaskan cukai dalam kedua-dua mod —
+      ini betul, bukan pepijat (PELAN.md 7.5)
+- [ ] Dua promosi bertindih pada satu produk → hanya `priority` tertinggi kena
+- [ ] Promosi tamat `31 Ogos`, jualan jam 01:00 pada 1 Sept dengan
+      `business_day` 31 Ogos → **masih kena**
+- [ ] Happy hour 14:00–17:00 → jualan jam 13:59 tidak kena, 14:01 kena
+- [ ] `max_uses` dihormati walaupun dua kaunter membayar serentak
+      (`used_count` dinaikkan dalam DB transaction yang sama)
+- [ ] Diskaun manual juruwang dikenakan **selepas** promosi
+- [ ] Had diskaun manual: `0` = tiada had (kelakuan sekarang kekal)
+- [ ] Produk `is_tax_exempt` dikecualikan dari asas cukai
+- [ ] Promosi KEDAI01 **tidak** kena pada jualan KEDAI02
+
+### Fasa 11 — Stok, transaksi, void & refund
 - [ ] `admin/stock.php` — baki, terima stok, pelarasan, log pergerakan
 - [ ] `admin/transactions.php` — tapis tarikh/juruwang/kaunter/kaedah/jenis pesanan
 - [ ] `jobs/Transaction/VoidTransactionJob.php` — pulang stok penuh
@@ -314,7 +372,7 @@ Uji sebagai vendor **KEDAI02** (restaurant).
 - [ ] Sahkan: void pulangkan stok betul; refund separa hanya pulangkan item dipilih
 - [ ] Sahkan: admin KEDAI01 tidak boleh void transaksi KEDAI02
 
-### Fasa 11 — Laporan
+### Fasa 12 — Laporan
 - [ ] `admin/reports.php` — harian, bulanan, ikut kaedah bayaran, ikut juruwang
 - [ ] **Laporan ikut jenis pesanan** (dine-in vs take away vs kaunter)
 - [ ] Laporan tutup syif (Z-report)
@@ -324,7 +382,7 @@ Uji sebagai vendor **KEDAI02** (restaurant).
 - [ ] Sahkan: **jumlah KEDAI01 tidak termasuk sebarang jualan KEDAI02** —
       bandingkan dengan `SUM` bertapis vendor
 
-### Fasa 12 — Tetapan kedai
+### Fasa 13 — Tetapan kedai
 - [ ] `admin/users.php` — admin/cashier/waiter (dalam vendor sahaja)
 - [ ] `admin/terminals.php` — kaunter & peranti waiter
 - [ ] `admin/tables.php` — susun atur meja, kawasan, kapasiti
@@ -336,13 +394,13 @@ Uji sebagai vendor **KEDAI02** (restaurant).
 - [ ] Sahkan: jualan lama tidak berubah bila kadar ditukar
 
 > `business_type` **tiada** dalam tetapan kedai — ia milik superadmin
-> (Fasa 13), kerana ia menentukan ciri yang dilanggan.
+> (Fasa 14), kerana ia menentukan ciri yang dilanggan.
 
 ---
 
-## Session 5 — Platform SaaS (Fasa 13–15)
+## Session 5 — Platform SaaS (Fasa 14–16)
 
-### Fasa 13 — Panel superadmin
+### Fasa 14 — Panel superadmin
 - [ ] `superadmin/` — login berasingan, layout berasingan
 - [ ] `superadmin/vendors.php` — senarai, cari, lihat penggunaan
 - [ ] `superadmin/plans.php` — pelan, harga, had
@@ -352,7 +410,7 @@ Uji sebagai vendor **KEDAI02** (restaurant).
 - [ ] Sahkan: superadmin (vendor_id NULL) **tidak boleh** masuk POS vendor
 - [ ] Sahkan: admin vendor **tidak boleh** capai `/superadmin/` langsung
 
-### Fasa 14 — Onboarding, had pelan & penggantungan
+### Fasa 15 — Onboarding, had pelan & penggantungan
 - [ ] `jobs/Vendor/ProvisionVendorJob.php` — cipta vendor baharu lengkap:
       tetapan lalai, kaedah bayaran, kategori, akaun admin, kaunter pertama
 - [ ] `core/PlanLimit.php` — kuatkuasa `max_terminals`, `max_users`,
@@ -363,7 +421,7 @@ Uji sebagai vendor **KEDAI02** (restaurant).
       sebarang langkah manual dalam DB
 - [ ] Sahkan: had pelan ditolak melalui API terus, bukan hanya butang disable
 
-### Fasa 15 — Audit kebocoran antara vendor
+### Fasa 16 — Audit kebocoran antara vendor
 
 > Fasa khusus. Semua ciri sudah wujud, jadi sekarang boleh diaudit menyeluruh.
 > Ujian per-fasa sebelum ini menangkap yang jelas; fasa ini mencari yang halus.
@@ -382,9 +440,9 @@ Uji sebagai vendor **KEDAI02** (restaurant).
 
 ---
 
-## Session 6 — Dokumentasi (Fasa 16)
+## Session 6 — Dokumentasi (Fasa 17)
 
-### Fasa 16 — Dokumentasi
+### Fasa 17 — Dokumentasi
 - [ ] Panduan juruwang (kemas kini `docs/panduan-pengguna.md`)
 - [ ] **Panduan waiter** (baharu)
 - [ ] **Panduan admin kedai** (baharu)
@@ -396,7 +454,7 @@ Uji sebagai vendor **KEDAI02** (restaurant).
 
 ---
 
-## Perkara tertangguh (bukan sebahagian 16 fasa)
+## Perkara tertangguh (bukan sebahagian 17 fasa)
 
 - **Bayaran langganan dalam talian** — superadmin tandakan status secara
   manual buat masa ini. Gerbang pembayaran belum dibincangkan
@@ -417,3 +475,6 @@ Uji sebagai vendor **KEDAI02** (restaurant).
 | 26 Ogos 2026 | **SaaS multi-tenant** — 13 fasa/5 session → 16 fasa/6 session | Sufi putuskan satu kod satu DB untuk semua vendor |
 | 26 Ogos 2026 | `settings.business_type` → `vendors.business_type` | Jenis perniagaan ialah ciri yang dilanggan, bukan pilihan bebas vendor |
 | 26 Ogos 2026 | Pangkalan data `pos_system` → `pos_saas` | Nama mencerminkan sifat sebenar sistem |
+| 26 Ogos 2026 | **Modul promosi ditambah** — 22 jadual → 25, 16 fasa → 17 | Pelan langsung tiada promosi produk; hanya diskaun manual juruwang |
+| 26 Ogos 2026 | Lajur produk ditambah: `cost_price`, `min_stock`, `unit`, `is_tax_exempt` | Tanpa `cost_price` laporan tidak boleh kira untung; `min_stock` diperlukan oleh amaran stok rendah yang pelan sudah janji |
+| 26 Ogos 2026 | `discount_tax_mode` jadi tetapan vendor, disimpan pada setiap transaksi | Keputusan Sufi: vendor tentukan sendiri diskaun sebelum atau selepas cukai |

@@ -4,7 +4,7 @@
 > mana-mana session. Keputusan di sini sudah disahkan oleh Sufi — jangan ubah
 > tanpa bertanya. Untuk status semasa, lihat [PROGRES.md](PROGRES.md).
 
-Kemas kini terakhir: 26 Ogos 2026 (SaaS multi-tenant)
+Kemas kini terakhir: 26 Ogos 2026 (SaaS multi-tenant + modul promosi)
 Persekitaran rujukan: XAMPP · PHP 8.2.12 · MariaDB 10.4.32
 
 ---
@@ -137,7 +137,7 @@ vendor dahulu sebelum boleh mencari pengguna.
 > Sekatan waiter **mesti disemak di dalam setiap endpoint**. Menyorok butang
 > di UI bukan kawalan keselamatan.
 
-## 6. Skema pangkalan data — 22 jadual
+## 6. Skema pangkalan data — 25 jadual
 
 Pangkalan data: `pos_saas` · `utf8mb4_unicode_ci` · InnoDB
 
@@ -165,8 +165,18 @@ started_at, trial_ends_at, current_period_end, cancelled_at, note
 **`categories`** — id, **vendor_id**, name, sort_order, is_active, created_at
 
 **`products`** — id, **vendor_id**, category_id(FK), name, icon, image_path,
-barcode, sku, price, stock, is_active, created_at, updated_at
+barcode, sku, price, **cost_price**, **unit**, stock, **min_stock**,
+**is_tax_exempt**, is_active, sort_order, created_at, updated_at
 · UNIQUE(vendor_id, barcode)
+
+> `cost_price` — tanpanya laporan hanya boleh beritahu berapa **jualan**,
+> bukan berapa **untung**. Untuk kedai runcit bermargin nipis, untung ialah
+> angka yang paling dicari.
+> `min_stock` — ambang amaran "stok rendah" pada dashboard. Tanpa lajur ini,
+> ciri itu tiada makna.
+> `unit` — kg / pcs / botol / bungkus. "Gula 1" tanpa unit tidak bermakna
+> untuk kedai runcit.
+> `is_tax_exempt` — sesetengah barang tidak dikenakan cukai.
 
 **`variation_groups`** — id, **vendor_id**, product_id(FK), **code**, name,
 type ENUM(single/multi), is_required, sort_order
@@ -213,7 +223,9 @@ type ENUM(sale/refund), ref_transaction_id(nullable),
 terminal_id(FK), shift_id(FK), user_id(FK),
 **order_type**, **table_label**, **takeaway_no** (salinan gambaran),
 subtotal, tax_rate, tax, **service_charge**, **packaging_fee**,
-discount, total, payment_method_id(FK),
+**promo_discount**, **manual_discount**, discount,
+**discount_tax_mode** ENUM(before_tax/after_tax),
+total, payment_method_id(FK),
 cash_received, change_amount, status ENUM(paid/void),
 void_reason, voided_at, voided_by, created_at
 · UNIQUE(vendor_id, receipt_no)
@@ -225,6 +237,7 @@ void_reason, voided_at, voided_by, created_at
 **`transaction_items`** — id, **vendor_id**, transaction_id(FK),
 order_item_id(FK, nullable), product_id,
 **product_name**, **icon**, **base_price**, **unit_price**,
+**promotion_id**, **promotion_name**, **discount_amount**,
 qty, line_total, variant_label, refunded_qty
 
 **`transaction_item_options`** — id, **vendor_id**, item_id(FK),
@@ -238,7 +251,30 @@ qty, line_total, variant_label, refunded_qty
 > **disalin masuk**, bukan dirujuk melalui FK. Kalau admin padam pilihan
 > "Rendang daging" tahun depan, resit tahun ini mesti kekal betul.
 
-### E. Operasi (7)
+### E. Promosi (4)
+
+**`promotions`** — id, **vendor_id**, name, code (nullable, untuk kupon),
+`type` ENUM(product_price/product_percent/category_percent/
+bill_percent/bill_fixed/buy_x_get_y),
+value, buy_qty, get_qty, get_product_id,
+**starts_on**, **ends_on** (DATE — ikut `business_day`),
+**time_start**, **time_end** (TIME, nullable — happy hour),
+**days_of_week** (mask 7 aksara, cth. `1111100` = Isnin–Jumaat),
+min_qty, min_spend, max_uses, used_count, max_uses_per_transaction,
+**priority**, **is_stackable**, is_active, created_by, created_at
+
+**`promotion_products`** — **vendor_id**, promotion_id(FK), product_id(FK)
+
+**`promotion_categories`** — **vendor_id**, promotion_id(FK), category_id(FK)
+
+**`transaction_promotions`** — **vendor_id**, transaction_id(FK),
+promotion_id, **promotion_name**, **promotion_type**, discount_amount
+
+> Nama dan jenis promosi **disalin masuk** ke transaksi. Kalau vendor menyunting
+> atau memadam promosi bulan depan, resit bulan ini mesti kekal menunjukkan
+> diskaun yang sebenarnya dikenakan. Prinsip yang sama seperti nama produk.
+
+### F. Operasi (7)
 
 **`terminals`** — id, **vendor_id**, code, name,
 **type** ENUM(cashier/waiter), receipt_prefix, is_active, last_seen_at
@@ -266,7 +302,10 @@ updated_by · PK(vendor_id, setting_key)
 > Isi awal setiap vendor: `day_cutoff_time` (04:00), `shop_name`,
 > `shop_address`, `tax_rate` (0.06), `service_charge_rate` (0),
 > `packaging_fee` (0), `receipt_footer`, `paper_width` (58/80),
-> `printer_name`, `currency_prefix` (RM)
+> `printer_name`, `currency_prefix` (RM),
+> **`discount_tax_mode`** (`after_tax` — kekalkan kelakuan sekarang),
+> **`manual_discount_max_percent`** (0 = tiada had),
+> **`manual_discount_needs_approval`** (0)
 >
 > `business_type` **tiada di sini** — ia dalam `vendors`, kerana ia menentukan
 > ciri yang dilanggan, bukan pilihan yang boleh ditukar sesuka hati.
@@ -274,7 +313,7 @@ updated_by · PK(vendor_id, setting_key)
 **`activity_logs`** — id, **vendor_id**, user_id, action, entity, entity_id,
 detail_json, created_at
 
-## 7. Tiga keputusan seni bina
+## 7. Keputusan seni bina
 
 ### 7.1 Semua jualan lalui `orders` — termasuk kedai runcit
 
@@ -304,6 +343,89 @@ setiap malam dan laporan harian akan silap.
 
 > Setiap vendor mempunyai `day_cutoff_time` sendiri — kedai mamak dan kedai
 > runcit tidak tutup pada waktu yang sama.
+
+### 7.4 Promosi dinilai di pelayan, dalam `CalculateCartJob`
+
+Lubang penilaian promosi mesti wujud dalam `CalculateCartJob` **sejak Fasa 3**,
+walaupun UI promosi belum dibina sehingga Fasa 10.
+
+**Sebab:** kalau enjin promosi ditampal kemudian, `CalculateCartJob` — fungsi
+yang mengira setiap sen dalam sistem ini — perlu ditulis semula, sedangkan ia
+sudah diuji dan sudah digunakan oleh pesanan, gabung bil dan pecah bil.
+Alasan yang sama seperti keputusan 7.1.
+
+Harga promosi **tidak pernah** dikira di browser. Browser boleh memaparkannya
+untuk kepantasan, tetapi angka yang disimpan sentiasa datang dari pelayan.
+
+### 7.5 Susunan pengiraan — dan apa yang boleh dikonfigur
+
+```
+1. Harga unit      = harga asas + price_delta variasi
+2. Promosi ITEM    -> kurangkan harga item
+                      (product_price, product_percent,
+                       category_percent, buy_x_get_y)
+3. Subjumlah       = jumlah semua item selepas promosi item
+4. Diskaun BIL     = promosi bil (bill_percent, bill_fixed)
+                     + diskaun manual juruwang
+5. Cukai           -> bergantung pada discount_tax_mode
+6. Caj perkhidmatan / caj bungkus
+7. Jumlah
+```
+
+**`discount_tax_mode` — tetapan setiap vendor:**
+
+| Mod | Kiraan cukai | Kesan |
+|---|---|---|
+| `after_tax` (lalai) | `cukai = subjumlah × kadar`, diskaun bil ditolak selepas | Cukai kekal penuh. **Kelakuan sistem sekarang** |
+| `before_tax` | `cukai = (subjumlah − diskaun bil) × kadar` | Cukai turun mengikut diskaun |
+
+> **Nuansa penting yang mudah disalah faham.** Tetapan ini mengawal **diskaun
+> peringkat bil sahaja**. Promosi peringkat **item** sentiasa menjejaskan cukai
+> dalam kedua-dua mod — bukan kerana tetapan, tetapi kerana ia benar-benar
+> mengubah harga jualan barang itu. Kalau Nasi Lemak dijual RM3.90 dan bukan
+> RM4.50, jumlah bercukai memang RM3.90. Tiada tetapan boleh mengubah hakikat
+> itu tanpa menjadikan cukai salah kira.
+
+`transactions.discount_tax_mode` **disimpan pada setiap transaksi**. Vendor
+boleh menukar tetapan pada bila-bila masa, dan resit lama mesti masih boleh
+diterangkan semula dengan mod yang digunakan pada masa itu.
+
+Produk `is_tax_exempt` dikecualikan daripada asas cukai dalam kedua-dua mod.
+
+### 7.6 Promosi bertindih — `priority` menang, tidak bertindan
+
+Apabila lebih daripada satu promosi kena pada item yang sama:
+
+1. Susun mengikut `priority` menurun
+2. **Satu promosi sahaja dikenakan** pada setiap item
+3. Kecuali promosi itu ditanda `is_stackable`, barulah ia boleh bergabung
+
+Tanpa peraturan ini, kelakuan menjadi rawak dan vendor akan melaporkannya
+sebagai pepijat — sedangkan puncanya reka bentuk yang tidak lengkap.
+
+### 7.7 Julat tarikh ikut `business_day`, happy hour ikut jam dinding
+
+Promosi tamat `31 Ogos`. Jualan pada jam 1 pagi 1 September, semasa
+`business_day` masih 31 Ogos (cutoff 4 pagi) — **promosi masih kena**. Itu
+yang tauke jangkakan, kerana bagi mereka malam itu masih hari Isnin.
+
+Tetapi happy hour `14:00–17:00` menggunakan **jam dinding sebenar**, kerana
+maksudnya memang waktu petang, bukan tempoh hari perniagaan.
+
+### 7.8 Diskaun manual juruwang dikekalkan
+
+Medan diskaun yang juruwang taip sendiri kekal, dan dikenakan **selepas**
+semua promosi.
+
+Kawalan disediakan dalam tetapan tetapi **dimatikan secara lalai**, supaya
+kelakuan kekal sama seperti sekarang:
+
+- `manual_discount_max_percent` — `0` bermakna tiada had
+- `manual_discount_needs_approval` — `0` bermakna tiada kelulusan diperlukan
+
+Vendor boleh menghidupkannya bila-bila masa. Juruwang yang boleh menaip
+diskaun tanpa had ialah lubang kebocoran wang paling biasa dalam POS, jadi
+kawalan itu ada apabila vendor memerlukannya — tetapi tidak dipaksa sekarang.
 
 ## 8. Aliran kerja setiap mod
 
@@ -393,8 +515,11 @@ claude-learn1/
 │   ├── Plan/        ListPlansJob · SavePlanJob · SaveSubscriptionJob
 │   ├── Product/     ListProductsJob · FindByBarcodeJob · SearchProductsJob
 │   │                SaveProductJob · DeleteProductJob · UploadProductImageJob
+│   │                ImportProductsCsvJob · LowStockJob
 │   │                ListCategoriesJob · SaveCategoryJob
 │   ├── Variation/   GetVariationsJob · SaveVariationsJob · ResetVariationsJob
+│   ├── Promotion/   ListPromotionsJob · SavePromotionJob · TogglePromotionJob
+│   │                ActivePromotionsJob · ApplyPromotionsJob
 │   ├── Order/       OpenOrderJob · AddOrderItemJob · UpdateOrderItemJob
 │   │                CancelOrderItemJob · GetOpenOrdersJob · FindByTakeawayNoJob
 │   │                CloseOrderJob · CancelOrderJob
@@ -465,6 +590,17 @@ claude-learn1/
     membacanya semula melalui `mysql.exe` yang sama **nampak betul**, jadi
     kerosakan hanya terserlah bila PDO membacanya — iaitu di dalam aplikasi.
     Lihat resepi lengkap dalam bahagian 15.1.
+11. **Promosi dinilai di pelayan sahaja.** Browser boleh memaparkan harga
+    promosi untuk kepantasan, tetapi angka yang disimpan sentiasa datang dari
+    `CalculateCartJob`. Sama seperti harga biasa — jangan percaya browser.
+12. **`promotions.used_count` mesti dinaikkan dalam DB transaction yang sama**
+    dengan penyimpanan jualan. Kalau tidak, promosi berhad (`max_uses`) boleh
+    digunakan melebihi had semasa dua kaunter membayar serentak.
+13. **Promosi disalin ke transaksi**, bukan dirujuk. Vendor menyunting promosi
+    bulan depan tidak boleh mengubah resit bulan ini.
+14. **Tetapan `discount_tax_mode` mengawal diskaun peringkat BIL sahaja.**
+    Promosi peringkat item sentiasa menjejaskan cukai kerana ia mengubah harga
+    jualan sebenar. Lihat 7.5.
 
 ## 15. Persediaan mesin pembangunan baharu
 

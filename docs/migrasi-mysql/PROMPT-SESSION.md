@@ -4,16 +4,16 @@ Salin blok yang berkenaan sebagai **mesej pertama** dalam session baharu.
 Prompt ini sengaja pendek — konteks sebenar ada dalam PELAN.md dan PROGRES.md,
 dan itu yang perlu dibaca dahulu.
 
-**16 fasa merentas 6 session.**
+**17 fasa merentas 6 session.**
 
 | Session | Fasa | Hasil |
 |---|---|---|
 | 1 | 1–3 | Jualan kaunter berfungsi, dua vendor terasing |
 | 2 | 4–6 | Kedai runcit siap sepenuhnya |
 | 3 | 7–9 | Kedai makan siap sepenuhnya |
-| 4 | 10–12 | Operasi & admin kedai penuh |
-| 5 | 13–15 | Platform SaaS + audit kebocoran |
-| 6 | 16 | Dokumentasi |
+| 4 | 10–13 | Promosi, operasi & admin kedai penuh |
+| 5 | 14–16 | Platform SaaS + audit kebocoran |
+| 6 | 17 | Dokumentasi |
 
 ---
 
@@ -44,13 +44,22 @@ Peraturan multi-tenant (paling penting):
   dengan vendor_id (PELAN.md 3.6).
 
 Peraturan lain:
-- Ikut skema 22 jadual dalam PELAN.md. Kalau ada yang tak masuk akal semasa
+- Ikut skema 25 jadual dalam PELAN.md. Kalau ada yang tak masuk akal semasa
   kerja, beritahu aku dulu sebelum ubah, dan catat dalam log keputusan
   di hujung PROGRES.md.
 - Semua jualan lalui jadual orders, termasuk jualan kaunter biasa
   (order_type = counter). Ini keputusan 7.1 PELAN.md — jangan tulis terus
   ke transactions, kalau tidak Fasa 9 kena tulis semula fasa ini.
 - business_day dikira dari settings.day_cutoff_time, BUKAN CURDATE().
+- Jadual promosi dicipta sekarang walaupun UI dibina di Fasa 10, dan
+  CalculateCartJob mesti sudah ada titik masuk penilaian promosi mengikut
+  susunan PELAN.md 7.5. ApplyPromotionsJob boleh pulangkan kosong buat masa
+  ini — yang penting susunan pengiraan betul sekarang, bukan ditampal nanti.
+  Sebabnya sama seperti keputusan orders: CalculateCartJob mengira setiap sen
+  dalam sistem ini, jadi ia tidak boleh ditulis semula selepas diuji.
+- Import seed.sql WAJIB guna --default-character-set=utf8mb4. mysql.exe di
+  Windows lalai cp850 dan akan merosakkan setiap emoji tanpa amaran.
+  Baca PELAN.md 15.1, dan sahkan dengan HEX() selepas import.
 - Guna pengguna MySQL pos_user, bukan root. Jangan sentuh database tuisyen.
 - Port calcUnitPrice(), makeLineId(), getTotals() dari JS sedia ada.
 - Empat peranan: superadmin, admin, cashier, waiter. Waiter tiada akses
@@ -147,7 +156,7 @@ Commit berasingan setiap fasa. Kemas kini PROGRES.md.
 
 ---
 
-## Session 4 — Operasi & Admin Kedai (Fasa 10–12)
+## Session 4 — Promosi, Operasi & Admin Kedai (Fasa 10–13)
 
 ```
 Sambung pembinaan KedaiPOS SaaS.
@@ -157,9 +166,22 @@ Baca dulu, ikut susunan:
 2. docs/migrasi-mysql/PELAN.md
 3. docs/migrasi-mysql/PROGRES.md — Fasa 1-9 sepatutnya sudah bertanda siap
 
-Buat Fasa 10, 11 dan 12.
+Buat Fasa 10, 11, 12 dan 13.
 
 Peraturan:
+- Fasa 10 (promosi): baca PELAN.md 7.4 hingga 7.8 habis dulu. Empat peraturan
+  di sana sudah aku putuskan dan tidak boleh diubah sambil lalu:
+  priority tertinggi menang dan tidak bertindan kecuali is_stackable;
+  discount_tax_mode ialah tetapan vendor yang disimpan pada setiap transaksi;
+  julat tarikh ikut business_day tetapi happy hour ikut jam dinding;
+  diskaun manual juruwang kekal dan dikenakan selepas promosi.
+- Promosi peringkat item SENTIASA menjejaskan cukai dalam kedua-dua mod,
+  kerana ia betul-betul mengubah harga jualan. discount_tax_mode mengawal
+  diskaun peringkat bil sahaja. Ini bukan pepijat — jangan "betulkan".
+- promotions.used_count dinaikkan dalam DB transaction yang sama dengan
+  jualan, kalau tidak max_uses boleh dilanggar bila dua kaunter bayar serentak.
+- Nama promosi disalin ke transaksi. Vendor sunting promosi bulan depan tidak
+  boleh mengubah resit bulan ini.
 - Void dan refund adalah dua perkara berbeza. Void = silap juruwang, tanda
   status void, stok pulang penuh. Refund = pelanggan pulang barang kemudian,
   jadi rekod baharu bernilai negatif berpaut pada resit asal.
@@ -171,14 +193,14 @@ Peraturan:
 - Kadar cukai, caj perkhidmatan dan caj bungkus dibaca dari settings vendor,
   bukan pemalar dalam kod. Uji: tukar kadar KEDAI01, sahkan KEDAI02 tidak
   terjejas dan jualan lama tidak berubah.
-- business_type TIADA dalam tetapan kedai — ia milik superadmin (Fasa 13).
+- business_type TIADA dalam tetapan kedai — ia milik superadmin (Fasa 14).
 
 Commit berasingan setiap fasa. Kemas kini PROGRES.md.
 ```
 
 ---
 
-## Session 5 — Platform SaaS (Fasa 13–15)
+## Session 5 — Platform SaaS (Fasa 14–16)
 
 ```
 Sambung pembinaan KedaiPOS SaaS — lapisan platform.
@@ -186,9 +208,9 @@ Sambung pembinaan KedaiPOS SaaS — lapisan platform.
 Baca dulu, ikut susunan:
 1. CLAUDE.md
 2. docs/migrasi-mysql/PELAN.md — bahagian 3, 5 (peranan) dan 9 (had pelan)
-3. docs/migrasi-mysql/PROGRES.md — Fasa 1-12 sepatutnya sudah bertanda siap
+3. docs/migrasi-mysql/PROGRES.md — Fasa 1-13 sepatutnya sudah bertanda siap
 
-Buat Fasa 13, 14 dan 15.
+Buat Fasa 14, 15 dan 16.
 
 Peraturan:
 - superadmin ada vendor_id NULL. Ia menguruskan vendor, TIDAK masuk POS
@@ -199,7 +221,7 @@ Peraturan:
 - ProvisionVendorJob mesti hasilkan vendor yang terus boleh berjualan —
   tetapan lalai, kaedah bayaran, kategori, akaun admin, kaunter pertama.
   Tiada langkah manual dalam DB selepas itu.
-- Fasa 15 ialah audit kebocoran menyeluruh. Ia bukan formaliti — senaraikan
+- Fasa 16 ialah audit kebocoran menyeluruh. Ia bukan formaliti — senaraikan
   setiap pertanyaan SQL dalam jobs/ dan sahkan setiap satu menapis
   vendor_id. `grep -rn "vendor_id" api/` mesti kosong. Jalankan juga
   /security-review. Catat hasilnya dalam PROGRES.md.
@@ -209,16 +231,16 @@ Commit berasingan setiap fasa. Kemas kini PROGRES.md.
 
 ---
 
-## Session 6 — Dokumentasi (Fasa 16)
+## Session 6 — Dokumentasi (Fasa 17)
 
 ```
 Fasa terakhir KedaiPOS SaaS — dokumentasi.
 
 Baca dulu:
 1. CLAUDE.md
-2. docs/migrasi-mysql/PROGRES.md — Fasa 1-15 sepatutnya sudah siap
+2. docs/migrasi-mysql/PROGRES.md — Fasa 1-16 sepatutnya sudah siap
 
-Buat Fasa 16.
+Buat Fasa 17.
 
 Peraturan:
 - Empat panduan berasingan sebab empat peranan berbeza: juruwang, waiter,

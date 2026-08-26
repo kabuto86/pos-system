@@ -14,7 +14,7 @@ Sistem ini sedang dibina semula sebagai SaaS multi-tenant: satu kod, satu
 pangkalan data, banyak vendor. Sebelum menulis sebarang kod berkaitan, baca
 dua fail ini dahulu:
 
-- `docs/migrasi-mysql/PELAN.md` — keputusan reka bentuk & skema 22 jadual (rujukan tetap)
+- `docs/migrasi-mysql/PELAN.md` — keputusan reka bentuk & skema 25 jadual (rujukan tetap)
 - `docs/migrasi-mysql/PROGRES.md` — fasa mana sudah siap, mana seterusnya
 
 **Peraturan paling penting:** `vendor_id` datang dari sesi, tidak pernah dari
