@@ -4,9 +4,29 @@
 > satu-satunya sumber kebenaran tentang di mana kerja terhenti.
 > Baca [PELAN.md](PELAN.md) untuk keputusan reka bentuk.
 
-**Status keseluruhan:** Belum bermula — pelan sahaja siap
+**Status keseluruhan:** Pelan siap · **persekitaran sudah disemak dan lulus**
 **Fasa terakhir siap:** —
 **Fasa seterusnya:** Fasa 1
+
+### Semakan kesediaan — 26 Ogos 2026 (mesin pejabat)
+
+| Perkara | Hasil |
+|---|---|
+| Apache (port 80) | ✅ berjalan · `index.html` → HTTP 200 |
+| MySQL/MariaDB (port 3306) | ✅ berjalan · 10.4.32 |
+| PHP melalui Apache | ✅ 8.2.12 |
+| Sambungan `pdo_mysql`, `gd`, `fileinfo`, `mbstring`, `session` | ✅ semua ada |
+| `upload_max_filesize` / `post_max_size` | 40M (had pelan kita 2MB — memadai) |
+| PDO + prepared statement (`EMULATE_PREPARES` dimatikan) | ✅ |
+| Emoji utf8mb4 hantar-balik melalui PDO | ✅ `F09F8D9B` (selepas pembetulan 15.1) |
+| `UNIQUE(vendor_id, name)` — nama sama merentas vendor | ✅ dibenarkan |
+| `SELECT … FOR UPDATE` (InnoDB) | ✅ |
+| Pengguna MySQL berhad tidak boleh capai DB lain | ✅ `tuisyen` ditolak 1044 |
+| Playwright memuatkan aplikasi melalui Apache | ✅ 18 produk dipapar, emoji betul |
+
+**Satu masalah dijumpai dan sudah didokumen:** `mysql.exe` di Windows lalai
+kepada `cp850`, merosakkan emoji semasa import `seed.sql` **tanpa sebarang
+amaran**. Resepi pembetulan dalam PELAN.md 15.1 — baca sebelum Fasa 1.
 
 **Struktur:** 16 fasa merentas 6 session.
 

@@ -458,6 +458,13 @@ claude-learn1/
    kalau tidak, item sama boleh dibayar dua kali.
 8. **Indeks bermula dengan `vendor_id`** (lihat 3.6).
 9. **utf8mb4 pada sambungan PDO**, bukan hanya pada jadual.
+10. **Import `seed.sql` mesti guna `--default-character-set=utf8mb4`.**
+    Disahkan pada mesin ini (26 Ogos 2026): `mysql.exe` di Windows lalai kepada
+    **`cp850`**. Tanpa flag itu, `🍛` disimpan sebagai 4 aksara sampah
+    (`C2ADC692C3ACC3B8`) dan bukan 1 aksara (`F09F8D9B`). Yang lebih bahaya:
+    membacanya semula melalui `mysql.exe` yang sama **nampak betul**, jadi
+    kerosakan hanya terserlah bila PDO membacanya — iaitu di dalam aplikasi.
+    Lihat resepi lengkap dalam bahagian 15.1.
 
 ## 15. Persediaan mesin pembangunan baharu
 
@@ -477,10 +484,41 @@ Langkah pemasangan:
 1. Pastikan Apache + MySQL berjalan dalam XAMPP Control Panel
 2. `CREATE DATABASE pos_saas CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`
    kemudian cipta `pos_user` dengan akses ke `pos_saas` sahaja
-3. `mysql -u root pos_saas < database/schema.sql` diikuti `seed.sql`
+3. Import (perhatikan flag charset — lihat 15.1):
+   `mysql --default-character-set=utf8mb4 -u root pos_saas < database/schema.sql`
+   diikuti `seed.sql`
 4. Salin `config/database.example.php` → `config/database.php`, isi kredensial
 5. Log masuk: Kod Kedai `KEDAI01` (runcit) atau `KEDAI02` (kedai makan)
 6. Superadmin: `http://localhost/{folder}/superadmin/`
+
+### 15.1 Emoji dan `mysql.exe` di Windows — perangkap yang sudah disahkan
+
+Diuji pada mesin pejabat, 26 Ogos 2026. `mysql.exe` di Windows bersambung
+dengan `character_set_client = cp850` secara lalai, bukan utf8mb4.
+
+Kesannya pada `seed.sql` yang penuh dengan ikon emoji:
+
+| Cara | Tersimpan sebagai | Betul? |
+|---|---|---|
+| `mysql -u root db < seed.sql` | `C2ADC692C3ACC3B8` — 4 aksara, 8 bait | ❌ rosak |
+| `mysql -e "INSERT … '🍛' …"` | `3F3F` — jadi `??` | ❌ rosak |
+| `mysql --default-character-set=utf8mb4 -u root db < seed.sql` | `F09F8D9B` — 1 aksara, 4 bait | ✅ betul |
+
+**Yang paling merbahaya:** cara pertama, bila dibaca semula melalui
+`mysql.exe` yang sama, **nampak betul** — kerana ia ditukar balik oleh
+penyongsangan yang sama. Kerosakan hanya terserlah apabila PDO membacanya,
+iaitu di dalam aplikasi, selepas semua data sudah dimasukkan.
+
+Peraturan yang mesti diikut:
+
+1. `seed.sql` dan `schema.sql` disimpan sebagai **UTF-8 tanpa BOM**
+2. Baris pertama setiap fail: `SET NAMES utf8mb4;`
+3. Import sentiasa dengan `--default-character-set=utf8mb4`
+4. **Jangan hantar emoji sebagai argumen baris arahan** (`-e "…'🍛'…"`) —
+   baris arahan Windows menukarnya menjadi `??` tanpa amaran
+5. Sahkan selepas import, jangan andaikan:
+   `SELECT HEX(icon), CHAR_LENGTH(icon), LENGTH(icon) FROM products LIMIT 3;`
+   — `🍛` mesti `F09F8D9B`, 1 aksara, 4 bait
 
 ## 16. Logik sedia ada yang boleh dipindah terus
 
