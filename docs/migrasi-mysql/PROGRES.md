@@ -28,7 +28,7 @@
 kepada `cp850`, merosakkan emoji semasa import `seed.sql` **tanpa sebarang
 amaran**. Resepi pembetulan dalam PELAN.md 15.1 — baca sebelum Fasa 1.
 
-**Struktur:** 18 fasa merentas 6 session.
+**Struktur:** 19 fasa merentas 6 session.
 
 Sejarah skop:
 9 fasa/3 session → 13 fasa/5 session (dua jenis perniagaan, waiter, meja)
@@ -58,7 +58,7 @@ ia ditulis, bukan enam session kemudian.
 ### Fasa 1 — Skema & teras
 - [ ] Cipta pangkalan data `pos_saas` (utf8mb4_unicode_ci)
 - [ ] Cipta pengguna MySQL `pos_user` (akses `pos_saas` sahaja)
-- [ ] `database/schema.sql` — **28 jadual**, `vendor_id` pada setiap jadual
+- [ ] `database/schema.sql` — **34 jadual**, `vendor_id` pada setiap jadual
       perniagaan, setiap UNIQUE jadi unik per vendor (PELAN.md 3.5),
       setiap indeks bermula dengan `vendor_id` (PELAN.md 3.6)
 - [ ] Jadual promosi wujud sejak sekarang walaupun UI dibina di Fasa 10:
@@ -73,7 +73,14 @@ ia ditulis, bukan enam session kemudian.
       tetapan, admin, kaunter; KEDAI02 dapat meja contoh
 - [ ] Satu akaun `superadmin` (vendor_id NULL)
 - [ ] Jadual bahasa: `languages` (ms lalai, en aktif), `translations`
-- [ ] `login_attempts` + lajur `users.failed_attempts`, `locked_until`
+- [ ] `login_attempts` + lajur `users.failed_attempts`, `locked_until`,
+      `pin_hash`, `outlet_id`; `email` dan `password_hash` jadi **nullable**
+- [ ] **`outlets`** + `outlet_id` pada orders, transactions, dining_tables,
+      terminals, shifts, stock_movements
+- [ ] **`product_outlets`** — stok berpindah dari `products` ke sini
+- [ ] `plan_outlet_tiers`, `invoices`, `invoice_lines`
+- [ ] Seed: KEDAI01 satu kedai · **KEDAI02 DUA kedai** — supaya isu kedai
+      berbilang terserlah awal, sama sebabnya seperti dua vendor (3.4)
 - [ ] `config/database.php` + `.example.php` + kemas kini `.gitignore`
 - [ ] `core/Database.php` (PDO utf8mb4), `Response.php`, `Request.php`,
       `Validator.php`, `BusinessDay.php`, **`VendorScope.php`**,
@@ -92,8 +99,13 @@ ia ditulis, bukan enam session kemudian.
 - [ ] `core/Auth.php` — sesi menyimpan `vendor_id`, `user_id`, `role`,
       `language`; `vendor_id` diperoleh dari baris pengguna, bukan borang
 - [ ] `core/Csrf.php`
-- [ ] `jobs/Auth/LoginJob.php` — **e-mel + kata laluan** (dua medan sahaja)
-- [ ] Argon2id `memory_cost 19456`, `time_cost 2`, `threads 1` (PELAN.md 4.2)
+- [ ] `jobs/Auth/LoginJob.php` — **e-mel + kata laluan** (admin/tauke sahaja)
+- [ ] `jobs/Auth/PinLoginJob.php` — **nama + PIN** untuk juruwang & waiter
+- [ ] `jobs/Auth/RegisterDeviceJob.php`, `RevokeDeviceJob.php` — peranti
+      diikat ke satu kedai, token dalam cookie jangka panjang
+- [ ] `jobs/Outlet/ValidateOutletJob.php` — sahkan `outlet_id` milik vendor
+- [ ] Pemilih kedai selepas log masuk (hanya jika vendor ada >1 kedai)
+- [ ] Argon2id `memory_cost 19456`, `time_cost 2`, `threads 1` (PELAN.md 4.4)
 - [ ] `password_needs_rehash()` pada setiap log masuk berjaya
 - [ ] `jobs/Auth/ThrottleJob.php` — kunci 15 minit selepas 5 cubaan gagal,
       rekod setiap cubaan + IP dalam `login_attempts`
@@ -107,6 +119,13 @@ ia ditulis, bukan enam session kemudian.
 - [ ] Sahkan: 6 cubaan gagal → akaun dikunci, cubaan ke-7 ditolak walaupun
       kata laluan betul
 - [ ] Sahkan: e-mel yang sama **tidak boleh** didaftarkan pada dua vendor
+- [ ] Sahkan: waiter **tanpa e-mel langsung** boleh log masuk dengan PIN
+- [ ] Sahkan: PIN **tidak berfungsi** pada peranti yang belum didaftarkan
+- [ ] Sahkan: PIN salah 3 kali → dikunci sehingga admin membukanya
+- [ ] Sahkan: PIN disimpan sebagai hash Argon2id, bukan teks biasa
+- [ ] Sahkan: admin membatalkan peranti dari jauh → peranti itu terus
+      hilang akses
+- [ ] Sahkan: `outlet_id` milik vendor lain dihantar → **ditolak**
 - [ ] Sahkan: vendor `suspended` → hanya admin masuk, dan hanya untuk lihat
       mesej langganan
 - [ ] Sahkan dengan curl: waiter panggil endpoint bayaran → **403**
@@ -416,7 +435,7 @@ Uji sebagai vendor **KEDAI02** (restaurant).
 
 ---
 
-## Session 5 — Platform SaaS & Bahasa (Fasa 14–17)
+## Session 5 — Platform SaaS (Fasa 14–16)
 
 ### Fasa 14 — Panel superadmin
 - [ ] `superadmin/` — login berasingan, layout berasingan
@@ -439,7 +458,45 @@ Uji sebagai vendor **KEDAI02** (restaurant).
       sebarang langkah manual dalam DB
 - [ ] Sahkan: had pelan ditolak melalui API terus, bukan hanya butang disable
 
-### Fasa 16 — Bahasa & modul terjemahan
+### Fasa 16 — Kedai berbilang, langganan & bil
+
+> Jadual `outlets`, `plan_outlet_tiers`, `invoices`, `invoice_lines` sudah
+> wujud sejak Fasa 1 dan `outlet_id` sudah ada pada semua jadual operasi.
+> Fasa ini membina pengurusan dan pengebilan. Baca PELAN.md 9.
+
+- [ ] `admin/outlets.php` — tauke tambah / sunting / tutup kedai
+- [ ] `jobs/Outlet/SaveOutletJob.php` — kuatkuasa `max_outlets` pelan
+- [ ] `jobs/Outlet/SwitchOutletJob.php` — tauke bertukar antara kedai
+- [ ] Pemilih kedai pada bar atas admin (hanya jika vendor ada >1 kedai)
+- [ ] `admin/product-outlets.php` — tetapkan `price_override`, `stock`,
+      `min_stock`, `is_available` setiap kedai
+- [ ] `superadmin/plans.php` — editor peringkat `plan_outlet_tiers`
+- [ ] `jobs/Billing/CalculateOutletPriceJob.php` — kira dari peringkat,
+      **bukan** nombor tetap dalam kod
+- [ ] `jobs/Billing/GenerateInvoiceJob.php` — jana sebagai `draft`,
+      prorata untuk kedai yang dibuka pertengahan kitaran
+- [ ] `superadmin/invoices.php` — semak, keluarkan, tandakan dibayar
+- [ ] `admin/billing.php` — vendor lihat bil sendiri
+
+**Pengesahan**
+
+- [ ] Vendor 3 kedai dengan peringkat 99 / 79 / 79 → bil RM 257
+- [ ] Kedai dibuka pada 15 haribulan → baris prorata, bukan caj penuh
+- [ ] Tukar harga peringkat → **bil lama tidak berubah** (`invoice_lines`
+      simpan `unit_price` sendiri)
+- [ ] `max_outlets` ditolak melalui API terus, bukan hanya butang disable
+- [ ] Stok Kedai A tidak menjejaskan stok Kedai B bagi produk yang sama
+- [ ] `price_override` NULL → guna `products.price`; ditetapkan → guna override
+- [ ] Laporan gabungan tauke = jumlah semua kedainya
+- [ ] Juruwang Kedai A **tidak** nampak jualan Kedai B
+- [ ] `outlet_id` milik vendor lain dihantar melalui API → **ditolak**
+      (`ValidateOutletJob`)
+
+---
+
+## Session 6 — Bahasa, Audit & Dokumentasi (Fasa 17–19)
+
+### Fasa 17 — Bahasa & modul terjemahan
 
 > `Lang.php` dan helper `t()` sudah wujud sejak Fasa 1, dan setiap rentetan
 > dari Fasa 2 ke sini sudah melaluinya. Fasa ini membina modul pentadbiran
@@ -475,7 +532,7 @@ Uji sebagai vendor **KEDAI02** (restaurant).
 - [ ] `grep` untuk rentetan Melayu yang masih ditulis terus dalam kod
       paparan — sepatutnya tiada; kalau ada, ia terlepas sejak fasa awal
 
-### Fasa 17 — Audit kebocoran antara vendor
+### Fasa 18 — Audit kebocoran antara vendor
 
 > Fasa khusus. Semua ciri sudah wujud, jadi sekarang boleh diaudit menyeluruh.
 > Ujian per-fasa sebelum ini menangkap yang jelas; fasa ini mencari yang halus.
@@ -492,11 +549,7 @@ Uji sebagai vendor **KEDAI02** (restaurant).
 - [ ] Jalankan `/security-review`
 - [ ] Catat hasil audit dalam fail ini
 
----
-
-## Session 6 — Dokumentasi (Fasa 18)
-
-### Fasa 18 — Dokumentasi
+### Fasa 19 — Dokumentasi
 - [ ] Panduan juruwang (kemas kini `docs/panduan-pengguna.md`)
 - [ ] **Panduan waiter** (baharu)
 - [ ] **Panduan admin kedai** (baharu)
@@ -508,7 +561,7 @@ Uji sebagai vendor **KEDAI02** (restaurant).
 
 ---
 
-## Perkara tertangguh (bukan sebahagian 18 fasa)
+## Perkara tertangguh (bukan sebahagian 19 fasa)
 
 - **Bayaran langganan dalam talian** — superadmin tandakan status secara
   manual buat masa ini. Gerbang pembayaran belum dibincangkan
@@ -545,3 +598,8 @@ Uji sebagai vendor **KEDAI02** (restaurant).
 | 27 Ogos 2026 | **Dwibahasa ditambah** — 25 jadual → 28, 17 fasa → 18 | Keputusan Sufi: lalai Melayu, vendor boleh pilih Inggeris, superadmin boleh tambah bahasa |
 | 27 Ogos 2026 | `t()` wajib wujud sejak Fasa 1 walaupun modul terjemahan di Fasa 16 | Terjemahan menyentuh setiap skrin. Kalau ditambah lewat, setiap paparan perlu dibuka semula dan setiap rentetan yang terlepas jadi pepijat senyap |
 | 27 Ogos 2026 | Nama produk **tidak** diterjemah | Nama makanan selalunya tidak diterjemah, dan memaksa vendor mengisi nama Inggeris untuk ribuan barang ialah beban yang tiada siapa mahu. `product_translations` boleh ditambah kemudian tanpa memecahkan apa-apa |
+| 27 Ogos 2026 | **Model tiga lapisan: vendor → outlet → users.** 28 jadual → 34, 18 fasa → 19 | Pembetulan model. Versi awal menganggap vendor = kedai, jadi tauke 3 kedai perlu 3 langganan dan 3 e-mel, tanpa laporan gabungan |
+| 27 Ogos 2026 | Stok berpindah dari `products` ke `product_outlets`; harga boleh ditindih per kedai | Satu lajur stok pada produk tiada makna apabila vendor ada tiga kedai. Keputusan Sufi: katalog dikongsi, harga & stok per kedai |
+| 27 Ogos 2026 | **PIN untuk juruwang & waiter**, e-mel untuk admin sahaja | Waiter log masuk 20–30 kali sehari pada tablet berkongsi. Kalau menyusahkan, mereka akan berkongsi satu akaun dan sistem hilang jejak siapa buat apa. `users.email` jadi nullable |
+| 27 Ogos 2026 | Kedai tambahan dicaj mengikut **peringkat**, bukan diskaun % tetap | Caj per lokasi ialah norma industri POS SaaS. Peringkat dipilih kerana peratus tetap tidak menjawab kedai ke-5 atau ke-20, dan peringkat boleh menghasilkan peratus rata juga |
+| 27 Ogos 2026 | Kedai dibuka pertengahan kitaran diprorata | Jangkaan pelanggan, dan menghapuskan insentif menunggu awal bulan sebelum membuka kedai |

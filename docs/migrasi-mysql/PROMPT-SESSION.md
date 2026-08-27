@@ -4,7 +4,7 @@ Salin blok yang berkenaan sebagai **mesej pertama** dalam session baharu.
 Prompt ini sengaja pendek — konteks sebenar ada dalam PELAN.md dan PROGRES.md,
 dan itu yang perlu dibaca dahulu.
 
-**18 fasa merentas 6 session.**
+**19 fasa merentas 6 session.**
 
 | Session | Fasa | Hasil |
 |---|---|---|
@@ -12,8 +12,8 @@ dan itu yang perlu dibaca dahulu.
 | 2 | 4–6 | Kedai runcit siap sepenuhnya |
 | 3 | 7–9 | Kedai makan siap sepenuhnya |
 | 4 | 10–13 | Promosi, operasi & admin kedai penuh |
-| 5 | 14–17 | Platform SaaS, bahasa + audit kebocoran |
-| 6 | 18 | Dokumentasi |
+| 5 | 14–16 | Platform SaaS, kedai berbilang & bil |
+| 6 | 17–19 | Bahasa, audit kebocoran, dokumentasi |
 
 ---
 
@@ -44,7 +44,7 @@ Peraturan multi-tenant (paling penting):
   dengan vendor_id (PELAN.md 3.6).
 
 Peraturan lain:
-- Ikut skema 28 jadual dalam PELAN.md. Kalau ada yang tak masuk akal semasa
+- Ikut skema 34 jadual dalam PELAN.md. Kalau ada yang tak masuk akal semasa
   kerja, beritahu aku dulu sebelum ubah, dan catat dalam log keputusan
   di hujung PROGRES.md.
 - Semua jualan lalui jadual orders, termasuk jualan kaunter biasa
@@ -65,10 +65,29 @@ Peraturan lain:
 - Empat peranan: superadmin, admin, cashier, waiter. Waiter tiada akses
   bayaran, disemak di dalam endpoint, bukan sekadar sorok butang.
 
+Model tiga lapisan (PELAN.md 1.1 dan 3.8):
+- vendor (syarikat yang melanggan) -> outlet (kedai) -> users (kakitangan).
+  Satu vendor boleh ada banyak kedai. Stok, kaunter, syif, pesanan dan
+  jualan milik OUTLET, bukan vendor.
+- vendor_id = sempadan KESELAMATAN, dari sesi sahaja, ada pada SETIAP jadual.
+  outlet_id = skop PERNIAGAAN, boleh dari input TAPI mesti disahkan milik
+  vendor semasa melalui ValidateOutletJob. Jangan campurkan dua ini.
+- Produk di peringkat vendor (katalog dikongsi). Stok dan harga per kedai
+  dalam product_outlets. price_override NULL bermakna guna products.price.
+- Seed: KEDAI01 satu kedai, KEDAI02 DUA kedai — supaya isu kedai berbilang
+  terserlah awal, sama sebabnya seperti dua vendor.
+
 Log masuk dan kata laluan (baca PELAN.md 4 habis):
-- Log masuk guna E-MEL sahaja, dua medan. users.email unik GLOBAL — ini
-  satu-satunya pengecualian kepada peraturan UNIQUE-per-vendor. vendor_id
-  diperoleh dari baris pengguna selepas pengesahan, tidak pernah dari borang.
+- DUA laluan berbeza. E-mel + kata laluan untuk superadmin/tauke/admin.
+  Nama + PIN untuk juruwang dan waiter, pada peranti yang sudah didaftarkan
+  ke satu kedai. Waiter log masuk 20-30 kali sehari — kalau dipaksa menaip
+  e-mel, mereka akan berkongsi satu akaun dan sistem hilang jejak siapa
+  buat apa.
+- users.email unik GLOBAL tetapi NULLABLE — wajib untuk admin, kosong untuk
+  waiter yang hanya guna PIN. vendor_id diperoleh dari baris pengguna
+  selepas pengesahan, tidak pernah dari borang.
+- PIN di-hash dengan Argon2id yang sama. Jangan simpan teks biasa.
+  PIN hanya sah pada peranti berdaftar. 3 cubaan gagal -> dikunci.
 - Argon2id dengan memory_cost 19456, time_cost 2, threads 1. JANGAN guna
   lalai PHP (64MB, t=4) — sudah diukur, 801ms, terlalu perlahan.
   password_hash VARCHAR(255).
@@ -222,7 +241,7 @@ Commit berasingan setiap fasa. Kemas kini PROGRES.md.
 
 ---
 
-## Session 5 — Platform SaaS & Bahasa (Fasa 14–17)
+## Session 5 — Platform SaaS & Kedai Berbilang (Fasa 14–16)
 
 ```
 Sambung pembinaan KedaiPOS SaaS — lapisan platform.
@@ -232,7 +251,7 @@ Baca dulu, ikut susunan:
 2. docs/migrasi-mysql/PELAN.md — bahagian 3, 5 (peranan) dan 9 (had pelan)
 3. docs/migrasi-mysql/PROGRES.md — Fasa 1-13 sepatutnya sudah bertanda siap
 
-Buat Fasa 14, 15, 16 dan 17.
+Buat Fasa 14, 15 dan 16.
 
 Peraturan:
 - superadmin ada vendor_id NULL. Ia menguruskan vendor, TIDAK masuk POS
@@ -240,6 +259,10 @@ Peraturan:
   admin vendor tak boleh capai /superadmin/.
 - Had pelan dikuatkuasa dalam job simpan, bukan hanya butang disable di UI.
   Uji dengan panggil API terus melebihi had.
+- Fasa 16 (kedai berbilang & bil): baca PELAN.md 9 habis. Harga kedai
+  tambahan dikira dari plan_outlet_tiers, BUKAN nombor tetap dalam kod.
+  Kedai dibuka pertengahan kitaran diprorata. invoice_lines simpan
+  unit_price sendiri supaya menukar harga pelan tidak mengubah bil lama.
 - ProvisionVendorJob mesti hasilkan vendor yang terus boleh berjualan —
   tetapan lalai, kaedah bayaran, kategori, akaun admin, kaunter pertama.
   Tiada langkah manual dalam DB selepas itu.
@@ -259,16 +282,16 @@ Commit berasingan setiap fasa. Kemas kini PROGRES.md.
 
 ---
 
-## Session 6 — Dokumentasi (Fasa 18)
+## Session 6 — Bahasa, Audit & Dokumentasi (Fasa 17–19)
 
 ```
-Fasa terakhir KedaiPOS SaaS — dokumentasi.
+Tiga fasa terakhir KedaiPOS SaaS.
 
 Baca dulu:
 1. CLAUDE.md
-2. docs/migrasi-mysql/PROGRES.md — Fasa 1-17 sepatutnya sudah siap
+2. docs/migrasi-mysql/PROGRES.md — Fasa 1-16 sepatutnya sudah siap
 
-Buat Fasa 18.
+Buat Fasa 17, 18 dan 19.
 
 Peraturan:
 - Empat panduan berasingan sebab empat peranan berbeza: juruwang, waiter,

@@ -4,16 +4,33 @@
 > mana-mana session. Keputusan di sini sudah disahkan oleh Sufi — jangan ubah
 > tanpa bertanya. Untuk status semasa, lihat [PROGRES.md](PROGRES.md).
 
-Kemas kini terakhir: 27 Ogos 2026 (log masuk e-mel, Argon2id, dwibahasa)
+Kemas kini terakhir: 27 Ogos 2026 (kedai berbilang, PIN kakitangan, bil langganan)
 Persekitaran rujukan: XAMPP · PHP 8.2.12 · MariaDB 10.4.32
 
 ---
 
 ## 1. Apa sistem ini sebenarnya
 
-**Satu SaaS.** Satu kod, satu pangkalan data, banyak vendor. Setiap vendor
-melanggan dan memilih **jenis perniagaan**, dan pilihan itu menentukan aliran
-kerja mereka:
+**Satu SaaS.** Satu kod, satu pangkalan data, banyak vendor.
+
+### 1.1 Tiga lapisan — vendor bukan kedai
+
+```
+vendor  (syarikat yang melanggan)     <- bayar langganan, pemilik akaun
+  └── outlet  (kedai / cawangan)      <- stok, kaunter, syif, jualan, meja
+        └── users  (kakitangan)       <- juruwang, waiter
+```
+
+Satu vendor boleh memiliki **beberapa kedai**. Tauke log masuk sekali dan
+melihat semua kedainya, termasuk laporan gabungan.
+
+> **Pembetulan model, 27 Ogos 2026.** Versi awal pelan ini menganggap satu
+> vendor = satu kedai. Itu salah: tauke dengan 3 kedai terpaksa membuat 3
+> langganan berasingan dengan 3 e-mel berbeza, dan tidak boleh melihat
+> laporan gabungan. Lapisan `outlets` membetulkannya.
+
+Setiap vendor memilih **jenis perniagaan**, dan pilihan itu menentukan aliran
+kerja semua kedainya:
 
 | | **Kedai Runcit** (`retail`) | **Kedai Makan** (`restaurant`) |
 |---|---|---|
@@ -79,14 +96,18 @@ perniagaan sekali gus, jadi kedua-dua mod boleh diuji bila-bila masa.
 Ini paling mudah terlepas pandang. Dua vendor berbeza mesti boleh mempunyai
 produk dengan barcode yang sama, meja bernama `A1`, dan resit nombor 0001.
 
+Sesetengahnya unik **per vendor** (data katalog yang dikongsi antara kedai),
+sesetengahnya **per outlet** (data operasi kedai). Perhatikan bezanya:
+
 | Dulu | Sekarang |
 |---|---|
 | `products.barcode` UNIQUE | UNIQUE(`vendor_id`, `barcode`) |
-| `transactions.receipt_no` UNIQUE | UNIQUE(`vendor_id`, `receipt_no`) |
-| `terminals.code` UNIQUE | UNIQUE(`vendor_id`, `code`) |
-| `dining_tables.code` UNIQUE | UNIQUE(`vendor_id`, `code`) |
-| `settings.setting_key` PK | PK(`vendor_id`, `setting_key`) |
-| `orders.takeaway_no` | UNIQUE(`vendor_id`, `business_day`, `takeaway_no`) |
+| `outlets.code` | UNIQUE(`vendor_id`, `code`) |
+| `transactions.receipt_no` UNIQUE | UNIQUE(`outlet_id`, `receipt_no`) |
+| `terminals.code` UNIQUE | UNIQUE(`outlet_id`, `code`) |
+| `dining_tables.code` UNIQUE | UNIQUE(`outlet_id`, `code`) |
+| `settings.setting_key` PK | PK(`vendor_id`, `outlet_id`, `setting_key`) |
+| `orders.takeaway_no` | UNIQUE(`outlet_id`, `business_day`, `takeaway_no`) |
 
 > **Pengecualian tunggal: `users.email` unik SECARA GLOBAL**, bukan per vendor.
 > Sebabnya e-mel itulah yang mengenal pasti pengguna sebelum sistem tahu
@@ -102,30 +123,99 @@ Kalau tidak, prestasi merudum apabila vendor bertambah.
 
 `uploads/products/{vendor_id}/{hash}.jpg` — bukan satu folder berkongsi.
 
+### 3.8 `vendor_id` ialah keselamatan · `outlet_id` ialah perniagaan
+
+Dua dimensi berbeza dengan peraturan berbeza. **Jangan campurkan.**
+
+```
+WHERE vendor_id = ?    <- sempadan KESELAMATAN
+                          dari sesi sahaja, tidak pernah dari input
+  AND outlet_id = ?    <- skop PERNIAGAAN
+                          boleh dari input, TETAPI mesti disahkan
+                          bahawa outlet itu milik vendor semasa
+```
+
+Kenapa `vendor_id` kekal pada **setiap** jadual walaupun `outlet_id` sudah
+menunjuk kepada kedai: supaya peraturan audit kekal satu baris mudah —
+*"setiap pertanyaan menapis vendor_id"*. Kalau keselamatan bergantung pada
+`outlet_id` sahaja, setiap semakan perlu menyusuri `outlets` untuk tahu
+vendor mana, dan satu penyusuran yang terlepas menjadi kebocoran.
+
+`ValidateOutletJob` mengesahkan `outlet_id` milik vendor semasa. Setiap
+endpoint yang menerima `outlet_id` mesti memanggilnya.
+
 ## 4. Log masuk & keselamatan kata laluan
 
-**Diputuskan Sufi, 27 Ogos 2026.** Skrin log masuk meminta **dua** medan:
+**Dua laluan log masuk yang berbeza**, kerana dua jenis pengguna mempunyai
+keperluan yang bertentangan.
+
+### 4.1 Kenapa dua laluan
+
+Waiter kedai makan selalunya pekerja sambilan, kerap bertukar, berkongsi
+tablet, dan log masuk **20–30 kali sehari**. Menaip
+`ahmad.bin.ali@gmail.com` + kata laluan setiap kali ialah seksaan — dan
+kesannya bukan sekadar menyusahkan: kakitangan akan mula berkongsi satu
+akaun supaya tidak perlu log masuk semula, dan sistem hilang keupayaan
+mengetahui siapa membuat apa.
+
+Sebab itu POS sebenar memisahkan **akaun** daripada **kakitangan**:
+
+| Lapisan | Siapa | Cara |
+|---|---|---|
+| **Akaun** | superadmin, tauke, admin | E-mel + kata laluan |
+| **Peranti** | Kaunter / tablet | Didaftarkan **sekali** ke satu kedai |
+| **Kakitangan** | Juruwang, waiter | Tekan **nama + PIN** pada peranti berdaftar |
 
 ```
-E-mel       : ali@kedaimakcik.com
+E-mel       : ali@kedaimakcik.com        [tauke / admin sahaja]
 Kata Laluan : ••••••••
+              -> pilih kedai (kalau lebih daripada satu)
+
+------------------------------------------------------
+
+Peranti "Kaunter 1" sudah berdaftar ke Kedai Ampang
+  [ Ahmad ]  [ Siti ]  [ Kumar ]        <- tekan nama
+  PIN: • • • •                          <- 4-6 digit
 ```
 
-E-mel ialah pengenal pengguna. `vendor_id` **diperoleh dari baris pengguna**
-selepas pengesahan berjaya — tidak pernah dari borang.
+Satu e-mel tauke memberi capaian ke **semua** kedainya. Tiada lagi tiga
+e-mel untuk tiga kedai.
 
-### 4.1 Akibat yang perlu Sufi tahu
+### 4.2 Kenapa PIN cukup selamat di sini
 
-**Satu e-mel = satu akaun = satu vendor.** Kalau seorang tauke memiliki dua
-kedai, dia perlukan dua e-mel berasingan.
+PIN 4 digit sahaja memang lemah — 10,000 kombinasi. Tetapi konteksnya
+berbeza sepenuhnya daripada kata laluan internet:
 
-Kalau ini menjadi masalah nanti, penyelesaiannya ialah jadual penghubung
-`user_vendors` yang membenarkan satu log masuk bertukar antara kedai.
-`users.vendor_id` kekal sebagai vendor utama, jadi penambahan itu **tidak
-memecahkan skema**. Tidak dibina sekarang — hanya perlu apabila ada pelanggan
-sebenar dengan dua cawangan.
+- Ia **hanya berfungsi pada peranti yang sudah didaftarkan** ke kedai itu.
+  Bukan capaian jarak jauh — penyerang perlu berdiri dalam kedai
+- Dihadkan 3 cubaan, kemudian PIN dikunci sehingga admin membukanya
+- Kakitangan **tekan nama dahulu**, kemudian PIN. Tiada penomboran, dan
+  tiada bocor siapa mempunyai akaun
+- PIN tetap di-hash seperti kata laluan, tidak pernah disimpan mentah
+- PIN unik dalam satu kedai, jadi tidak boleh disalah anggap milik orang lain
 
-### 4.2 Hashing kata laluan — Argon2id
+Akibatnya **waiter tidak perlukan e-mel langsung.** `users.email` menjadi
+nullable — wajib untuk `superadmin` dan `admin`, kosong untuk kakitangan
+yang hanya menggunakan PIN.
+
+> Kerana `email` nullable, `UNIQUE(email)` masih betul: MySQL membenarkan
+> berbilang NULL dalam indeks UNIQUE.
+
+### 4.3 Pendaftaran peranti
+
+Peranti didaftarkan sekali oleh admin: log masuk dengan e-mel, pilih kedai,
+namakan peranti. Sistem menyimpan token peranti dalam cookie jangka panjang
+dan mengikat `terminal_id` kepadanya.
+
+Selepas itu peranti sentiasa "berada" di kedai tersebut sehingga admin
+membatalkan pendaftarannya. Skrin PIN sahaja yang dipaparkan.
+
+- Admin boleh membatalkan mana-mana peranti dari jauh — penting apabila
+  tablet hilang atau pekerja berhenti
+- Token peranti **tidak** memberi capaian data dengan sendirinya; ia hanya
+  menentukan kedai mana dan membenarkan skrin PIN
+
+### 4.4 Hashing kata laluan & PIN — Argon2id
 
 Diukur pada mesin Sufi, 27 Ogos 2026:
 
@@ -150,6 +240,9 @@ Ia lebih kuat daripada bcrypt **dan** lebih laju daripada bcrypt cost 10.
 Lalai PHP untuk argon2id (64MB, t=4) terlalu perlahan pada 801ms — jangan
 guna lalai, tetapkan parameter secara eksplisit.
 
+**PIN juga di-hash dengan Argon2id yang sama.** Jangan sekali-kali simpan
+PIN sebagai teks biasa atau MD5 — ia kata laluan, cuma pendek.
+
 `users.password_hash` mesti **VARCHAR(255)** — argon2id menghasilkan 97
 aksara, bcrypt 60. 255 memberi ruang untuk algoritma masa depan.
 
@@ -157,7 +250,7 @@ aksara, bcrypt 60. 255 memberi ruang untuk algoritma masa depan.
 > vendor ini masih selamat kerana log masuk jarang berbanding muat halaman,
 > tetapi ia sebab lain kenapa lalai 64MB tidak diguna.
 
-### 4.3 Peraturan log masuk yang lain
+### 4.5 Peraturan log masuk yang lain
 
 - **`password_needs_rehash()` pada setiap log masuk berjaya.** Kalau parameter
   ditingkatkan kemudian, kata laluan lama dinaik taraf secara senyap tanpa
@@ -196,14 +289,14 @@ aksara, bcrypt 60. 255 memberi ruang untuk algoritma masa depan.
 > Sekatan waiter **mesti disemak di dalam setiap endpoint**. Menyorok butang
 > di UI bukan kawalan keselamatan.
 
-## 6. Skema pangkalan data — 28 jadual
+## 6. Skema pangkalan data — 34 jadual
 
 Pangkalan data: `pos_saas` · `utf8mb4_unicode_ci` · InnoDB
 
 > **utf8mb4 wajib** pada pangkalan data, jadual, lajur DAN sambungan PDO.
 > **Setiap jadual perniagaan mempunyai `vendor_id`** kecuali yang ditanda.
 
-### A. Platform (5) — tiada `vendor_id`
+### A. Platform & Langganan (9)
 
 **`languages`** — code(PK, cth. `ms`, `en`), name, native_name,
 is_active, is_default, sort_order
@@ -219,30 +312,72 @@ is_active, is_default, sort_order
 status ENUM(trial/active/suspended/cancelled), phone, address,
 created_at, updated_at
 
-**`plans`** — id, code, name, price_monthly,
-max_terminals, max_users, max_products, features_json, is_active
+**`outlets`** — id, **vendor_id**(FK), code, name, address, phone,
+is_active, opened_at, closed_at, created_at
+· UNIQUE(vendor_id, code)
+
+> Kedai / cawangan. Stok, kaunter, syif, pesanan dan jualan semuanya milik
+> outlet, bukan vendor. Lihat 1.1.
+
+**`plans`** — id, code, name, **base_price**, **price_per_outlet**,
+max_outlets, max_terminals_per_outlet, max_users, max_products,
+features_json, is_active
+
+**`plan_outlet_tiers`** — id, plan_id(FK), from_outlet, to_outlet,
+unit_price · lihat 9.2
 
 **`subscriptions`** — id, vendor_id(FK), plan_id(FK),
 status ENUM(trial/active/past_due/cancelled),
 started_at, trial_ends_at, current_period_end, cancelled_at, note
 
-> Bayaran langganan dalam talian **tidak** termasuk dalam skop sekarang.
-> Superadmin menandakan status secara manual. Lihat "Perkara tertangguh".
+**`invoices`** — id, **vendor_id**(FK), invoice_no(UNIQUE),
+period_start, period_end, subtotal, tax, total,
+status ENUM(draft/issued/paid/void), issued_at, due_at, paid_at, note
 
-### B. Katalog (4)
+**`invoice_lines`** — id, invoice_id(FK), description,
+outlet_id (nullable), qty, unit_price, amount, is_prorated
+
+> `outlet_id` nullable kerana sesetengah baris ialah yuran asas, bukan
+> caj kedai tertentu.
+
+**`languages`** dan **`translations`** — lihat di bawah.
+
+### B. Katalog (5)
 
 **`categories`** — id, **vendor_id**, name, sort_order, is_active, created_at
 
 **`products`** — id, **vendor_id**, category_id(FK), name, icon, image_path,
-barcode, sku, price, **cost_price**, **unit**, stock, **min_stock**,
+barcode, sku, **price** (lalai), **cost_price**, **unit**,
 **is_tax_exempt**, is_active, sort_order, created_at, updated_at
 · UNIQUE(vendor_id, barcode)
+
+**`product_outlets`** — **vendor_id**, **outlet_id**(FK), product_id(FK),
+**price_override** (nullable), **stock**, **min_stock**, is_available
+· PK(outlet_id, product_id)
+
+> **Diputuskan Sufi, 27 Ogos 2026: produk di peringkat vendor, harga & stok
+> boleh ditindih per kedai.**
+>
+> Katalog dikongsi — tauke menambah "Nasi Lemak" **sekali** dan ia muncul di
+> semua kedai. Tetapi:
+>
+> - **Stok sentiasa per kedai.** Stok Ampang bukan stok Kajang. Sebab itu
+>   `stock` berpindah dari `products` ke `product_outlets` — satu lajur stok
+>   pada produk tiada makna apabila vendor ada tiga kedai.
+> - **Harga boleh ditindih.** `price_override` NULL bermakna guna
+>   `products.price`. Kedai dalam bandar boleh caj lebih tinggi tanpa
+>   memecahkan katalog.
+> - **`is_available`** — kedai boleh mematikan satu produk tanpa membuangnya
+>   dari katalog vendor.
+>
+> Model ini menampung kedua-dua kes: rangkaian restoran yang mahu menu
+> seragam, dan kedai runcit berbeza lokasi yang mahu harga berbeza.
 
 > `cost_price` — tanpanya laporan hanya boleh beritahu berapa **jualan**,
 > bukan berapa **untung**. Untuk kedai runcit bermargin nipis, untung ialah
 > angka yang paling dicari.
-> `min_stock` — ambang amaran "stok rendah" pada dashboard. Tanpa lajur ini,
-> ciri itu tiada makna.
+> `min_stock` — ambang amaran "stok rendah", **per kedai** kerana setiap
+> kedai ada kadar jualan berbeza.
 > `unit` — kg / pcs / botol / bungkus. "Gula 1" tanpa unit tidak bermakna
 > untuk kedai runcit.
 > `is_tax_exempt` — sesetengah barang tidak dikenakan cukai.
@@ -258,12 +393,12 @@ price_delta, sort_order, is_active
 
 ### C. Pesanan (4) — teras mod kedai makan
 
-**`orders`** — id, **vendor_id**, order_no, **business_day**(DATE),
+**`orders`** — id, **vendor_id**, **outlet_id**(FK), order_no, **business_day**(DATE),
 **order_type** ENUM(dine_in/takeaway/counter),
 table_id(FK, nullable), **takeaway_no**(nullable),
 status ENUM(open/billed/paid/cancelled), guest_count,
 opened_by(FK users), terminal_id(FK, nullable), note, opened_at, closed_at
-· UNIQUE(vendor_id, business_day, takeaway_no)
+· UNIQUE(outlet_id, business_day, takeaway_no)
 
 > `order_type = counter` digunakan oleh mod kedai runcit — pesanan yang
 > dibuka dan dibayar serentak. `takeaway_no` dipapar 3 digit (001, 002…);
@@ -282,12 +417,12 @@ note, added_by(FK users), added_at
 **`order_item_options`** — id, **vendor_id**, order_item_id(FK),
 **group_name**, **option_label**, **price_delta**
 
-**`dining_tables`** — id, **vendor_id**, code, name, area, capacity,
+**`dining_tables`** — id, **vendor_id**, **outlet_id**(FK), code, name, area, capacity,
 status ENUM(free/occupied/reserved), current_order_id, is_active, sort_order
 
 ### D. Bayaran (4)
 
-**`transactions`** — id, **vendor_id**, receipt_no, **business_day**(DATE),
+**`transactions`** — id, **vendor_id**, **outlet_id**(FK), receipt_no, **business_day**(DATE),
 type ENUM(sale/refund), ref_transaction_id(nullable),
 terminal_id(FK), shift_id(FK), user_id(FK),
 **order_type**, **table_label**, **takeaway_no** (salinan gambaran),
@@ -297,7 +432,7 @@ subtotal, tax_rate, tax, **service_charge**, **packaging_fee**,
 total, payment_method_id(FK),
 cash_received, change_amount, status ENUM(paid/void),
 void_reason, voided_at, voided_by, created_at
-· UNIQUE(vendor_id, receipt_no)
+· UNIQUE(outlet_id, receipt_no)
 
 > `service_charge` dan `packaging_fee` disediakan sekarang dengan nilai **0**.
 > Menambah lajur pada jadual yang sudah ada jutaan baris — merentas semua
@@ -345,15 +480,15 @@ promotion_id, **promotion_name**, **promotion_type**, discount_amount
 
 ### F. Operasi (8)
 
-**`terminals`** — id, **vendor_id**, code, name,
+**`terminals`** — id, **vendor_id**, **outlet_id**(FK), code, name,
 **type** ENUM(cashier/waiter), receipt_prefix, is_active, last_seen_at
-· UNIQUE(vendor_id, code)
+· UNIQUE(outlet_id, code)
 
-**`shifts`** — id, **vendor_id**, terminal_id(FK), user_id(FK), business_day,
+**`shifts`** — id, **vendor_id**, **outlet_id**(FK), terminal_id(FK), user_id(FK), business_day,
 opened_at, opening_float, closed_at, closing_cash, expected_cash,
 variance, status ENUM(open/closed), note
 
-**`stock_movements`** — id, **vendor_id**, product_id(FK),
+**`stock_movements`** — id, **vendor_id**, **outlet_id**(FK), product_id(FK),
 type ENUM(sale/refund/void/restock/adjustment), qty_change, balance_after,
 ref_transaction_id, ref_order_id, user_id, note, created_at
 
@@ -361,8 +496,9 @@ ref_transaction_id, ref_order_id, user_id, note, created_at
 note, is_active, sort_order
 
 **`users`** — id, **vendor_id (NULL untuk superadmin)**, **email**,
-**password_hash VARCHAR(255)**, full_name,
-role ENUM(superadmin/admin/cashier/waiter), **language** (nullable),
+**password_hash VARCHAR(255)** (nullable), **pin_hash** (nullable), full_name,
+role ENUM(superadmin/admin/cashier/waiter), **outlet_id** (nullable),
+**language** (nullable),
 is_active, **failed_attempts**, **locked_until**, last_login_at, created_at
 · **UNIQUE(email) — global, bukan per vendor** (lihat 3.5 dan 4)
 
@@ -372,8 +508,14 @@ attempted_at · INDEX(email, attempted_at), INDEX(ip_address, attempted_at)
 > Tiada `vendor_id` — semasa cubaan log masuk, sistem belum tahu vendor mana.
 > Berguna untuk audit dan mengesan serangan meneka kata laluan.
 
-**`settings`** — **vendor_id**, setting_key, setting_value, updated_at,
-updated_by · PK(vendor_id, setting_key)
+**`settings`** — **vendor_id**, **outlet_id (NULL = lalai vendor)**,
+setting_key, setting_value, updated_at,
+updated_by · PK(vendor_id, outlet_id, setting_key)
+
+> `outlet_id` NULL bermakna nilai lalai untuk seluruh vendor. Baris dengan
+> `outlet_id` ditetapkan menindihnya untuk kedai itu — corak yang sama
+> seperti `product_outlets.price_override`. Nama kedai, alamat dan printer
+> semestinya per kedai; kadar cukai biasanya lalai vendor.
 
 > Isi awal setiap vendor: `day_cutoff_time` (04:00), `shop_name`,
 > `shop_address`, `tax_rate` (0.06), `service_charge_rate` (0),
@@ -602,19 +744,72 @@ WAITER / KAUNTER                KAUNTER
                                  BAYAR  -> resit
 ```
 
-## 9. Had pelan langganan
+## 9. Langganan, had pelan & bil
+
+### 9.1 Had pelan
 
 Dikuatkuasakan dalam job simpan, bukan hanya di UI:
 
 | Had | Disemak dalam |
 |---|---|
-| `max_terminals` | `SaveTerminalJob` |
+| `max_outlets` | `SaveOutletJob` |
+| `max_terminals_per_outlet` | `SaveTerminalJob` |
 | `max_users` | `SaveUserJob` |
 | `max_products` | `SaveProductJob` |
 
 Vendor `suspended` atau `cancelled`: log masuk ditolak untuk semua peranan
 kecuali `admin`, yang dibenarkan masuk **hanya** untuk melihat mesej
 langganan tamat. Tiada akses POS, tiada akses data.
+
+### 9.2 Harga per kedai — model berperingkat
+
+**Diputuskan Sufi, 27 Ogos 2026: kedai tambahan dicaj dan masuk bil.**
+
+Ini amalan standard industri. Caj per lokasi ialah norma dalam POS SaaS —
+Square, Loyverse, Toast, Lightspeed dan StoreHub semuanya mengecaj mengikut
+bilangan kedai. Diskaun untuk kedai tambahan juga lazim, biasanya dinyatakan
+sebagai **peringkat** dan bukan peratus.
+
+> Harga sebenar mana-mana platform tidak dicatat di sini kerana ia berubah
+> kerap. Sufi patut menyemak harga semasa pesaing sebelum menetapkan sendiri.
+
+Sebab peringkat dipilih dan bukan "diskaun % untuk kedai ke-2": peratus
+tetap tidak menjawab kedai ke-5 atau ke-20, dan setiap kadar baharu akan
+memerlukan perubahan kod. Peringkat menyelesaikan itu — dan **boleh
+menghasilkan peratus rata juga**, cukup tetapkan satu peringkat sahaja.
+
+`plan_outlet_tiers` menyimpan peringkat. Contoh pelan:
+
+| Peringkat | Kedai | Harga seunit |
+|---|---|---|
+| 1 | 1 | RM 99 |
+| 2 | 2–5 | RM 79 (20% diskaun) |
+| 3 | 6+ | RM 59 (40% diskaun) |
+
+Vendor dengan 3 kedai: `99 + 79 + 79 = RM 257` sebulan.
+
+`GenerateInvoiceJob` mengira daripada peringkat, bukan daripada nombor tetap
+dalam kod. Menukar harga bermakna menyunting baris `plan_outlet_tiers`.
+
+### 9.3 Bila kedai ditambah di tengah kitaran
+
+Kedai dibuka pada 15 haribulan sedangkan kitaran bil berakhir 30 haribulan.
+
+**Cadangan: prorata** — caj separuh bulan sahaja, dan tandakan
+`invoice_lines.is_prorated`. Ini yang pelanggan jangkakan, dan ia menghapuskan
+insentif menunggu awal bulan sebelum membuka kedai.
+
+Peraturan lain:
+
+- **Kedai ditutup: tiada bayaran balik**, caj berhenti pada kitaran berikutnya.
+  Standard industri, dan menghindari penyalahgunaan buka-tutup
+- **Bil dijana sebagai `draft`** dahulu supaya superadmin boleh menyemak
+  sebelum `issued`
+- **Bil disimpan sebagai salinan gambaran.** Menukar harga pelan bulan depan
+  **tidak** boleh mengubah bil bulan lepas — sebab itu `invoice_lines`
+  menyimpan `unit_price` sendiri dan tidak merujuk `plan_outlet_tiers`
+- Bayaran dalam talian masih **ditangguhkan**. Superadmin menandakan
+  `paid` secara manual buat masa ini
 
 ## 10. Barcode — lebih mudah daripada yang disangka
 
@@ -653,8 +848,13 @@ claude-learn1/
 │                   BusinessDay.php · VendorScope.php · PlanLimit.php · Lang.php
 ├── jobs/           SATU KELAS = SATU KERJA — semua terima vendor_id
 │   ├── Auth/        LoginJob · LogoutJob · CheckSubscriptionJob · ThrottleJob
+│   │                PinLoginJob · RegisterDeviceJob · RevokeDeviceJob
 │   ├── Vendor/      ListVendorsJob · SaveVendorJob · SuspendVendorJob
 │   │                ProvisionVendorJob
+│   ├── Outlet/      ListOutletsJob · SaveOutletJob · ValidateOutletJob
+│   │                CloseOutletJob · SwitchOutletJob
+│   ├── Billing/     GenerateInvoiceJob · ListInvoicesJob · MarkPaidJob
+│   │                CalculateOutletPriceJob
 │   ├── Plan/        ListPlansJob · SavePlanJob · SaveSubscriptionJob
 │   ├── Product/     ListProductsJob · FindByBarcodeJob · SearchProductsJob
 │   │                SaveProductJob · DeleteProductJob · UploadProductImageJob
@@ -704,7 +904,7 @@ claude-learn1/
 - [ ] Seed dua vendor sejak Fasa 1, uji kebocoran setiap fasa
 - [ ] Pengguna MySQL khas `pos_user`, akses ke `pos_saas` sahaja (bukan `root`)
 - [ ] **Argon2id** dengan `memory_cost 19456`, `time_cost 2`, `threads 1`
-      (bukan lalai PHP — lihat 4.2). `password_hash` VARCHAR(255)
+      (bukan lalai PHP — lihat 4.4). `password_hash` VARCHAR(255)
 - [ ] `password_needs_rehash()` pada setiap log masuk berjaya
 - [ ] Mesej ralat log masuk yang sama untuk e-mel salah dan kata laluan salah
 - [ ] Kunci akaun selepas 5 cubaan gagal; rekod setiap cubaan + IP
@@ -755,7 +955,7 @@ claude-learn1/
     pengecualian kepada peraturan 3.5, kerana e-mel mengenal pasti pengguna
     sebelum sistem tahu vendor mana.
 16. **Jangan guna parameter lalai PHP untuk argon2id** — 801ms terlalu
-    perlahan. Tetapkan 19456/2/1 secara eksplisit (4.2).
+    perlahan. Tetapkan 19456/2/1 secara eksplisit (4.4).
 17. **Jangan mencantum serpihan yang diterjemah.** Guna placeholder.
     Susunan perkataan berbeza antara bahasa (7.11).
 18. **Resit ikut bahasa vendor, bukan bahasa juruwang.** Resit dibaca
