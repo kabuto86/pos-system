@@ -79,6 +79,12 @@ ia ditulis, bukan enam session kemudian.
       cutoff 04:00 — punca pepijat nombor take-away kalau silap
 
 ### Fasa 2 — Auth, vendor, peranan, kaunter & syif
+
+> **Sahkan dengan Sufi sebelum menulis `LoginJob`:** cara vendor dikenal pasti.
+> Pelan guna **Kod Kedai + nama pengguna + kata laluan** (PELAN.md 4).
+> Pilihan lain: subdomain, atau e-mel sebagai nama pengguna. Ini keputusan
+> terakhir yang masih terbuka — tidak menghalang Fasa 1.
+
 - [ ] `core/Auth.php` — sesi menyimpan `vendor_id`, `user_id`, `role`
 - [ ] `core/Csrf.php`
 - [ ] `jobs/Auth/LoginJob.php` — **Kod Kedai + nama pengguna + kata laluan**
