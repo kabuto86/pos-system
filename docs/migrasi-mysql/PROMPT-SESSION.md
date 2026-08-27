@@ -4,11 +4,12 @@ Salin blok yang berkenaan sebagai **mesej pertama** dalam session baharu.
 Prompt ini sengaja pendek — konteks sebenar ada dalam PELAN.md dan PROGRES.md,
 dan itu yang perlu dibaca dahulu.
 
-**19 fasa merentas 6 session.**
+**19 fasa merentas 7 session.**
 
 | Session | Fasa | Hasil |
 |---|---|---|
-| 1 | 1–3 | Jualan kaunter berfungsi, dua vendor terasing |
+| **1A** | 1–2 | Skema penuh, log masuk e-mel & PIN, syif, dua vendor terasing |
+| **1B** | 3 | Jualan kaunter sebenar masuk DB, stok kekal |
 | 2 | 4–6 | Kedai runcit siap sepenuhnya |
 | 3 | 7–9 | Kedai makan siap sepenuhnya |
 | 4 | 10–13 | Promosi, operasi & admin kedai penuh |
@@ -17,7 +18,12 @@ dan itu yang perlu dibaca dahulu.
 
 ---
 
-## Session 1 — Teras Multi-Tenant (Fasa 1–3)
+## Session 1A — Skema, Teras & Auth (Fasa 1–2)
+
+> Session 1 dipecahkan kepada 1A dan 1B kerana skop bertambah dari 14 jadual
+> kepada 34. Hujung 1A ialah milestone yang benar-benar boleh diuji sendiri
+> oleh Sufi — log masuk, PIN, syif, pengasingan vendor — **sebelum** 15
+> endpoint dibina di atasnya di 1B.
 
 ```
 Kita bina KedaiPOS sebagai SaaS: satu kod, satu DB, banyak vendor.
@@ -30,7 +36,7 @@ Baca dulu, ikut susunan:
    selamat atau bocor.
 3. docs/migrasi-mysql/PROGRES.md — status semasa
 
-Buat Fasa 1, 2 dan 3 sahaja. Jangan mula Fasa 4.
+Buat Fasa 1 dan 2 sahaja. JANGAN mula Fasa 3.
 
 Peraturan multi-tenant (paling penting):
 - vendor_id datang dari SESI, tidak pernah dari $_POST atau $_GET.
@@ -47,21 +53,13 @@ Peraturan lain:
 - Ikut skema 34 jadual dalam PELAN.md. Kalau ada yang tak masuk akal semasa
   kerja, beritahu aku dulu sebelum ubah, dan catat dalam log keputusan
   di hujung PROGRES.md.
-- Semua jualan lalui jadual orders, termasuk jualan kaunter biasa
-  (order_type = counter). Ini keputusan 7.1 PELAN.md — jangan tulis terus
-  ke transactions, kalau tidak Fasa 9 kena tulis semula fasa ini.
 - business_day dikira dari settings.day_cutoff_time, BUKAN CURDATE().
-- Jadual promosi dicipta sekarang walaupun UI dibina di Fasa 10, dan
-  CalculateCartJob mesti sudah ada titik masuk penilaian promosi mengikut
-  susunan PELAN.md 7.5. ApplyPromotionsJob boleh pulangkan kosong buat masa
-  ini — yang penting susunan pengiraan betul sekarang, bukan ditampal nanti.
-  Sebabnya sama seperti keputusan orders: CalculateCartJob mengira setiap sen
-  dalam sistem ini, jadi ia tidak boleh ditulis semula selepas diuji.
+- Jadual promosi dan bil dicipta sekarang walaupun UI dibina jauh kemudian
+  (Fasa 10 dan 16). Skema lengkap dari awal; UI menyusul.
 - Import seed.sql WAJIB guna --default-character-set=utf8mb4. mysql.exe di
   Windows lalai cp850 dan akan merosakkan setiap emoji tanpa amaran.
   Baca PELAN.md 15.1, dan sahkan dengan HEX() selepas import.
 - Guna pengguna MySQL pos_user, bukan root. Jangan sentuh database tuisyen.
-- Port calcUnitPrice(), makeLineId(), getTotals() dari JS sedia ada.
 - Empat peranan: superadmin, admin, cashier, waiter. Waiter tiada akses
   bayaran, disemak di dalam endpoint, bukan sekadar sorok butang.
 
@@ -112,7 +110,61 @@ Ujian wajib setiap fasa:
 - Ambil id rekod KEDAI01, cuba capai melalui API sebagai KEDAI02 —
   mesti 404 atau 403, bukan data.
 
+Hujung session ini aku nak boleh uji sendiri: log masuk dengan e-mel,
+log masuk dengan PIN pada peranti berdaftar, buka dan tutup syif, dan
+sahkan KEDAI01 tidak nampak apa-apa milik KEDAI02. Kalau itu belum boleh
+dibuat, session belum siap.
+
 Commit berasingan setiap fasa. Kemas kini PROGRES.md sebelum commit terakhir.
+```
+
+---
+
+## Session 1B — POS Kaunter (Fasa 3)
+
+```
+Sambung pembinaan KedaiPOS SaaS.
+
+Baca dulu, ikut susunan:
+1. CLAUDE.md
+2. docs/migrasi-mysql/PELAN.md — bahagian 3 (multi-tenant), 7.1 dan 7.5
+3. docs/migrasi-mysql/PROGRES.md — Fasa 1-2 sepatutnya sudah bertanda siap
+
+Sebelum tulis kod baharu, sahkan Fasa 1-2 masih berfungsi: log masuk
+dengan e-mel, log masuk dengan PIN, buka syif. Kalau ada yang rosak,
+betulkan dulu sebelum teruskan.
+
+Buat Fasa 3 sahaja. Jangan mula Fasa 4.
+
+Peraturan:
+- Semua jualan lalui jadual orders, termasuk jualan kaunter biasa
+  (order_type = counter, dibuka dan ditutup serentak). Ini keputusan 7.1
+  PELAN.md — jangan tulis terus ke transactions, kalau tidak Fasa 9 kena
+  tulis semula fasa ini.
+- CalculateCartJob ialah fungsi yang mengira setiap sen dalam sistem ini.
+  Port calcUnitPrice(), makeLineId(), buildVariantLabel() dan getTotals()
+  dari JS sedia ada — jangan tulis logik harga dari awal, kelakuannya
+  sudah betul dan sudah diuji pengguna.
+- CalculateCartJob mesti sudah ada titik masuk penilaian promosi mengikut
+  susunan PELAN.md 7.5, dan membaca discount_tax_mode dari tetapan.
+  ApplyPromotionsJob boleh pulangkan kosong buat masa ini — yang penting
+  susunan pengiraan betul sekarang, bukan ditampal di Fasa 10.
+- Harga produk: guna product_outlets.price_override kalau ada, kalau NULL
+  guna products.price. Stok sentiasa dari product_outlets, bukan products.
+- Stok dikunci dengan SELECT ... FOR UPDATE.
+- CreateTransactionJob mesti guna DB transaction sebenar. Nombor resit
+  dijana dalam transaction yang sama dan unik PER OUTLET, bukan per vendor.
+- Tiada SQL mentah dalam api/. vendor_id dari sesi sahaja.
+
+Pengesahan dengan Playwright, bukan sekadar baca kod:
+- Buat jualan sebenar melalui browser.
+- Sahkan baris masuk ke orders, order_items, transactions,
+  transaction_items dan stock_movements dengan vendor_id DAN outlet_id betul.
+- Refresh browser, sahkan stok kekal berkurang.
+- Jualan di dua kedai KEDAI02: sahkan stok kedai A tidak menjejaskan kedai B.
+- Nombor resit kedua-dua kedai bermula 0001.
+
+Commit di hujung fasa. Kemas kini PROGRES.md.
 ```
 
 ---

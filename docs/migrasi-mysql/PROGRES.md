@@ -28,13 +28,14 @@
 kepada `cp850`, merosakkan emoji semasa import `seed.sql` **tanpa sebarang
 amaran**. Resepi pembetulan dalam PELAN.md 15.1 — baca sebelum Fasa 1.
 
-**Struktur:** 19 fasa merentas 6 session.
+**Struktur:** 19 fasa merentas 7 session (Session 1 dipecah 1A + 1B).
 
 Sejarah skop:
 9 fasa/3 session → 13 fasa/5 session (dua jenis perniagaan, waiter, meja)
 → 16 fasa/6 session (SaaS multi-tenant)
 → 17 fasa/6 session (modul promosi & diskaun)
-→ **18 fasa/6 session** (dwibahasa & modul terjemahan, 27 Ogos 2026).
+→ 18 fasa/6 session (dwibahasa & modul terjemahan)
+→ **19 fasa/7 session** (kedai berbilang, PIN, bil; Session 1 dipecah, 27 Ogos 2026).
 
 ---
 
@@ -53,7 +54,7 @@ ia ditulis, bukan enam session kemudian.
 
 ---
 
-## Session 1 — Teras Multi-Tenant (Fasa 1–3)
+## Session 1A — Skema, Teras & Auth (Fasa 1–2)
 
 ### Fasa 1 — Skema & teras
 - [ ] Cipta pangkalan data `pos_saas` (utf8mb4_unicode_ci)
@@ -130,6 +131,10 @@ ia ditulis, bukan enam session kemudian.
       mesej langganan
 - [ ] Sahkan dengan curl: waiter panggil endpoint bayaran → **403**
 
+---
+
+## Session 1B — POS Kaunter (Fasa 3)
+
 ### Fasa 3 — POS kaunter (jualan penuh)
 - [ ] `jobs/Product/ListProductsJob.php` (produk + variasi + stok)
 - [ ] `jobs/Cart/CalculateCartJob.php` (port `calcUnitPrice` + `getTotals`)
@@ -140,13 +145,13 @@ ia ditulis, bukan enam session kemudian.
 - [ ] `jobs/Order/OpenOrderJob.php`, `AddOrderItemJob.php`, `CloseOrderJob.php`
 - [ ] `jobs/Stock/DeductStockJob.php` (`SELECT ... FOR UPDATE`)
 - [ ] `jobs/Transaction/CreateTransactionJob.php` (DB transaction,
-      jana `receipt_no` unik **per vendor**)
+      jana `receipt_no` unik **per outlet**)
 - [ ] `jobs/Transaction/ListTransactionsJob.php`, `GetReceiptJob.php`
 - [ ] `api/` untuk semua di atas — **tiada SQL dalam api/**
 - [ ] `cashier/index.php` + `cashier/js/` — pindah dari index.html,
       **buang butang Variasi dari navbar**
 - [ ] Sahkan: jualan di KEDAI01 dan KEDAI02 kedua-duanya bermula `0001` —
-      nombor resit unik per vendor, bukan global
+      nombor resit unik per outlet, bukan global
 - [ ] Sahkan: baris masuk ke `orders`, `order_items`, `transactions`,
       `transaction_items`, `stock_movements` dengan `vendor_id` betul
 - [ ] Sahkan: refresh browser → stok kekal berkurang
@@ -155,7 +160,7 @@ ia ditulis, bukan enam session kemudian.
 > (`order_type = counter`, dibuka & ditutup serentak). Jangan tulis terus
 > ke `transactions` — kalau tidak Fasa 9 perlu tulis semula fasa ini.
 
-**Hujung Session 1: jualan kaunter berfungsi, dua vendor terasing.**
+**Hujung Session 1B: jualan kaunter berfungsi, dua vendor dan tiga kedai terasing.**
 
 ---
 
