@@ -4,7 +4,7 @@ Salin blok yang berkenaan sebagai **mesej pertama** dalam session baharu.
 Prompt ini sengaja pendek — konteks sebenar ada dalam PELAN.md dan PROGRES.md,
 dan itu yang perlu dibaca dahulu.
 
-**17 fasa merentas 6 session.**
+**18 fasa merentas 6 session.**
 
 | Session | Fasa | Hasil |
 |---|---|---|
@@ -12,8 +12,8 @@ dan itu yang perlu dibaca dahulu.
 | 2 | 4–6 | Kedai runcit siap sepenuhnya |
 | 3 | 7–9 | Kedai makan siap sepenuhnya |
 | 4 | 10–13 | Promosi, operasi & admin kedai penuh |
-| 5 | 14–16 | Platform SaaS + audit kebocoran |
-| 6 | 17 | Dokumentasi |
+| 5 | 14–17 | Platform SaaS, bahasa + audit kebocoran |
+| 6 | 18 | Dokumentasi |
 
 ---
 
@@ -44,7 +44,7 @@ Peraturan multi-tenant (paling penting):
   dengan vendor_id (PELAN.md 3.6).
 
 Peraturan lain:
-- Ikut skema 25 jadual dalam PELAN.md. Kalau ada yang tak masuk akal semasa
+- Ikut skema 28 jadual dalam PELAN.md. Kalau ada yang tak masuk akal semasa
   kerja, beritahu aku dulu sebelum ubah, dan catat dalam log keputusan
   di hujung PROGRES.md.
 - Semua jualan lalui jadual orders, termasuk jualan kaunter biasa
@@ -64,6 +64,28 @@ Peraturan lain:
 - Port calcUnitPrice(), makeLineId(), getTotals() dari JS sedia ada.
 - Empat peranan: superadmin, admin, cashier, waiter. Waiter tiada akses
   bayaran, disemak di dalam endpoint, bukan sekadar sorok butang.
+
+Log masuk dan kata laluan (baca PELAN.md 4 habis):
+- Log masuk guna E-MEL sahaja, dua medan. users.email unik GLOBAL — ini
+  satu-satunya pengecualian kepada peraturan UNIQUE-per-vendor. vendor_id
+  diperoleh dari baris pengguna selepas pengesahan, tidak pernah dari borang.
+- Argon2id dengan memory_cost 19456, time_cost 2, threads 1. JANGAN guna
+  lalai PHP (64MB, t=4) — sudah diukur, 801ms, terlalu perlahan.
+  password_hash VARCHAR(255).
+- password_needs_rehash() pada setiap log masuk berjaya.
+- Mesej ralat sama untuk e-mel tidak wujud dan kata laluan salah.
+- Kunci akaun 15 minit selepas 5 cubaan gagal, rekod cubaan + IP.
+
+Dwibahasa:
+- core/Lang.php dan helper t() WAJIB wujud sejak Fasa 1, dan setiap rentetan
+  yang dipapar dari Fasa 2 ke hadapan melaluinya. Modul pentadbiran
+  terjemahan dibina di Fasa 16 — tetapi kalau titik masuk tidak ada sekarang,
+  setiap paparan kena dibuka semula nanti dan setiap rentetan yang terlepas
+  jadi pepijat senyap. Baca PELAN.md 7.9 hingga 7.11.
+- Jangan cantum serpihan yang diterjemah. Guna placeholder:
+  t('stok_tidak_cukup', ['produk' => $nama]), bukan t('stok') . $nama.
+- Kunci hilang pulangkan kunci itu sendiri, jangan sekali-kali kosong.
+- Bahasa lalai Melayu. Nama produk TIDAK diterjemah.
 
 Ujian wajib setiap fasa:
 - Log masuk KEDAI01, cipta data. Log masuk KEDAI02, sahkan data KEDAI01
@@ -200,7 +222,7 @@ Commit berasingan setiap fasa. Kemas kini PROGRES.md.
 
 ---
 
-## Session 5 — Platform SaaS (Fasa 14–16)
+## Session 5 — Platform SaaS & Bahasa (Fasa 14–17)
 
 ```
 Sambung pembinaan KedaiPOS SaaS — lapisan platform.
@@ -210,7 +232,7 @@ Baca dulu, ikut susunan:
 2. docs/migrasi-mysql/PELAN.md — bahagian 3, 5 (peranan) dan 9 (had pelan)
 3. docs/migrasi-mysql/PROGRES.md — Fasa 1-13 sepatutnya sudah bertanda siap
 
-Buat Fasa 14, 15 dan 16.
+Buat Fasa 14, 15, 16 dan 17.
 
 Peraturan:
 - superadmin ada vendor_id NULL. Ia menguruskan vendor, TIDAK masuk POS
@@ -221,7 +243,13 @@ Peraturan:
 - ProvisionVendorJob mesti hasilkan vendor yang terus boleh berjualan —
   tetapan lalai, kaedah bayaran, kategori, akaun admin, kaunter pertama.
   Tiada langkah manual dalam DB selepas itu.
-- Fasa 16 ialah audit kebocoran menyeluruh. Ia bukan formaliti — senaraikan
+- Fasa 16 (bahasa): t() sudah wujud sejak Fasa 1 dan setiap rentetan sudah
+  melaluinya. Fasa ini bina modul pentadbiran dan lengkapkan set Inggeris.
+  Modul mesti benar-benar boleh tambah bahasa ketiga melalui UI — uji dengan
+  menambah satu bahasa baharu, bukan sekadar menyokong ms dan en.
+  Nama produk TIDAK diterjemah, dan resit ikut bahasa vendor bukan bahasa
+  juruwang. Kedua-duanya betul — jangan "betulkan". Baca PELAN.md 7.10, 7.11.
+- Fasa 17 ialah audit kebocoran menyeluruh. Ia bukan formaliti — senaraikan
   setiap pertanyaan SQL dalam jobs/ dan sahkan setiap satu menapis
   vendor_id. `grep -rn "vendor_id" api/` mesti kosong. Jalankan juga
   /security-review. Catat hasilnya dalam PROGRES.md.
@@ -231,16 +259,16 @@ Commit berasingan setiap fasa. Kemas kini PROGRES.md.
 
 ---
 
-## Session 6 — Dokumentasi (Fasa 17)
+## Session 6 — Dokumentasi (Fasa 18)
 
 ```
 Fasa terakhir KedaiPOS SaaS — dokumentasi.
 
 Baca dulu:
 1. CLAUDE.md
-2. docs/migrasi-mysql/PROGRES.md — Fasa 1-16 sepatutnya sudah siap
+2. docs/migrasi-mysql/PROGRES.md — Fasa 1-17 sepatutnya sudah siap
 
-Buat Fasa 17.
+Buat Fasa 18.
 
 Peraturan:
 - Empat panduan berasingan sebab empat peranan berbeza: juruwang, waiter,

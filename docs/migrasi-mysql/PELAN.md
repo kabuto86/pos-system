@@ -4,7 +4,7 @@
 > mana-mana session. Keputusan di sini sudah disahkan oleh Sufi — jangan ubah
 > tanpa bertanya. Untuk status semasa, lihat [PROGRES.md](PROGRES.md).
 
-Kemas kini terakhir: 26 Ogos 2026 (SaaS multi-tenant + modul promosi)
+Kemas kini terakhir: 27 Ogos 2026 (log masuk e-mel, Argon2id, dwibahasa)
 Persekitaran rujukan: XAMPP · PHP 8.2.12 · MariaDB 10.4.32
 
 ---
@@ -77,17 +77,20 @@ perniagaan sekali gus, jadi kedua-dua mod boleh diuji bila-bila masa.
 ### 3.5 Setiap kekangan UNIQUE jadi unik PER VENDOR
 
 Ini paling mudah terlepas pandang. Dua vendor berbeza mesti boleh mempunyai
-juruwang bernama `ali`, produk barcode yang sama, dan resit nombor 0001.
+produk dengan barcode yang sama, meja bernama `A1`, dan resit nombor 0001.
 
 | Dulu | Sekarang |
 |---|---|
-| `users.username` UNIQUE | UNIQUE(`vendor_id`, `username`) |
 | `products.barcode` UNIQUE | UNIQUE(`vendor_id`, `barcode`) |
 | `transactions.receipt_no` UNIQUE | UNIQUE(`vendor_id`, `receipt_no`) |
 | `terminals.code` UNIQUE | UNIQUE(`vendor_id`, `code`) |
 | `dining_tables.code` UNIQUE | UNIQUE(`vendor_id`, `code`) |
 | `settings.setting_key` PK | PK(`vendor_id`, `setting_key`) |
 | `orders.takeaway_no` | UNIQUE(`vendor_id`, `business_day`, `takeaway_no`) |
+
+> **Pengecualian tunggal: `users.email` unik SECARA GLOBAL**, bukan per vendor.
+> Sebabnya e-mel itulah yang mengenal pasti pengguna sebelum sistem tahu
+> vendor mana. Lihat bahagian 4.
 
 ### 3.6 Setiap indeks bermula dengan `vendor_id`
 
@@ -99,27 +102,83 @@ Kalau tidak, prestasi merudum apabila vendor bertambah.
 
 `uploads/products/{vendor_id}/{hash}.jpg` — bukan satu folder berkongsi.
 
-## 4. Cara vendor dikenal pasti semasa log masuk
+## 4. Log masuk & keselamatan kata laluan
 
-Skrin log masuk meminta **tiga** medan:
+**Diputuskan Sufi, 27 Ogos 2026.** Skrin log masuk meminta **dua** medan:
 
 ```
-Kod Kedai   : KEDAI01
-Nama Pengguna : ali
+E-mel       : ali@kedaimakcik.com
 Kata Laluan : ••••••••
 ```
 
-Sebabnya: nama pengguna hanya unik dalam vendor, jadi sistem perlu tahu
-vendor dahulu sebelum boleh mencari pengguna.
+E-mel ialah pengenal pengguna. `vendor_id` **diperoleh dari baris pengguna**
+selepas pengesahan berjaya — tidak pernah dari borang.
 
-> **Perlu disahkan Sufi.** Dua pilihan lain wujud:
-> **subdomain** (`kedai01.pos.com`) lebih kemas untuk pengeluaran tetapi perlu
-> DNS dan vhost — menyusahkan di XAMPP semasa pembangunan;
-> **e-mel sebagai nama pengguna** (unik global) membuang medan Kod Kedai
-> tetapi menyusahkan waiter yang log masuk berpuluh kali sehari.
-> Cadangan saya: **Kod Kedai + nama pengguna** sekarang. Ia berfungsi di
-> mana-mana, dan subdomain boleh ditambah kemudian tanpa mengubah skema —
-> subdomain cuma mengisi medan Kod Kedai secara automatik.
+### 4.1 Akibat yang perlu Sufi tahu
+
+**Satu e-mel = satu akaun = satu vendor.** Kalau seorang tauke memiliki dua
+kedai, dia perlukan dua e-mel berasingan.
+
+Kalau ini menjadi masalah nanti, penyelesaiannya ialah jadual penghubung
+`user_vendors` yang membenarkan satu log masuk bertukar antara kedai.
+`users.vendor_id` kekal sebagai vendor utama, jadi penambahan itu **tidak
+memecahkan skema**. Tidak dibina sekarang — hanya perlu apabila ada pelanggan
+sebenar dengan dua cawangan.
+
+### 4.2 Hashing kata laluan — Argon2id
+
+Diukur pada mesin Sufi, 27 Ogos 2026:
+
+| Algoritma | Hash | Verify |
+|---|---|---|
+| bcrypt cost 10 | 146 ms | 156 ms |
+| bcrypt cost 12 | 633 ms | 606 ms |
+| argon2id lalai PHP (64MB, t=4) | 801 ms | 782 ms |
+| **argon2id 19MB, t=2, p=1** | **123 ms** | **115 ms** |
+
+**Guna Argon2id dengan parameter OWASP:**
+
+```php
+password_hash($password, PASSWORD_ARGON2ID, [
+    'memory_cost' => 19456,   // 19 MiB
+    'time_cost'   => 2,
+    'threads'     => 1,
+]);
+```
+
+Ia lebih kuat daripada bcrypt **dan** lebih laju daripada bcrypt cost 10.
+Lalai PHP untuk argon2id (64MB, t=4) terlalu perlahan pada 801ms — jangan
+guna lalai, tetapkan parameter secara eksplisit.
+
+`users.password_hash` mesti **VARCHAR(255)** — argon2id menghasilkan 97
+aksara, bcrypt 60. 255 memberi ruang untuk algoritma masa depan.
+
+> Setiap log masuk berjaya menggunakan ~19MB memori seketika. Untuk beratus
+> vendor ini masih selamat kerana log masuk jarang berbanding muat halaman,
+> tetapi ia sebab lain kenapa lalai 64MB tidak diguna.
+
+### 4.3 Peraturan log masuk yang lain
+
+- **`password_needs_rehash()` pada setiap log masuk berjaya.** Kalau parameter
+  ditingkatkan kemudian, kata laluan lama dinaik taraf secara senyap tanpa
+  pengguna perlu tukar apa-apa.
+- **Mesej ralat yang sama** untuk e-mel tidak wujud dan kata laluan salah:
+  *"E-mel atau kata laluan tidak sah"*. Membezakannya memberitahu penyerang
+  e-mel mana yang berdaftar.
+- **Hadkan cubaan.** Selepas 5 kali gagal, akaun dikunci 15 minit
+  (`users.failed_attempts`, `users.locked_until`). Setiap cubaan direkod
+  dalam `login_attempts` bersama IP — untuk audit dan pengesanan serangan.
+- **`session_regenerate_id(true)`** selepas log masuk berjaya.
+- **Semak status langganan selepas pengesahan**, bukan sebelum — kalau tidak,
+  penyerang boleh mengenal pasti vendor yang wujud.
+- Set semula kata laluan melalui e-mel **ditangguhkan** (perlukan SMTP).
+  Buat masa ini admin vendor menetapkan semula untuk kakitangannya, dan
+  superadmin untuk admin vendor.
+
+> **Nota praktikal.** Waiter menaip e-mel penuh berpuluh kali sehari pada
+> tablet berkongsi memang menyusahkan. Penyelesaian lazim POS ialah PIN
+> pendek selepas log masuk pertama pada peranti itu. Tidak dibina sekarang —
+> dicatat dalam "Perkara tertangguh" supaya ia tidak hilang.
 
 ## 5. Peranan pengguna
 
@@ -137,14 +196,24 @@ vendor dahulu sebelum boleh mencari pengguna.
 > Sekatan waiter **mesti disemak di dalam setiap endpoint**. Menyorok butang
 > di UI bukan kawalan keselamatan.
 
-## 6. Skema pangkalan data — 25 jadual
+## 6. Skema pangkalan data — 28 jadual
 
 Pangkalan data: `pos_saas` · `utf8mb4_unicode_ci` · InnoDB
 
 > **utf8mb4 wajib** pada pangkalan data, jadual, lajur DAN sambungan PDO.
 > **Setiap jadual perniagaan mempunyai `vendor_id`** kecuali yang ditanda.
 
-### A. Platform (3) — tiada `vendor_id`
+### A. Platform (5) — tiada `vendor_id`
+
+**`languages`** — code(PK, cth. `ms`, `en`), name, native_name,
+is_active, is_default, sort_order
+
+**`translations`** — language_code(FK), translation_key, value
+· PK(language_code, translation_key)
+
+> Terjemahan adalah **peringkat platform**, diurus superadmin. Vendor tidak
+> menulis terjemahan sendiri — mereka hanya memilih bahasa yang tersedia.
+> Lihat 7.9.
 
 **`vendors`** — id, code(UNIQUE), name, business_type ENUM(retail/restaurant),
 status ENUM(trial/active/suspended/cancelled), phone, address,
@@ -274,7 +343,7 @@ promotion_id, **promotion_name**, **promotion_type**, discount_amount
 > atau memadam promosi bulan depan, resit bulan ini mesti kekal menunjukkan
 > diskaun yang sebenarnya dikenakan. Prinsip yang sama seperti nama produk.
 
-### F. Operasi (7)
+### F. Operasi (8)
 
 **`terminals`** — id, **vendor_id**, code, name,
 **type** ENUM(cashier/waiter), receipt_prefix, is_active, last_seen_at
@@ -291,10 +360,17 @@ ref_transaction_id, ref_order_id, user_id, note, created_at
 **`payment_methods`** — id, **vendor_id**, code, label, icon, needs_cash,
 note, is_active, sort_order
 
-**`users`** — id, **vendor_id (NULL untuk superadmin)**, username,
-password_hash, full_name, role ENUM(superadmin/admin/cashier/waiter),
-is_active, last_login_at, created_at
-· UNIQUE(vendor_id, username)
+**`users`** — id, **vendor_id (NULL untuk superadmin)**, **email**,
+**password_hash VARCHAR(255)**, full_name,
+role ENUM(superadmin/admin/cashier/waiter), **language** (nullable),
+is_active, **failed_attempts**, **locked_until**, last_login_at, created_at
+· **UNIQUE(email) — global, bukan per vendor** (lihat 3.5 dan 4)
+
+**`login_attempts`** — id, email, ip_address, user_agent, success,
+attempted_at · INDEX(email, attempted_at), INDEX(ip_address, attempted_at)
+
+> Tiada `vendor_id` — semasa cubaan log masuk, sistem belum tahu vendor mana.
+> Berguna untuk audit dan mengesan serangan meneka kata laluan.
 
 **`settings`** — **vendor_id**, setting_key, setting_value, updated_at,
 updated_by · PK(vendor_id, setting_key)
@@ -305,7 +381,7 @@ updated_by · PK(vendor_id, setting_key)
 > `printer_name`, `currency_prefix` (RM),
 > **`discount_tax_mode`** (`after_tax` — kekalkan kelakuan sekarang),
 > **`manual_discount_max_percent`** (0 = tiada had),
-> **`manual_discount_needs_approval`** (0)
+> **`manual_discount_needs_approval`** (0), **`default_language`** (ms)
 >
 > `business_type` **tiada di sini** — ia dalam `vendors`, kerana ia menentukan
 > ciri yang dilanggan, bukan pilihan yang boleh ditukar sesuka hati.
@@ -427,6 +503,73 @@ Vendor boleh menghidupkannya bila-bila masa. Juruwang yang boleh menaip
 diskaun tanpa had ialah lubang kebocoran wang paling biasa dalam POS, jadi
 kawalan itu ada apabila vendor memerlukannya — tetapi tidak dipaksa sekarang.
 
+### 7.9 Dwibahasa — `t()` mesti wujud sejak Fasa 1
+
+**Diputuskan Sufi, 27 Ogos 2026.** Bahasa lalai kekal **Bahasa Melayu**.
+Vendor boleh memilih Bahasa Inggeris. Superadmin boleh menambah bahasa baharu
+melalui modul terjemahan.
+
+Ini keputusan seni bina, bukan ciri hujung projek. Sebabnya:
+
+> Terjemahan menyentuh **setiap skrin dalam sistem**. Kalau ia ditambah di
+> Session 5 sedangkan Fasa 2 hingga 13 menulis teks Melayu terus dalam kod,
+> setiap paparan perlu dibuka semula dan setiap rentetan diganti. Itu kerja
+> berhari-hari, dan setiap rentetan yang terlepas menjadi pepijat senyap yang
+> hanya kelihatan kepada pengguna Inggeris.
+
+Jadi `core/Lang.php` dan helper `t()` **wujud dari Fasa 1**, dan setiap
+rentetan yang ditulis dari Fasa 2 ke hadapan melaluinya. Modul pentadbiran
+terjemahan dibina kemudian (Fasa 16) — yang penting titik masuknya betul
+sekarang. Alasan yang sama seperti 7.1 dan 7.4.
+
+### 7.10 Dua jenis teks — hanya satu diterjemah
+
+| | Contoh | Diterjemah? |
+|---|---|---|
+| **Teks antara muka** | "Bayar", "Troli", "Stok habis", "Wang Diterima" | **Ya** |
+| **Data vendor** | "Nasi Lemak", "Rendang daging", "Kaunter 1" | **Tidak** |
+
+Nama produk kekal seperti yang vendor taip. Ini bukan kekurangan — nama
+makanan memang selalunya tidak diterjemah, dan memaksa vendor mengisi nama
+Inggeris untuk 2,000 barang kedai runcit ialah beban yang tiada siapa mahu.
+
+Kalau nanti benar-benar diperlukan, jadual `product_translations` boleh
+ditambah tanpa mengubah apa-apa yang sedia ada — `products.name` kekal
+sebagai nilai lalai dan jatuh balik.
+
+### 7.11 Peraturan menulis rentetan
+
+**Jangan sekali-kali mencantum serpihan yang diterjemah.** Susunan perkataan
+berbeza antara bahasa:
+
+```
+SALAH  : t('stok') . ' ' . $nama . ' ' . t('tidak_cukup')
+BETUL  : t('stok_tidak_cukup', ['produk' => $nama])
+         ms: "Stok {produk} tidak mencukupi"
+         en: "Insufficient stock for {produk}"
+```
+
+Peraturan lain:
+
+- Kunci terjemahan dalam **Bahasa Inggeris** (konvensyen kod, ikut CLAUDE.md),
+  nilai dalam bahasa masing-masing
+- Kunci hilang → pulangkan nilai Melayu, kemudian kunci itu sendiri.
+  **Jangan sekali-kali pulangkan kosong** — skrin kosong lebih teruk daripada
+  perkataan yang salah bahasa
+- Semua rentetan dimuatkan **sekali** setiap permintaan ke dalam array,
+  bukan satu pertanyaan setiap `t()`
+
+**Bahasa mana yang digunakan:**
+
+| Konteks | Sumber |
+|---|---|
+| Antara muka pengguna | `users.language`, jatuh balik ke `settings.default_language` |
+| **Resit bercetak** | `settings.default_language` vendor — **bukan** bahasa juruwang |
+
+> Resit dibaca oleh **pelanggan**, bukan juruwang. Juruwang yang memilih
+> antara muka Inggeris tidak sepatutnya menyebabkan resit pelanggan bertukar
+> bahasa.
+
 ## 8. Aliran kerja setiap mod
 
 ### Kedai runcit
@@ -507,9 +650,9 @@ claude-learn1/
 ├── config/         database.php (.gitignore) · database.example.php · app.php
 ├── core/           Database.php · Auth.php · Csrf.php · Request.php
 │                   Response.php · Validator.php · Uploader.php
-│                   BusinessDay.php · VendorScope.php · PlanLimit.php
+│                   BusinessDay.php · VendorScope.php · PlanLimit.php · Lang.php
 ├── jobs/           SATU KELAS = SATU KERJA — semua terima vendor_id
-│   ├── Auth/        LoginJob · LogoutJob · CheckSubscriptionJob
+│   ├── Auth/        LoginJob · LogoutJob · CheckSubscriptionJob · ThrottleJob
 │   ├── Vendor/      ListVendorsJob · SaveVendorJob · SuspendVendorJob
 │   │                ProvisionVendorJob
 │   ├── Plan/        ListPlansJob · SavePlanJob · SaveSubscriptionJob
@@ -535,7 +678,9 @@ claude-learn1/
 │   ├── Report/      DailySalesJob · SalesByPaymentJob · SalesByOrderTypeJob
 │   │                TopProductsJob · ExportCsvJob
 │   ├── User/        ListUsersJob · SaveUserJob · ResetPasswordJob
-│   └── Setting/     GetSettingsJob · SaveSettingsJob
+│   ├── Setting/     GetSettingsJob · SaveSettingsJob
+│   └── Language/    ListLanguagesJob · SaveLanguageJob · SaveTranslationJob
+│                    MissingKeysJob · ExportTranslationsJob
 ├── api/            endpoint nipis, pulangkan JSON — TIADA SQL di sini
 ├── cashier/        index.php · login.php · shift.php · js/
 ├── waiter/         index.php · login.php · tables.php · order.php · js/
@@ -545,6 +690,7 @@ claude-learn1/
 ├── print/          receipt.php
 ├── uploads/        products/{vendor_id}/ (.gitignore isinya)
 ├── assets/img/     product-default.png
+├── lang/           ms.php · en.php (cache terjemahan, dijana dari DB)
 ├── css/            style.css · receipt-58mm.css · receipt-80mm.css
 ├── vendor/bootstrap/
 └── database/       schema.sql · seed.sql
@@ -557,7 +703,11 @@ claude-learn1/
 - [ ] **Tiada SQL mentah dalam `api/`** — semua dalam job class
 - [ ] Seed dua vendor sejak Fasa 1, uji kebocoran setiap fasa
 - [ ] Pengguna MySQL khas `pos_user`, akses ke `pos_saas` sahaja (bukan `root`)
-- [ ] `password_hash()` / `password_verify()`
+- [ ] **Argon2id** dengan `memory_cost 19456`, `time_cost 2`, `threads 1`
+      (bukan lalai PHP — lihat 4.2). `password_hash` VARCHAR(255)
+- [ ] `password_needs_rehash()` pada setiap log masuk berjaya
+- [ ] Mesej ralat log masuk yang sama untuk e-mel salah dan kata laluan salah
+- [ ] Kunci akaun selepas 5 cubaan gagal; rekod setiap cubaan + IP
 - [ ] PDO prepared statement untuk **setiap** pertanyaan
 - [ ] `session_regenerate_id(true)` selepas log masuk
 - [ ] Token CSRF pada semua POST
@@ -601,6 +751,15 @@ claude-learn1/
 14. **Tetapan `discount_tax_mode` mengawal diskaun peringkat BIL sahaja.**
     Promosi peringkat item sentiasa menjejaskan cukai kerana ia mengubah harga
     jualan sebenar. Lihat 7.5.
+15. **`users.email` unik GLOBAL, bukan per vendor.** Ia satu-satunya
+    pengecualian kepada peraturan 3.5, kerana e-mel mengenal pasti pengguna
+    sebelum sistem tahu vendor mana.
+16. **Jangan guna parameter lalai PHP untuk argon2id** — 801ms terlalu
+    perlahan. Tetapkan 19456/2/1 secara eksplisit (4.2).
+17. **Jangan mencantum serpihan yang diterjemah.** Guna placeholder.
+    Susunan perkataan berbeza antara bahasa (7.11).
+18. **Resit ikut bahasa vendor, bukan bahasa juruwang.** Resit dibaca
+    pelanggan (7.11).
 
 ## 15. Persediaan mesin pembangunan baharu
 
@@ -624,7 +783,8 @@ Langkah pemasangan:
    `mysql --default-character-set=utf8mb4 -u root pos_saas < database/schema.sql`
    diikuti `seed.sql`
 4. Salin `config/database.example.php` → `config/database.php`, isi kredensial
-5. Log masuk: Kod Kedai `KEDAI01` (runcit) atau `KEDAI02` (kedai makan)
+5. Log masuk dengan e-mel akaun seed — vendor KEDAI01 (runcit) atau
+   KEDAI02 (kedai makan). E-mel sebenar ada dalam `database/seed.sql`
 6. Superadmin: `http://localhost/{folder}/superadmin/`
 
 ### 15.1 Emoji dan `mysql.exe` di Windows — perangkap yang sudah disahkan

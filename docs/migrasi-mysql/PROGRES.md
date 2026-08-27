@@ -28,12 +28,13 @@
 kepada `cp850`, merosakkan emoji semasa import `seed.sql` **tanpa sebarang
 amaran**. Resepi pembetulan dalam PELAN.md 15.1 — baca sebelum Fasa 1.
 
-**Struktur:** 17 fasa merentas 6 session.
+**Struktur:** 18 fasa merentas 6 session.
 
 Sejarah skop:
 9 fasa/3 session → 13 fasa/5 session (dua jenis perniagaan, waiter, meja)
 → 16 fasa/6 session (SaaS multi-tenant)
-→ **17 fasa/6 session** (modul promosi & diskaun, 26 Ogos 2026).
+→ 17 fasa/6 session (modul promosi & diskaun)
+→ **18 fasa/6 session** (dwibahasa & modul terjemahan, 27 Ogos 2026).
 
 ---
 
@@ -57,7 +58,7 @@ ia ditulis, bukan enam session kemudian.
 ### Fasa 1 — Skema & teras
 - [ ] Cipta pangkalan data `pos_saas` (utf8mb4_unicode_ci)
 - [ ] Cipta pengguna MySQL `pos_user` (akses `pos_saas` sahaja)
-- [ ] `database/schema.sql` — **25 jadual**, `vendor_id` pada setiap jadual
+- [ ] `database/schema.sql` — **28 jadual**, `vendor_id` pada setiap jadual
       perniagaan, setiap UNIQUE jadi unik per vendor (PELAN.md 3.5),
       setiap indeks bermula dengan `vendor_id` (PELAN.md 3.6)
 - [ ] Jadual promosi wujud sejak sekarang walaupun UI dibina di Fasa 10:
@@ -71,30 +72,41 @@ ia ditulis, bukan enam session kemudian.
       (restaurant), setiap satu dengan 18 produk, kategori, kaedah bayaran,
       tetapan, admin, kaunter; KEDAI02 dapat meja contoh
 - [ ] Satu akaun `superadmin` (vendor_id NULL)
+- [ ] Jadual bahasa: `languages` (ms lalai, en aktif), `translations`
+- [ ] `login_attempts` + lajur `users.failed_attempts`, `locked_until`
 - [ ] `config/database.php` + `.example.php` + kemas kini `.gitignore`
 - [ ] `core/Database.php` (PDO utf8mb4), `Response.php`, `Request.php`,
-      `Validator.php`, `BusinessDay.php`, **`VendorScope.php`**
+      `Validator.php`, `BusinessDay.php`, **`VendorScope.php`**,
+      **`Lang.php`** dengan helper `t()`
+- [ ] Sahkan: `t()` berfungsi dan pulangkan kunci itu sendiri kalau
+      terjemahan hilang — **jangan sekali-kali pulangkan kosong**
 - [ ] Sahkan: query CLI pulangkan 18 produk **setiap vendor**, emoji tidak rosak
 - [ ] Sahkan: `BusinessDay` pulangkan tarikh semalam bila jam 01:00 dan
       cutoff 04:00 — punca pepijat nombor take-away kalau silap
 
 ### Fasa 2 — Auth, vendor, peranan, kaunter & syif
 
-> **Sahkan dengan Sufi sebelum menulis `LoginJob`:** cara vendor dikenal pasti.
-> Pelan guna **Kod Kedai + nama pengguna + kata laluan** (PELAN.md 4).
-> Pilihan lain: subdomain, atau e-mel sebagai nama pengguna. Ini keputusan
-> terakhir yang masih terbuka — tidak menghalang Fasa 1.
+> Baca PELAN.md bahagian 4 habis dulu — log masuk guna **e-mel sahaja**
+> (unik global), dan hashing guna **Argon2id 19456/2/1**, bukan lalai PHP.
 
-- [ ] `core/Auth.php` — sesi menyimpan `vendor_id`, `user_id`, `role`
+- [ ] `core/Auth.php` — sesi menyimpan `vendor_id`, `user_id`, `role`,
+      `language`; `vendor_id` diperoleh dari baris pengguna, bukan borang
 - [ ] `core/Csrf.php`
-- [ ] `jobs/Auth/LoginJob.php` — **Kod Kedai + nama pengguna + kata laluan**
+- [ ] `jobs/Auth/LoginJob.php` — **e-mel + kata laluan** (dua medan sahaja)
+- [ ] Argon2id `memory_cost 19456`, `time_cost 2`, `threads 1` (PELAN.md 4.2)
+- [ ] `password_needs_rehash()` pada setiap log masuk berjaya
+- [ ] `jobs/Auth/ThrottleJob.php` — kunci 15 minit selepas 5 cubaan gagal,
+      rekod setiap cubaan + IP dalam `login_attempts`
 - [ ] `jobs/Auth/CheckSubscriptionJob.php` — vendor suspended/cancelled ditolak
 - [ ] **Empat peranan**: superadmin, admin, cashier, waiter
 - [ ] `jobs/Terminal/…` (jenis cashier/waiter), `jobs/Shift/…`
 - [ ] `cashier/login.php`, `cashier/shift.php`
-- [ ] Sahkan: nama pengguna `ali` boleh wujud dalam KEDAI01 **dan** KEDAI02
-      tanpa bertembung
-- [ ] Sahkan: log masuk KEDAI01 dengan kata laluan KEDAI02 → gagal
+- [ ] Sahkan: hash yang dihasilkan bermula `$argon2id$` dan muat dalam
+      VARCHAR(255)
+- [ ] Sahkan: e-mel tidak wujud dan kata laluan salah beri **mesej yang sama**
+- [ ] Sahkan: 6 cubaan gagal → akaun dikunci, cubaan ke-7 ditolak walaupun
+      kata laluan betul
+- [ ] Sahkan: e-mel yang sama **tidak boleh** didaftarkan pada dua vendor
 - [ ] Sahkan: vendor `suspended` → hanya admin masuk, dan hanya untuk lihat
       mesej langganan
 - [ ] Sahkan dengan curl: waiter panggil endpoint bayaran → **403**
@@ -404,7 +416,7 @@ Uji sebagai vendor **KEDAI02** (restaurant).
 
 ---
 
-## Session 5 — Platform SaaS (Fasa 14–16)
+## Session 5 — Platform SaaS & Bahasa (Fasa 14–17)
 
 ### Fasa 14 — Panel superadmin
 - [ ] `superadmin/` — login berasingan, layout berasingan
@@ -427,7 +439,43 @@ Uji sebagai vendor **KEDAI02** (restaurant).
       sebarang langkah manual dalam DB
 - [ ] Sahkan: had pelan ditolak melalui API terus, bukan hanya butang disable
 
-### Fasa 16 — Audit kebocoran antara vendor
+### Fasa 16 — Bahasa & modul terjemahan
+
+> `Lang.php` dan helper `t()` sudah wujud sejak Fasa 1, dan setiap rentetan
+> dari Fasa 2 ke sini sudah melaluinya. Fasa ini membina modul pentadbiran
+> dan melengkapkan set Bahasa Inggeris. Baca PELAN.md 7.9–7.11 dahulu.
+
+- [ ] `superadmin/languages.php` — senarai bahasa, tambah bahasa baharu,
+      hidup/mati
+- [ ] `superadmin/translations.php` — editor kunci & nilai, tapis ikut bahasa,
+      cari kunci
+- [ ] `jobs/Language/MissingKeysJob.php` — senaraikan kunci yang belum
+      diterjemah bagi setiap bahasa
+- [ ] `jobs/Language/ExportTranslationsJob.php` — jana `lang/{code}.php`
+      sebagai cache, supaya tiada pertanyaan DB setiap permintaan
+- [ ] Import/eksport CSV terjemahan — supaya penterjemah luar boleh bekerja
+      tanpa akses sistem
+- [ ] Set Bahasa Inggeris **lengkap** untuk semua skrin sedia ada
+- [ ] `admin/settings.php` tambah `default_language` (pilihan vendor)
+- [ ] Pemilih bahasa untuk pengguna sendiri (`users.language`)
+
+**Pengesahan**
+
+- [ ] Tukar bahasa vendor ke `en` → seluruh antara muka bertukar
+- [ ] **Nama produk kekal seperti vendor taip** — tidak diterjemah (7.10),
+      ini betul dan bukan pepijat
+- [ ] **Resit ikut bahasa vendor, bukan bahasa juruwang** — juruwang guna
+      antara muka Inggeris, resit pelanggan tetap Melayu kalau vendor pilih
+      Melayu (7.11)
+- [ ] `MissingKeysJob` pulangkan kosong untuk `ms` dan `en`
+- [ ] Padam satu terjemahan → skrin papar kunci, **bukan ruang kosong**
+- [ ] Tambah bahasa ketiga (cth. `zh`) melalui UI dan sahkan ia muncul
+      sebagai pilihan vendor — modul ini mesti benar-benar boleh tambah
+      bahasa, bukan hanya menyokong dua yang sedia ada
+- [ ] `grep` untuk rentetan Melayu yang masih ditulis terus dalam kod
+      paparan — sepatutnya tiada; kalau ada, ia terlepas sejak fasa awal
+
+### Fasa 17 — Audit kebocoran antara vendor
 
 > Fasa khusus. Semua ciri sudah wujud, jadi sekarang boleh diaudit menyeluruh.
 > Ujian per-fasa sebelum ini menangkap yang jelas; fasa ini mencari yang halus.
@@ -446,9 +494,9 @@ Uji sebagai vendor **KEDAI02** (restaurant).
 
 ---
 
-## Session 6 — Dokumentasi (Fasa 17)
+## Session 6 — Dokumentasi (Fasa 18)
 
-### Fasa 17 — Dokumentasi
+### Fasa 18 — Dokumentasi
 - [ ] Panduan juruwang (kemas kini `docs/panduan-pengguna.md`)
 - [ ] **Panduan waiter** (baharu)
 - [ ] **Panduan admin kedai** (baharu)
@@ -460,10 +508,18 @@ Uji sebagai vendor **KEDAI02** (restaurant).
 
 ---
 
-## Perkara tertangguh (bukan sebahagian 17 fasa)
+## Perkara tertangguh (bukan sebahagian 18 fasa)
 
 - **Bayaran langganan dalam talian** — superadmin tandakan status secara
   manual buat masa ini. Gerbang pembayaran belum dibincangkan
+- **Set semula kata laluan melalui e-mel** — perlukan SMTP. Buat masa ini
+  admin vendor set semula untuk kakitangannya, superadmin untuk admin vendor
+- **PIN pendek untuk waiter** — menaip e-mel penuh berpuluh kali sehari pada
+  tablet berkongsi menyusahkan. Corak lazim POS ialah PIN selepas log masuk
+  pertama pada peranti itu
+- **`user_vendors`** — satu e-mel menguruskan beberapa kedai. Hanya perlu
+  bila ada pelanggan sebenar dengan dua cawangan (PELAN.md 4.1)
+- **`product_translations`** — terjemahan nama produk (PELAN.md 7.10)
 - **Subdomain per vendor** (`kedai01.pos.com`) — perlu DNS dan vhost;
   boleh ditambah kemudian tanpa ubah skema
 - **Eksport data vendor** bila vendor berhenti melanggan
@@ -484,3 +540,8 @@ Uji sebagai vendor **KEDAI02** (restaurant).
 | 26 Ogos 2026 | **Modul promosi ditambah** — 22 jadual → 25, 16 fasa → 17 | Pelan langsung tiada promosi produk; hanya diskaun manual juruwang |
 | 26 Ogos 2026 | Lajur produk ditambah: `cost_price`, `min_stock`, `unit`, `is_tax_exempt` | Tanpa `cost_price` laporan tidak boleh kira untung; `min_stock` diperlukan oleh amaran stok rendah yang pelan sudah janji |
 | 26 Ogos 2026 | `discount_tax_mode` jadi tetapan vendor, disimpan pada setiap transaksi | Keputusan Sufi: vendor tentukan sendiri diskaun sebelum atau selepas cukai |
+| 27 Ogos 2026 | **Log masuk guna e-mel** — `users.username` dibuang, `users.email` unik **global** | Keputusan Sufi. Ini satu-satunya pengecualian kepada peraturan UNIQUE-per-vendor (3.5), kerana e-mel mengenal pasti pengguna sebelum sistem tahu vendor mana |
+| 27 Ogos 2026 | **Argon2id 19456/2/1** dipilih, bukan bcrypt dan bukan lalai PHP | Sufi serahkan keputusan keselamatan. Diukur pada mesin sebenar: lebih kuat daripada bcrypt dan lebih laju (123ms) daripada bcrypt cost 10 (146ms). Lalai PHP 801ms terlalu perlahan |
+| 27 Ogos 2026 | **Dwibahasa ditambah** — 25 jadual → 28, 17 fasa → 18 | Keputusan Sufi: lalai Melayu, vendor boleh pilih Inggeris, superadmin boleh tambah bahasa |
+| 27 Ogos 2026 | `t()` wajib wujud sejak Fasa 1 walaupun modul terjemahan di Fasa 16 | Terjemahan menyentuh setiap skrin. Kalau ditambah lewat, setiap paparan perlu dibuka semula dan setiap rentetan yang terlepas jadi pepijat senyap |
+| 27 Ogos 2026 | Nama produk **tidak** diterjemah | Nama makanan selalunya tidak diterjemah, dan memaksa vendor mengisi nama Inggeris untuk ribuan barang ialah beban yang tiada siapa mahu. `product_translations` boleh ditambah kemudian tanpa memecahkan apa-apa |
