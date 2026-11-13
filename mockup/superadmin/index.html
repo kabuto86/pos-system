@@ -4,10 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KedaiPOS — Superadmin</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="../../vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="../../vendor/fontawesome/css/all.min.css">
 <link rel="stylesheet" href="../../css/theme.css">
 </head>
 <body>
@@ -27,16 +25,16 @@
         <div class="small text-white-50">Pusat kawalan platform</div>
       </div>
       <nav class="nav flex-column gap-1">
-        <a class="nav-link active" href="#">🏬 Vendor</a>
-        <a class="nav-link" href="#">📦 Pelan langganan</a>
-        <a class="nav-link" href="#">🧮 Invois</a>
-        <a class="nav-link" href="#">🌐 Bahasa</a>
-        <a class="nav-link" href="#">📜 Log platform</a>
+        <a class="nav-link active" href="#"><i class="fa-solid fa-store fa-fw"></i>Vendor</a>
+        <a class="nav-link" href="#"><i class="fa-solid fa-layer-group fa-fw"></i>Pelan langganan</a>
+        <a class="nav-link" href="#"><i class="fa-solid fa-file-invoice-dollar fa-fw"></i>Invois</a>
+        <a class="nav-link" href="#"><i class="fa-solid fa-language fa-fw"></i>Bahasa</a>
+        <a class="nav-link" href="#"><i class="fa-solid fa-list-ul fa-fw"></i>Log platform</a>
       </nav>
       <div class="mt-auto px-2 pt-3 small">
         <div class="text-white-50">Log masuk sebagai</div>
         <div class="text-white fw-semibold">superadmin@kedaipos.my</div>
-        <a href="#" class="link-warning">Log keluar</a>
+        <a href="#" class="link-warning"><i class="fa-solid fa-arrow-right-from-bracket me-1"></i>Log keluar</a>
       </div>
     </div>
   </aside>
@@ -45,10 +43,10 @@
   <main class="flex-grow-1 min-w-0 px-3 px-lg-5 py-4">
 
     <div class="d-flex flex-wrap align-items-center gap-2 mb-4">
-      <button class="btn btn-light btn-sm d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-label="Menu">☰</button>
+      <button class="btn btn-light kp-btn-icon d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
       <h1 class="h2 fw-bold mb-0 me-2">Vendor</h1>
       <span class="kp-mockup-tag">Mockup</span>
-      <button class="btn btn-dark ms-auto px-3">Daftar vendor baharu</button>
+      <button class="btn btn-dark ms-auto"><i class="fa-solid fa-plus"></i>Daftar vendor baharu</button>
     </div>
 
     <!-- Ringkasan: satu jalur, bukan empat kad -->
@@ -95,7 +93,7 @@
             <tr>
               <td>
                 <div class="d-flex align-items-center gap-3">
-                  <span class="kp-avatar bg-primary-subtle text-primary">P</span>
+                  <span class="kp-initial bg-primary-subtle text-primary">P</span>
                   <div><div class="fw-semibold">Kedai Runcit Pak Mat</div><div class="small text-body-secondary">KEDAI01</div></div>
                 </div>
               </td>
@@ -107,7 +105,7 @@
             <tr>
               <td>
                 <div class="d-flex align-items-center gap-3">
-                  <span class="kp-avatar bg-warning-subtle text-warning-emphasis">S</span>
+                  <span class="kp-initial bg-warning-subtle text-warning-emphasis">S</span>
                   <div><div class="fw-semibold">Restoran Selera Kampung</div><div class="small text-body-secondary">KEDAI02</div></div>
                 </div>
               </td>
@@ -119,7 +117,7 @@
             <tr>
               <td>
                 <div class="d-flex align-items-center gap-3">
-                  <span class="kp-avatar bg-primary-subtle text-primary">K</span>
+                  <span class="kp-initial bg-primary-subtle text-primary">K</span>
                   <div><div class="fw-semibold">Kafe Sudut Biru</div><div class="small text-body-secondary">KEDAI03</div></div>
                 </div>
               </td>
@@ -131,7 +129,7 @@
             <tr>
               <td>
                 <div class="d-flex align-items-center gap-3">
-                  <span class="kp-avatar bg-danger-subtle text-danger-emphasis">M</span>
+                  <span class="kp-initial bg-danger-subtle text-danger-emphasis">M</span>
                   <div><div class="fw-semibold">Mini Mart Seri Indah</div><div class="small text-body-secondary">KEDAI04</div></div>
                 </div>
               </td>

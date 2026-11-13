@@ -76,6 +76,12 @@ HTML statik dalam `mockup/`, Bootstrap sahaja, data palsu. Buka di
       "oldschool". Tema **Pandan & Kunyit** dalam `css/theme.css`: menukar
       pemboleh ubah Bootstrap + kelas `kp-*`, fon Bricolage Grotesque
       (tajuk & nombor) + Figtree (teks). Tiada inline CSS
+- [x] Semakan Sufi #2 (13 Nov 2026): emoji antara muka → Font Awesome 6;
+      fon & ikon disimpan dalam `vendor/`; tiga saiz butang standard
+      (32/40/48px); bar skrol nipis; dropdown tanpa avatar; diskaun manual
+      jadi togol RM/% + input teks perpuluhan; jubin produk ruang gambar 4:3
+- [ ] **Gambar produk sebenar** — belum ada; jubin papar ikon kelabu
+      sebagai keadaan "tiada gambar"
 - [ ] **Sufi setuju rangka & gaya** sebelum pusingan 2
 
 **Pusingan 2 — skrin Session 1A/1B** (sebelum Fasa 1 dimulakan)

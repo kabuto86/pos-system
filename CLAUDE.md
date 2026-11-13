@@ -2,7 +2,11 @@ Sila guna bahasa melayu bukan indonesia ketika menjawab
 Sila guna bahasa melayu untuk display perkataan dalam sistem atau website
 Sila guna bahasa inggeris untuk filename dan coding
 
-Jangan pakai inline CSS, pakai Bootstrap sahaja
+Jangan pakai inline CSS, pakai Bootstrap sahaja. Tambahan yang dibenarkan:
+- `css/theme.css` — tema "Pandan & Kunyit" (pemboleh ubah Bootstrap + kelas `kp-*`).
+  Guna saiz standard di situ (`--kp-control*`, `--kp-text-*`), jangan cipta saiz baharu
+- Ikon: **Font Awesome 6 Free** dari `vendor/fontawesome/` — bukan emoji untuk ikon antara muka
+- Fon: Figtree + Bricolage Grotesque dari `vendor/fonts/` — jangan pautkan Google Fonts
 
 Sentiasa pakai job class, jangan pakai God Controller
 

@@ -4,10 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KedaiPOS — Admin Kedai</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="../../vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="../../vendor/fontawesome/css/all.min.css">
 <link rel="stylesheet" href="../../css/theme.css">
 </head>
 <body>
@@ -27,29 +25,29 @@
         <span class="kp-mockup-tag">Mockup</span>
       </div>
       <nav class="nav nav-pills flex-column">
-        <a class="nav-link active" href="#">📊 Ringkasan hari ini</a>
-        <a class="nav-link" href="#">📈 Laporan</a>
+        <a class="nav-link active" href="#"><i class="fa-solid fa-chart-pie fa-fw"></i>Ringkasan hari ini</a>
+        <a class="nav-link" href="#"><i class="fa-solid fa-chart-line fa-fw"></i>Laporan</a>
       </nav>
       <div class="kp-side-group">Jualan</div>
       <nav class="nav nav-pills flex-column">
-        <a class="nav-link" href="#">📦 Produk</a>
-        <a class="nav-link" href="#">🗂️ Kategori</a>
-        <a class="nav-link" href="#">🎛️ Pilihan &amp; variasi</a>
-        <a class="nav-link" href="#">🏷️ Promosi</a>
+        <a class="nav-link" href="#"><i class="fa-solid fa-box fa-fw"></i>Produk</a>
+        <a class="nav-link" href="#"><i class="fa-solid fa-layer-group fa-fw"></i>Kategori</a>
+        <a class="nav-link" href="#"><i class="fa-solid fa-sliders fa-fw"></i>Pilihan &amp; variasi</a>
+        <a class="nav-link" href="#"><i class="fa-solid fa-tags fa-fw"></i>Promosi</a>
       </nav>
       <div class="kp-side-group">Operasi</div>
       <nav class="nav nav-pills flex-column">
-        <a class="nav-link" href="#">📋 Stok</a>
-        <a class="nav-link" href="#">🧾 Transaksi</a>
-        <a class="nav-link" href="#">🪑 Meja</a>
+        <a class="nav-link" href="#"><i class="fa-solid fa-boxes-stacked fa-fw"></i>Stok</a>
+        <a class="nav-link" href="#"><i class="fa-solid fa-receipt fa-fw"></i>Transaksi</a>
+        <a class="nav-link" href="#"><i class="fa-solid fa-chair fa-fw"></i>Meja</a>
       </nav>
       <div class="kp-side-group">Kedai</div>
       <nav class="nav nav-pills flex-column">
-        <a class="nav-link" href="#">👥 Kakitangan</a>
-        <a class="nav-link" href="#">🖥️ Kaunter &amp; peranti</a>
-        <a class="nav-link" href="#">🏪 Cawangan</a>
-        <a class="nav-link" href="#">⚙️ Tetapan</a>
-        <a class="nav-link" href="#">💼 Langganan</a>
+        <a class="nav-link" href="#"><i class="fa-solid fa-users fa-fw"></i>Kakitangan</a>
+        <a class="nav-link" href="#"><i class="fa-solid fa-cash-register fa-fw"></i>Kaunter &amp; peranti</a>
+        <a class="nav-link" href="#"><i class="fa-solid fa-store fa-fw"></i>Cawangan</a>
+        <a class="nav-link" href="#"><i class="fa-solid fa-gear fa-fw"></i>Tetapan</a>
+        <a class="nav-link" href="#"><i class="fa-solid fa-credit-card fa-fw"></i>Langganan</a>
       </nav>
     </div>
   </aside>
@@ -59,22 +57,21 @@
 
     <!-- BAR ATAS -->
     <header class="d-flex align-items-center gap-2 px-3 px-lg-5 pt-4 pb-2">
-      <button class="btn btn-light btn-sm d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-label="Menu">☰</button>
-      <select class="form-select form-select-sm w-auto fw-semibold rounded-pill" aria-label="Pilih cawangan">
+      <button class="btn btn-light kp-btn-icon d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+      <select class="form-select w-auto fw-semibold rounded-pill" aria-label="Pilih cawangan">
         <option>Semua cawangan</option>
         <option selected>Cawangan Bangi</option>
         <option>Cawangan Kajang</option>
       </select>
       <div class="ms-auto dropdown">
-        <button class="btn btn-light rounded-pill d-flex align-items-center gap-2 ps-1 pe-3 py-1" data-bs-toggle="dropdown">
-          <span class="kp-avatar bg-warning-subtle text-warning-emphasis">R</span>
-          <span class="small">Encik Rahman</span>
+        <button class="btn btn-light kp-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="fa-regular fa-user"></i>Encik Rahman
         </button>
-        <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-          <li><a class="dropdown-item" href="#">Profil</a></li>
-          <li><a class="dropdown-item" href="#">Bahasa: Melayu</a></li>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="#"><i class="fa-regular fa-id-card fa-fw"></i>Profil</a></li>
+          <li><a class="dropdown-item" href="#"><i class="fa-solid fa-language fa-fw"></i>Bahasa: Melayu</a></li>
           <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item text-danger" href="#">Log keluar</a></li>
+          <li><a class="dropdown-item text-danger" href="#"><i class="fa-solid fa-arrow-right-from-bracket fa-fw"></i>Log keluar</a></li>
         </ul>
       </div>
     </header>
@@ -182,15 +179,15 @@
               <li class="d-flex justify-content-between py-1"><span>Kek Lapis Sarawak</span><span class="text-danger fw-semibold">habis</span></li>
               <li class="d-flex justify-content-between py-1"><span>Air Kotak Laici</span><span class="text-danger fw-semibold">tinggal 6</span></li>
             </ul>
-            <a href="#" class="btn btn-light btn-sm">Terima stok</a>
+            <a href="#" class="btn btn-light btn-sm"><i class="fa-solid fa-truck-ramp-box"></i>Terima stok</a>
           </section>
 
           <!-- Kaedah bayaran & syif -->
           <section class="kp-panel p-4">
             <h2 class="h5 fw-bold mb-3">Cara pelanggan bayar</h2>
-            <div class="d-flex justify-content-between py-1"><span>💵 Tunai</span><span class="kp-num fw-semibold">RM 1,302.00</span></div>
-            <div class="d-flex justify-content-between py-1"><span>📱 DuitNow QR</span><span class="kp-num fw-semibold">RM 641.50</span></div>
-            <div class="d-flex justify-content-between py-1"><span>💳 Kad</span><span class="kp-num fw-semibold">RM 241.00</span></div>
+            <div class="d-flex justify-content-between py-1"><span><i class="fa-solid fa-money-bill-wave kp-pay-icon"></i> Tunai</span><span class="kp-num fw-semibold">RM 1,302.00</span></div>
+            <div class="d-flex justify-content-between py-1"><span><i class="fa-solid fa-qrcode kp-pay-icon"></i> DuitNow QR</span><span class="kp-num fw-semibold">RM 641.50</span></div>
+            <div class="d-flex justify-content-between py-1"><span><i class="fa-solid fa-credit-card kp-pay-icon"></i> Kad</span><span class="kp-num fw-semibold">RM 241.00</span></div>
             <hr>
             <h3 class="h6 fw-bold mb-2">Kaunter dibuka</h3>
             <div class="d-flex justify-content-between small py-1"><span>Kaunter 1, Ali</span><span class="kp-status kp-status-live">sejak 08:02</span></div>
