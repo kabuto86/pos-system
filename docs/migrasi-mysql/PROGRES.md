@@ -28,7 +28,7 @@
 kepada `cp850`, merosakkan emoji semasa import `seed.sql` **tanpa sebarang
 amaran**. Resepi pembetulan dalam PELAN.md 15.1 — baca sebelum Fasa 1.
 
-**Struktur:** 20 fasa merentas 7 session (Session 1 dipecah 1A + 1B; Fasa 9B ditambah).
+**Struktur:** 21 fasa merentas 7 session (Session 1 dipecah 1A + 1B; Fasa 9B dan 9C ditambah).
 
 Sejarah skop:
 9 fasa/3 session → 13 fasa/5 session (dua jenis perniagaan, waiter, meja)
@@ -36,7 +36,8 @@ Sejarah skop:
 → 17 fasa/6 session (modul promosi & diskaun)
 → 18 fasa/6 session (dwibahasa & modul terjemahan)
 → 19 fasa/7 session (kedai berbilang, PIN, bil; Session 1 dipecah, 27 Ogos 2026)
-→ **20 fasa/7 session** (modul per pelan + pesanan QR pelanggan, Fasa 9B, 13 Nov 2026).
+→ 20 fasa/7 session (modul per pelan + pesanan QR pelanggan, Fasa 9B, 13 Nov 2026).
+→ **21 fasa/7 session** (modul dapur, Fasa 9C, 13 Nov 2026).
 
 ---
 
@@ -86,6 +87,7 @@ HTML statik dalam `mockup/`, Bootstrap sahaja, data palsu. Buka di
 - [x] `kp-tile-name` tanpa `min-height` — jimat ruang
 - [x] `mockup/superadmin/plans.html` — pelan & tanda modul
 - [x] `mockup/order/index.html` — menu pesanan QR pelanggan (telefon)
+- [x] `mockup/kitchen/index.html` — skrin dapur (tablet landskap, 3 lajur)
 - [ ] **Sufi setuju rangka & gaya** sebelum pusingan 2
 
 **Pusingan 2 — skrin Session 1A/1B** (sebelum Fasa 1 dimulakan)
@@ -106,7 +108,7 @@ HTML statik dalam `mockup/`, Bootstrap sahaja, data palsu. Buka di
 - [ ] `database/migrate.php` — pelari migrasi CLI (PELAN.md 15.2):
       `up`, `status`, `seed [--demo]`, `fresh --demo`, `dump`, `superadmin`;
       jadual `schema_migrations`; `fresh`/`--demo` ditolak bila `env` bukan `local`
-- [ ] `database/migrations/001…007_*.sql` — **36 jadual**, `vendor_id` pada
+- [ ] `database/migrations/001…007_*.sql` — **37 jadual**, `vendor_id` pada
       setiap jadual perniagaan, setiap UNIQUE jadi unik per vendor
       (PELAN.md 3.5), setiap indeks bermula dengan `vendor_id` (PELAN.md 3.6)
 - [ ] `database/schema.sql` — dijana dengan `migrate.php dump`, bukan ditulis tangan
@@ -117,7 +119,7 @@ HTML statik dalam `mockup/`, Bootstrap sahaja, data palsu. Buka di
 - [ ] Lajur diskaun pada `transactions`: `promo_discount`, `manual_discount`,
       `discount_tax_mode`; pada `transaction_items`: `promotion_id`,
       `promotion_name`, `discount_amount`
-- [ ] `database/seeds/core/` — 7 modul (PELAN.md 9.4), bahasa ms/en,
+- [ ] `database/seeds/core/` — 8 modul (PELAN.md 9.4), bahasa ms/en,
       rentetan terjemahan sistem
 - [ ] `database/seeds/demo/` — **DUA vendor**: KEDAI01 (retail), KEDAI02
       (restaurant), setiap satu dengan 18 produk, kategori, kaedah bayaran,
@@ -127,7 +129,7 @@ HTML statik dalam `mockup/`, Bootstrap sahaja, data palsu. Buka di
 - [ ] Akaun demo dalam seed `.php` (Argon2id melalui `password_hash()`);
       senarai log masuk dicetak hujung `fresh --demo` + `seeds/demo/README.md`
 - [ ] Pelan demo dengan **harga contoh**: **Asas** (`pos` sahaja) ·
-      **Pro** (semua 7 modul) · **Percubaan**. KEDAI01 = Asas, KEDAI02 = Pro —
+      **Pro** (semua 8 modul) · **Percubaan**. KEDAI01 = Asas, KEDAI02 = Pro —
       supaya sekatan modul teruji sejak awal, sama sebabnya seperti dua vendor
 - [ ] Sahkan: `fresh --demo` dua kali berturut-turut → hasil sama, tiada
       data berganda, tiada ralat
@@ -470,6 +472,32 @@ Uji sebagai vendor **KEDAI02** (restaurant).
 - [ ] Sahkan: KEDAI01 (pelan Asas / runcit) → modul tiada langsung
 - [ ] Sahkan pada viewport telefon (390x844)
 
+### Fasa 9C — Dapur: skrin & slip automatik (modul `kitchen`)
+
+> Ditambah 13 Nov 2026. Baca PELAN.md 9.5 dahulu.
+
+- [ ] `kitchen/index.php` — skrin landskap tablet: lajur **Baharu ·
+      Sedang dimasak · Siap**, tinjau setiap 5 saat
+- [ ] Daftar peranti dapur (`terminals.type = kitchen`) — tiada PIN, token
+      peranti sahaja; tetapan `auto_print` per peranti
+- [ ] `jobs/Kitchen/CreateKitchenTicketJob.php` — dipanggil semasa waiter/
+      juruwang hantar pesanan, dan semasa `AcceptQrOrderJob`; hanya item
+      kategori `send_to_kitchen = 1`
+- [ ] `AdvanceTicketJob` (new → preparing → ready → done),
+      `CancelTicketItemJob` (cetak slip **BATAL**)
+- [ ] `ClaimTicketPrintJob` — `UPDATE … SET printed_at = NOW() WHERE
+      printed_at IS NULL`; cetak hanya jika baris dikemas kini = 1
+- [ ] `print/kitchen-slip.php` — tiada harga, tiada emoji, huruf besar
+- [ ] Lencana "Siap dihidang" pada skrin waiter dan juruwang
+- [ ] `admin/categories.php` tambah suis "Hantar ke dapur"
+- [ ] Sahkan: meja tambah pesanan kedua → **tiket kedua**, bukan tiket
+      pertama dikemas kini
+- [ ] Sahkan: dua tab dapur dibuka serentak → slip dicetak **sekali** sahaja
+- [ ] Sahkan: pesanan QR yang belum diterima **tidak** muncul di dapur
+- [ ] Sahkan: token peranti dapur panggil endpoint harga/bayaran/laporan → **403**
+- [ ] Sahkan: pesanan air kotak sahaja → tiada tiket langsung
+- [ ] Sahkan: KEDAI02 dapur tidak nampak tiket vendor lain
+
 **Hujung Session 3: kedai makan boleh guna sistem ini sepenuhnya.**
 
 ---
@@ -584,7 +612,7 @@ Uji sebagai vendor **KEDAI02** (restaurant).
       sebarang langkah manual dalam DB
 - [ ] Sahkan: had pelan ditolak melalui API terus, bukan hanya butang disable
 - [ ] Audit modul: setiap endpoint `stock`, `reports`, `csv_import`,
-      `promotions`, `qr_order` memanggil `Module::require()` — grep, bukan anggapan
+      `promotions`, `waiter_app`, `qr_order`, `kitchen` memanggil `Module::require()` — grep, bukan anggapan
 - [ ] Sidebar admin sorok menu modul yang tiada; halaman "Naik taraf pelan"
       bila URL modul dibuka terus
 
@@ -691,7 +719,7 @@ Uji sebagai vendor **KEDAI02** (restaurant).
 
 ---
 
-## Perkara tertangguh (bukan sebahagian 20 fasa)
+## Perkara tertangguh (bukan sebahagian 21 fasa)
 
 - **Bayaran langganan dalam talian** — superadmin tandakan status secara
   manual buat masa ini. Gerbang pembayaran belum dibincangkan
@@ -708,7 +736,6 @@ Uji sebagai vendor **KEDAI02** (restaurant).
   boleh ditambah kemudian tanpa ubah skema
 - **Eksport data vendor** bila vendor berhenti melanggan
 - **ESC/POS mentah + buka laci wang** — tunggu jenama printer termal
-- **Paparan dapur (kitchen display)** — `order_items.status` sudah disediakan
 - **Tempahan meja** — `dining_tables.status` ada nilai `reserved`
 - Pelanggan / program kesetiaan · Cukai berbilang kadar
 
@@ -736,6 +763,7 @@ Uji sebagai vendor **KEDAI02** (restaurant).
 | 13 Nov 2026 | **Lebar resit jadi tetapan vendor** (`paper_width` 58/80, tindihan per kedai), bukan satu lalai sistem | Keputusan Sufi. Kedai berbeza guna printer berbeza; satu vendor boleh ada kaunter 58mm dan 80mm |
 | 13 Nov 2026 | **Emoji dibuang dari resit bercetak**, kekal pada skrin | Keputusan Sufi. Driver termal murah cetak emoji sebagai kotak hitam |
 | 13 Nov 2026 | **Modul per pelan** — `plans.features_json` diganti `modules` + `plan_modules`. 34 jadual → 36 | Keputusan Sufi: superadmin tentukan modul dalam setiap pelan, gaya ringkas. Jadual sebenar boleh di-JOIN dan disemak dengan kekunci asing; JSON tidak |
+| 13 Nov 2026 | **Modul dapur `kitchen`** — skrin + slip automatik, Fasa 9C; jadual `kitchen_tickets` (36 → 37), 8 modul, 20 → 21 fasa | Keputusan Sufi. Pelan sebelum ini tiada saluran ke dapur langsung. Pelayar hanya mencetak ke printer komputernya sendiri, jadi dapur perlukan peranti sendiri; skrin dan slip digabung dalam satu modul |
 | 13 Nov 2026 | **`waiter_app` jadi modul** (7 modul) | Keputusan Sufi. Tanpanya kedai makan masih ambil pesanan meja dari skrin juruwang |
 | 13 Nov 2026 | `schema.sql` + `seed.sql` tulisan tangan → **`database/migrate.php`** + migrasi bernombor + seed `core`/`demo` | Keputusan Sufi: persediaan satu arahan, dan skema boleh berubah di pelayan sebenar tanpa sunting tangan. Bonus: PDO utf8mb4 mengelak perangkap `cp850` |
 | 13 Nov 2026 | **Pesanan QR pelanggan** ditambah sebagai modul `qr_order` — Fasa 9B, 19 → 20 fasa | Permintaan Sufi. Pesanan masuk `pending` dan perlu diterima kakitangan supaya QR yang diimbas dari luar kedai tidak boleh menolak stok |
