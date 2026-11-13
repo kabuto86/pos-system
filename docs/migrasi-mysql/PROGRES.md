@@ -72,6 +72,10 @@ HTML statik dalam `mockup/`, Bootstrap sahaja, data palsu. Buka di
       **tiada UI bayaran**
 - [x] `mockup/admin/index.html` — layout sidebar + pemilih kedai, dashboard
 - [x] `mockup/superadmin/index.html` — layout sidebar gelap, senarai vendor
+- [x] Reka semula premium (13 Nov 2026) — Sufi tolak versi pertama sebagai
+      "oldschool". Tema **Pandan & Kunyit** dalam `css/theme.css`: menukar
+      pemboleh ubah Bootstrap + kelas `kp-*`, fon Bricolage Grotesque
+      (tajuk & nombor) + Figtree (teks). Tiada inline CSS
 - [ ] **Sufi setuju rangka & gaya** sebelum pusingan 2
 
 **Pusingan 2 — skrin Session 1A/1B** (sebelum Fasa 1 dimulakan)

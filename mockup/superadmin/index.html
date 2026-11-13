@@ -4,120 +4,155 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KedaiPOS — Superadmin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="../../vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="../../css/theme.css">
 </head>
-<body class="bg-body-tertiary">
+<body>
 
 <div class="d-flex min-vh-100">
 
-  <!-- SIDEBAR GELAP: beza jelas dari admin kedai -->
-  <aside class="offcanvas-lg offcanvas-start bg-dark text-white" tabindex="-1" id="sidebar" data-bs-theme="dark">
+  <!-- SIDEBAR DAKWAT: sengaja berbeza dari admin kedai -->
+  <div class="kp-side-ink-wrap flex-shrink-0">
+  <aside class="offcanvas-lg offcanvas-start kp-side-ink h-100" tabindex="-1" id="sidebar" data-bs-theme="dark">
     <div class="offcanvas-header">
-      <h5 class="offcanvas-title">Menu</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebar"></button>
+      <span class="kp-brand kp-brand-light">KedaiPOS</span>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Tutup"></button>
     </div>
-    <div class="offcanvas-body d-flex flex-column p-3">
-      <div class="fs-5 fw-semibold mb-1 d-none d-lg-block">🛡️ Platform</div>
-      <div class="small text-white-50 mb-3 d-none d-lg-block">KedaiPOS Superadmin</div>
-      <nav class="nav nav-pills flex-column gap-1">
+    <div class="offcanvas-body d-flex flex-column px-3 pb-3">
+      <div class="d-none d-lg-block px-2 pt-4 pb-4">
+        <span class="kp-brand kp-brand-light">KedaiPOS</span>
+        <div class="small text-white-50">Pusat kawalan platform</div>
+      </div>
+      <nav class="nav flex-column gap-1">
         <a class="nav-link active" href="#">🏬 Vendor</a>
-        <a class="nav-link text-white" href="#">📦 Pelan langganan</a>
-        <a class="nav-link text-white" href="#">🧮 Invois</a>
-        <a class="nav-link text-white" href="#">🌐 Bahasa &amp; terjemahan</a>
-        <a class="nav-link text-white" href="#">📜 Log platform</a>
+        <a class="nav-link" href="#">📦 Pelan langganan</a>
+        <a class="nav-link" href="#">🧮 Invois</a>
+        <a class="nav-link" href="#">🌐 Bahasa</a>
+        <a class="nav-link" href="#">📜 Log platform</a>
       </nav>
-      <div class="mt-auto pt-3 border-top border-secondary small">
-        <div>superadmin@kedaipos.my</div>
-        <a href="#" class="link-danger">Log keluar</a>
+      <div class="mt-auto px-2 pt-3 small">
+        <div class="text-white-50">Log masuk sebagai</div>
+        <div class="text-white fw-semibold">superadmin@kedaipos.my</div>
+        <a href="#" class="link-warning">Log keluar</a>
       </div>
     </div>
   </aside>
+  </div>
 
-  <main class="flex-grow-1 p-3 p-lg-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <div class="d-flex align-items-center gap-2">
-        <button class="btn btn-outline-secondary btn-sm d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#sidebar">☰</button>
-        <h1 class="h4 fw-semibold mb-0">Vendor <span class="badge text-bg-warning align-middle fs-6">MOCKUP</span></h1>
+  <main class="flex-grow-1 min-w-0 px-3 px-lg-5 py-4">
+
+    <div class="d-flex flex-wrap align-items-center gap-2 mb-4">
+      <button class="btn btn-light btn-sm d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-label="Menu">☰</button>
+      <h1 class="h2 fw-bold mb-0 me-2">Vendor</h1>
+      <span class="kp-mockup-tag">Mockup</span>
+      <button class="btn btn-dark ms-auto px-3">Daftar vendor baharu</button>
+    </div>
+
+    <!-- Ringkasan: satu jalur, bukan empat kad -->
+    <section class="kp-panel row g-0 kp-summary mb-4 mx-0">
+      <div class="col-6 col-lg-3 p-3 p-lg-4">
+        <div class="small text-body-secondary">Aktif</div>
+        <div class="kp-summary-figure">42</div>
       </div>
-      <button class="btn btn-dark btn-sm">+ Daftar vendor baharu</button>
-    </div>
+      <div class="col-6 col-lg-3 p-3 p-lg-4">
+        <div class="small text-body-secondary">Dalam percubaan</div>
+        <div class="kp-summary-figure">7</div>
+        <div class="small text-warning-emphasis">3 tamat minggu ini</div>
+      </div>
+      <div class="col-6 col-lg-3 p-3 p-lg-4">
+        <div class="small text-body-secondary">Digantung</div>
+        <div class="kp-summary-figure text-danger">3</div>
+      </div>
+      <div class="col-6 col-lg-3 p-3 p-lg-4">
+        <div class="small text-body-secondary">Invois belum dibayar</div>
+        <div class="kp-summary-figure">RM 1,140</div>
+      </div>
+    </section>
 
-    <div class="row row-cols-2 row-cols-lg-4 g-3 mb-3">
-      <div class="col"><div class="card shadow-sm"><div class="card-body py-2">
-        <div class="small text-body-secondary">Vendor aktif</div><div class="fs-5 fw-bold">42</div>
-      </div></div></div>
-      <div class="col"><div class="card shadow-sm"><div class="card-body py-2">
-        <div class="small text-body-secondary">Percubaan</div><div class="fs-5 fw-bold">7</div>
-      </div></div></div>
-      <div class="col"><div class="card shadow-sm"><div class="card-body py-2">
-        <div class="small text-body-secondary">Digantung</div><div class="fs-5 fw-bold text-danger">3</div>
-      </div></div></div>
-      <div class="col"><div class="card shadow-sm"><div class="card-body py-2">
-        <div class="small text-body-secondary">Invois tertunggak</div><div class="fs-5 fw-bold">RM 1,140</div>
-      </div></div></div>
-    </div>
-
-    <div class="card shadow-sm">
-      <div class="card-header bg-white d-flex flex-wrap gap-2">
-        <input type="search" class="form-control form-control-sm w-auto flex-grow-1" placeholder="Cari kod, nama atau e-mel vendor...">
-        <select class="form-select form-select-sm w-auto">
+    <section class="kp-panel">
+      <div class="d-flex flex-wrap gap-2 p-3 border-bottom">
+        <input type="search" class="form-control rounded-pill flex-grow-1 w-auto" placeholder="Cari kod, nama kedai atau e-mel pemilik" aria-label="Cari vendor">
+        <select class="form-select rounded-pill w-auto" aria-label="Status">
           <option>Semua status</option><option>Aktif</option><option>Percubaan</option>
           <option>Digantung</option><option>Dibatalkan</option>
         </select>
-        <select class="form-select form-select-sm w-auto">
+        <select class="form-select rounded-pill w-auto" aria-label="Jenis perniagaan">
           <option>Semua jenis</option><option>Runcit</option><option>Kedai makan</option>
         </select>
       </div>
       <div class="table-responsive">
-        <table class="table table-hover mb-0 align-middle">
-          <thead class="table-light">
+        <table class="table table-hover kp-table-clean mb-0 align-middle">
+          <thead>
             <tr>
-              <th>Kod</th><th>Nama</th><th>Jenis</th><th>Pelan</th>
-              <th class="text-center">Kedai</th><th>Status</th><th>Tamat</th><th></th>
+              <th>Vendor</th><th>Jenis</th><th>Pelan</th>
+              <th class="text-end">Cawangan</th><th>Status</th><th>Langganan tamat</th><th></th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td class="font-monospace">KEDAI01</td><td>Kedai Runcit Pak Mat</td>
-              <td><span class="badge text-bg-info">Runcit</span></td><td>Asas</td>
-              <td class="text-center">1</td><td><span class="badge text-bg-success">Aktif</span></td>
-              <td class="small">31/12/2026</td>
-              <td class="text-end"><button class="btn btn-outline-secondary btn-sm">Urus</button></td>
+              <td>
+                <div class="d-flex align-items-center gap-3">
+                  <span class="kp-avatar bg-primary-subtle text-primary">P</span>
+                  <div><div class="fw-semibold">Kedai Runcit Pak Mat</div><div class="small text-body-secondary">KEDAI01</div></div>
+                </div>
+              </td>
+              <td>Runcit</td><td>Asas</td><td class="text-end kp-num">1</td>
+              <td><span class="kp-status kp-status-live">Aktif</span></td>
+              <td class="kp-num">31 Dis 2026</td>
+              <td class="text-end"><a href="#" class="btn btn-light btn-sm">Urus</a></td>
             </tr>
             <tr>
-              <td class="font-monospace">KEDAI02</td><td>Restoran Selera Kampung</td>
-              <td><span class="badge text-bg-primary">Kedai makan</span></td><td>Pro</td>
-              <td class="text-center">2</td><td><span class="badge text-bg-success">Aktif</span></td>
-              <td class="small">15/01/2027</td>
-              <td class="text-end"><button class="btn btn-outline-secondary btn-sm">Urus</button></td>
+              <td>
+                <div class="d-flex align-items-center gap-3">
+                  <span class="kp-avatar bg-warning-subtle text-warning-emphasis">S</span>
+                  <div><div class="fw-semibold">Restoran Selera Kampung</div><div class="small text-body-secondary">KEDAI02</div></div>
+                </div>
+              </td>
+              <td>Kedai makan</td><td>Pro</td><td class="text-end kp-num">2</td>
+              <td><span class="kp-status kp-status-live">Aktif</span></td>
+              <td class="kp-num">15 Jan 2027</td>
+              <td class="text-end"><a href="#" class="btn btn-light btn-sm">Urus</a></td>
             </tr>
             <tr>
-              <td class="font-monospace">KEDAI03</td><td>Kafe Sudut Biru</td>
-              <td><span class="badge text-bg-primary">Kedai makan</span></td><td>Percubaan</td>
-              <td class="text-center">1</td><td><span class="badge text-bg-warning">Percubaan</span></td>
-              <td class="small">20/11/2026</td>
-              <td class="text-end"><button class="btn btn-outline-secondary btn-sm">Urus</button></td>
+              <td>
+                <div class="d-flex align-items-center gap-3">
+                  <span class="kp-avatar bg-primary-subtle text-primary">K</span>
+                  <div><div class="fw-semibold">Kafe Sudut Biru</div><div class="small text-body-secondary">KEDAI03</div></div>
+                </div>
+              </td>
+              <td>Kedai makan</td><td>Percubaan</td><td class="text-end kp-num">1</td>
+              <td><span class="kp-status kp-status-trial">Percubaan, 7 hari lagi</span></td>
+              <td class="kp-num">20 Nov 2026</td>
+              <td class="text-end"><a href="#" class="btn btn-light btn-sm">Urus</a></td>
             </tr>
             <tr>
-              <td class="font-monospace">KEDAI04</td><td>Mini Mart Seri Indah</td>
-              <td><span class="badge text-bg-info">Runcit</span></td><td>Asas</td>
-              <td class="text-center">1</td><td><span class="badge text-bg-danger">Digantung</span></td>
-              <td class="small text-danger">01/11/2026</td>
-              <td class="text-end"><button class="btn btn-outline-secondary btn-sm">Urus</button></td>
+              <td>
+                <div class="d-flex align-items-center gap-3">
+                  <span class="kp-avatar bg-danger-subtle text-danger-emphasis">M</span>
+                  <div><div class="fw-semibold">Mini Mart Seri Indah</div><div class="small text-body-secondary">KEDAI04</div></div>
+                </div>
+              </td>
+              <td>Runcit</td><td>Asas</td><td class="text-end kp-num">1</td>
+              <td><span class="kp-status kp-status-off">Digantung</span></td>
+              <td class="kp-num text-danger">1 Nov 2026</td>
+              <td class="text-end"><a href="#" class="btn btn-light btn-sm">Urus</a></td>
             </tr>
           </tbody>
         </table>
       </div>
-      <div class="card-footer bg-white d-flex justify-content-between align-items-center small">
-        <span class="text-body-secondary">Papar 1–4 daripada 52</span>
-        <nav><ul class="pagination pagination-sm mb-0">
-          <li class="page-item disabled"><a class="page-link" href="#">‹</a></li>
+      <div class="d-flex justify-content-between align-items-center p-3 border-top small">
+        <span class="text-body-secondary">Memaparkan 4 daripada 52 vendor</span>
+        <nav aria-label="Halaman"><ul class="pagination pagination-sm mb-0">
+          <li class="page-item disabled"><a class="page-link" href="#">Sebelum</a></li>
           <li class="page-item active"><a class="page-link" href="#">1</a></li>
           <li class="page-item"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">›</a></li>
+          <li class="page-item"><a class="page-link" href="#">Seterusnya</a></li>
         </ul></nav>
       </div>
-    </div>
+    </section>
   </main>
 </div>
 

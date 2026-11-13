@@ -4,30 +4,35 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KedaiPOS — Juruwang</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="../../vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="../../css/theme.css">
 </head>
-<body class="bg-body-tertiary">
+<body>
 
 <div class="d-flex flex-column vh-100">
 
-  <!-- NAVBAR: kedai, kaunter, juruwang, syif sentiasa kelihatan -->
-  <nav class="navbar navbar-expand bg-dark flex-shrink-0" data-bs-theme="dark">
-    <div class="container-fluid px-3">
-      <span class="navbar-brand mb-0 h1 fw-semibold">
-        🛒 Kedai<span class="text-primary-emphasis">POS</span>
-        <span class="badge text-bg-warning ms-2 align-middle">MOCKUP</span>
-      </span>
-      <div class="d-flex align-items-center gap-3 small">
-        <span class="navbar-text d-none d-lg-inline">
-          <strong class="text-white">Restoran Selera Kampung</strong> · Cawangan Bangi
-        </span>
-        <span class="badge text-bg-secondary">Kaunter 1</span>
-        <span class="badge text-bg-success">Syif dibuka 08:02</span>
+  <!-- BAR ATAS: kedai, kaunter, syif, juruwang -->
+  <header class="kp-topbar flex-shrink-0">
+    <div class="d-flex align-items-center gap-3 px-3 px-lg-4 py-2">
+      <span class="kp-brand">KedaiPOS</span>
+      <span class="kp-mockup-tag">Mockup</span>
+      <div class="vr d-none d-lg-block"></div>
+      <div class="d-none d-lg-block lh-sm">
+        <div class="fw-bold">Restoran Selera Kampung</div>
+        <div class="small text-body-secondary">Cawangan Bangi</div>
+      </div>
+      <div class="ms-auto d-flex align-items-center gap-2">
+        <span class="kp-chip">🖥️ Kaunter 1</span>
+        <span class="kp-chip"><span class="kp-status kp-status-live">Syif sejak 08:02</span></span>
         <div class="dropdown">
-          <button class="btn btn-sm btn-outline-light dropdown-toggle" data-bs-toggle="dropdown">
-            Ali bin Abu
+          <button class="btn btn-light rounded-pill d-flex align-items-center gap-2 ps-1 pe-3 py-1" data-bs-toggle="dropdown">
+            <span class="kp-avatar bg-primary-subtle text-primary">A</span>
+            <span class="small">Ali</span>
           </button>
-          <ul class="dropdown-menu dropdown-menu-end">
+          <ul class="dropdown-menu dropdown-menu-end shadow border-0">
             <li><a class="dropdown-item" href="#">📜 Sejarah transaksi</a></li>
             <li><a class="dropdown-item" href="#">🔒 Kunci skrin</a></li>
             <li><hr class="dropdown-divider"></li>
@@ -37,209 +42,197 @@
         </div>
       </div>
     </div>
-  </nav>
+  </header>
 
   <div class="row g-0 flex-grow-1 overflow-hidden">
 
     <!-- PANEL PRODUK -->
-    <main class="col-md-8 col-xl-9 d-flex flex-column p-3 h-100">
+    <main class="col-md-7 col-lg-8 col-xl-9 d-flex flex-column h-100 px-3 px-lg-4 pt-3">
 
-      <!-- Jenis pesanan (mod kedai makan) -->
-      <div class="d-flex flex-wrap gap-2 mb-3 flex-shrink-0">
-        <div class="btn-group" role="group">
+      <div class="d-flex flex-wrap align-items-center gap-2 mb-3 flex-shrink-0">
+        <div class="kp-segment" role="group" aria-label="Jenis pesanan">
           <input type="radio" class="btn-check" name="orderType" id="otCounter" checked>
-          <label class="btn btn-outline-primary btn-sm" for="otCounter">Kaunter</label>
+          <label class="btn btn-sm" for="otCounter">Kaunter</label>
           <input type="radio" class="btn-check" name="orderType" id="otDineIn">
-          <label class="btn btn-outline-primary btn-sm" for="otDineIn">Dine-in</label>
+          <label class="btn btn-sm" for="otDineIn">Dine-in</label>
           <input type="radio" class="btn-check" name="orderType" id="otTakeaway">
-          <label class="btn btn-outline-primary btn-sm" for="otTakeaway">Take away</label>
+          <label class="btn btn-sm" for="otTakeaway">Take away</label>
         </div>
-        <button class="btn btn-outline-secondary btn-sm">📋 Panggil pesanan meja / take-away</button>
+        <button class="btn btn-light btn-sm rounded-pill px-3">Panggil pesanan meja</button>
       </div>
 
-      <!-- Imbas barcode + carian -->
-      <div class="input-group mb-3 flex-shrink-0">
-        <span class="input-group-text bg-white">🔍</span>
-        <input type="text" class="form-control" placeholder="Imbas barcode atau cari nama / SKU..." autofocus>
+      <div class="kp-search d-flex align-items-center mb-3 flex-shrink-0">
+        <span aria-hidden="true">🔍</span>
+        <input type="text" class="form-control" placeholder="Imbas barcode, atau taip nama / SKU" aria-label="Cari produk" autofocus>
+        <span class="kp-kbd d-none d-sm-inline">F2</span>
       </div>
 
-      <div class="d-flex flex-wrap gap-2 mb-3 flex-shrink-0">
-        <button class="btn btn-primary btn-sm rounded-pill">Semua</button>
-        <button class="btn btn-outline-secondary btn-sm rounded-pill">Makanan</button>
-        <button class="btn btn-outline-secondary btn-sm rounded-pill">Minuman</button>
-        <button class="btn btn-outline-secondary btn-sm rounded-pill">Kuih</button>
-        <button class="btn btn-outline-secondary btn-sm rounded-pill">Promosi 🔥</button>
-      </div>
+      <nav class="d-flex flex-nowrap overflow-x-auto mb-3 flex-shrink-0" aria-label="Kategori">
+        <button class="kp-cat active">Semua<span class="kp-count">18</span></button>
+        <button class="kp-cat">Makanan<span class="kp-count">7</span></button>
+        <button class="kp-cat">Minuman<span class="kp-count">6</span></button>
+        <button class="kp-cat">Kuih<span class="kp-count">5</span></button>
+        <button class="kp-cat">Ada promosi<span class="kp-count">2</span></button>
+      </nav>
 
-      <div class="flex-grow-1 overflow-y-auto overflow-x-hidden">
-        <div class="row row-cols-2 row-cols-lg-4 row-cols-xxl-5 g-2">
+      <div class="flex-grow-1 overflow-y-auto overflow-x-hidden pb-3">
+        <div class="row row-cols-2 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5 g-3">
           <div class="col">
-            <button class="card h-100 w-100 text-center shadow-sm border-0 p-0">
-              <div class="card-body p-2">
-                <div class="fs-1">🍛</div>
-                <div class="fw-semibold small">Nasi Lemak</div>
-                <div class="text-primary small">RM 4.50</div>
-                <span class="badge text-bg-light border">Variasi</span>
+            <button class="kp-tile">
+              <span class="kp-tile-flag kp-flag-var">Pilihan</span>
+              <span class="kp-tile-icon kp-tint-food">🍛</span>
+              <div class="kp-tile-name">Nasi Lemak</div>
+              <div class="kp-tile-price">RM 4.50</div>
+            </button>
+          </div>
+          <div class="col">
+            <button class="kp-tile">
+              <span class="kp-tile-icon kp-tint-food">🍜</span>
+              <div class="kp-tile-name">Mee Goreng Mamak</div>
+              <div class="kp-tile-price">RM 6.00</div>
+            </button>
+          </div>
+          <div class="col">
+            <button class="kp-tile">
+              <span class="kp-tile-flag kp-flag-promo">−RM 1</span>
+              <span class="kp-tile-icon kp-tint-food">🥘</span>
+              <div class="kp-tile-name">Nasi Goreng Kampung</div>
+              <div class="kp-tile-price text-danger">RM 6.00
+                <small class="text-body-secondary text-decoration-line-through fw-normal">7.00</small>
               </div>
             </button>
           </div>
           <div class="col">
-            <button class="card h-100 w-100 text-center shadow-sm border-0 p-0">
-              <div class="card-body p-2">
-                <div class="fs-1">🍜</div>
-                <div class="fw-semibold small">Mee Goreng</div>
-                <div class="text-primary small">RM 6.00</div>
-              </div>
+            <button class="kp-tile">
+              <span class="kp-tile-flag kp-flag-var">Pilihan</span>
+              <span class="kp-tile-icon kp-tint-drink">☕</span>
+              <div class="kp-tile-name">Teh Tarik</div>
+              <div class="kp-tile-price">RM 2.50</div>
             </button>
           </div>
           <div class="col">
-            <button class="card h-100 w-100 text-center shadow-sm border-0 p-0">
-              <div class="card-body p-2">
-                <div class="fs-1">🥘</div>
-                <div class="fw-semibold small">Nasi Goreng Kampung</div>
-                <div class="small">
-                  <span class="text-decoration-line-through text-body-secondary">RM 7.00</span>
-                  <span class="text-danger fw-semibold">RM 6.00</span>
-                </div>
-              </div>
+            <button class="kp-tile">
+              <span class="kp-tile-icon kp-tint-drink">🥤</span>
+              <div class="kp-tile-name">Sirap Bandung</div>
+              <div class="kp-tile-price">RM 3.00</div>
             </button>
           </div>
           <div class="col">
-            <button class="card h-100 w-100 text-center shadow-sm border-0 p-0">
-              <div class="card-body p-2">
-                <div class="fs-1">☕</div>
-                <div class="fw-semibold small">Teh Tarik</div>
-                <div class="text-primary small">RM 2.50</div>
-                <span class="badge text-bg-light border">Variasi</span>
-              </div>
+            <button class="kp-tile">
+              <span class="kp-tile-flag kp-flag-low">Tinggal 3</span>
+              <span class="kp-tile-icon kp-tint-sweet">🍩</span>
+              <div class="kp-tile-name">Kuih Keria</div>
+              <div class="kp-tile-price">RM 1.00</div>
             </button>
           </div>
           <div class="col">
-            <button class="card h-100 w-100 text-center shadow-sm border-0 p-0">
-              <div class="card-body p-2">
-                <div class="fs-1">🥤</div>
-                <div class="fw-semibold small">Sirap Bandung</div>
-                <div class="text-primary small">RM 3.00</div>
-              </div>
+            <button class="kp-tile" disabled>
+              <span class="kp-tile-flag kp-flag-out">Habis</span>
+              <span class="kp-tile-icon kp-tint-sweet">🍰</span>
+              <div class="kp-tile-name">Kek Lapis Sarawak</div>
+              <div class="kp-tile-price">RM 3.50</div>
             </button>
           </div>
           <div class="col">
-            <button class="card h-100 w-100 text-center shadow-sm border-0 p-0">
-              <div class="card-body p-2">
-                <div class="fs-1">🍩</div>
-                <div class="fw-semibold small">Kuih Keria</div>
-                <div class="text-primary small">RM 1.00</div>
-                <span class="badge text-bg-warning">Stok: 3</span>
-              </div>
+            <button class="kp-tile">
+              <span class="kp-tile-icon kp-tint-drink">🧃</span>
+              <div class="kp-tile-name">Air Kotak Laici</div>
+              <div class="kp-tile-price">RM 1.80</div>
             </button>
           </div>
           <div class="col">
-            <button class="card h-100 w-100 text-center shadow-sm border-0 p-0 opacity-50" disabled>
-              <div class="card-body p-2">
-                <div class="fs-1">🍰</div>
-                <div class="fw-semibold small">Kek Lapis</div>
-                <div class="text-primary small">RM 3.50</div>
-                <span class="badge text-bg-danger">Habis</span>
-              </div>
+            <button class="kp-tile">
+              <span class="kp-tile-icon kp-tint-food">🍗</span>
+              <div class="kp-tile-name">Ayam Goreng Berempah</div>
+              <div class="kp-tile-price">RM 5.50</div>
             </button>
           </div>
           <div class="col">
-            <button class="card h-100 w-100 text-center shadow-sm border-0 p-0">
-              <div class="card-body p-2">
-                <div class="fs-1">🧃</div>
-                <div class="fw-semibold small">Air Kotak Laici</div>
-                <div class="text-primary small">RM 1.80</div>
-              </div>
+            <button class="kp-tile">
+              <span class="kp-tile-icon kp-tint-drink">🧋</span>
+              <div class="kp-tile-name">Milo Dinosaur</div>
+              <div class="kp-tile-price">RM 5.00</div>
             </button>
           </div>
         </div>
       </div>
     </main>
 
-    <!-- PANEL TROLI -->
-    <aside class="col-md-4 col-xl-3 bg-white border-start d-flex flex-column h-100">
+    <!-- TIKET TROLI -->
+    <aside class="col-md-5 col-lg-4 col-xl-3 kp-ticket d-flex flex-column h-100">
 
-      <div class="d-flex justify-content-between align-items-center px-3 pt-3 pb-2">
+      <div class="d-flex justify-content-between align-items-start px-4 pt-4 pb-3">
         <div>
-          <h2 class="h6 mb-0 fw-semibold">🧾 Troli</h2>
-          <div class="small text-body-secondary">Kaunter · Pesanan #0042</div>
+          <h2 class="h4 fw-bold mb-0">Pesanan 0042</h2>
+          <div class="small text-body-secondary">Kaunter, 3 item</div>
         </div>
-        <button class="btn btn-sm btn-link text-danger text-decoration-none p-0">Kosongkan</button>
+        <button class="btn btn-link btn-sm kp-link-light text-decoration-none p-0">Kosongkan</button>
       </div>
 
-      <div class="flex-grow-1 overflow-auto px-3">
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item px-0">
-            <div class="d-flex justify-content-between">
-              <span class="fw-semibold small">Nasi Lemak</span>
-              <span class="small">RM 18.00</span>
+      <div class="flex-grow-1 overflow-y-auto px-4">
+        <div class="kp-ticket-line py-3">
+          <div class="d-flex justify-content-between gap-2">
+            <span class="fw-semibold">Nasi Lemak</span>
+            <span class="fw-semibold kp-num">18.00</span>
+          </div>
+          <div class="kp-ticket-variant">Rendang daging, extra pedas</div>
+          <div class="d-flex justify-content-between align-items-center mt-2">
+            <div class="kp-stepper">
+              <button aria-label="Kurang">−</button><span>2</span><button aria-label="Tambah">+</button>
             </div>
-            <div class="small text-body-secondary">Rendang daging, Extra pedas</div>
-            <div class="d-flex justify-content-between align-items-center mt-1">
-              <div class="btn-group btn-group-sm">
-                <button class="btn btn-outline-secondary">−</button>
-                <span class="btn btn-outline-secondary disabled">2</span>
-                <button class="btn btn-outline-secondary">+</button>
-              </div>
-              <small class="text-body-secondary">@ RM 9.00</small>
-            </div>
-          </li>
-          <li class="list-group-item px-0">
-            <div class="d-flex justify-content-between">
-              <span class="fw-semibold small">Nasi Goreng Kampung</span>
-              <span class="small">RM 7.00</span>
-            </div>
-            <div class="small text-danger">🔥 Promosi Isnin Ceria −RM 1.00</div>
-            <div class="d-flex justify-content-between align-items-center mt-1">
-              <div class="btn-group btn-group-sm">
-                <button class="btn btn-outline-secondary">−</button>
-                <span class="btn btn-outline-secondary disabled">1</span>
-                <button class="btn btn-outline-secondary">+</button>
-              </div>
-              <small class="text-body-secondary">@ RM 7.00</small>
-            </div>
-          </li>
-          <li class="list-group-item px-0">
-            <div class="d-flex justify-content-between">
-              <span class="fw-semibold small">Teh Tarik</span>
-              <span class="small">RM 3.00</span>
-            </div>
-            <div class="small text-body-secondary">Besar, Ais</div>
-            <div class="d-flex justify-content-between align-items-center mt-1">
-              <div class="btn-group btn-group-sm">
-                <button class="btn btn-outline-secondary">−</button>
-                <span class="btn btn-outline-secondary disabled">1</span>
-                <button class="btn btn-outline-secondary">+</button>
-              </div>
-              <small class="text-body-secondary">@ RM 3.00</small>
-            </div>
-          </li>
-        </ul>
-      </div>
-
-      <div class="border-top p-3">
-        <div class="d-flex justify-content-between small text-body-secondary mb-1">
-          <span>Subjumlah</span><span>RM 28.00</span>
-        </div>
-        <div class="d-flex justify-content-between small text-danger mb-1">
-          <span>Diskaun promosi</span><span>−RM 1.00</span>
-        </div>
-        <div class="d-flex justify-content-between small text-body-secondary mb-1">
-          <span>Cukai (6%)</span><span>RM 1.62</span>
-        </div>
-        <div class="d-flex justify-content-between align-items-center small text-body-secondary mb-2">
-          <span>Diskaun manual</span>
-          <div class="input-group input-group-sm w-50">
-            <span class="input-group-text">RM</span>
-            <input type="number" class="form-control text-end" value="0">
+            <small class="text-body-secondary kp-num">9.00 seunit</small>
           </div>
         </div>
-        <div class="d-flex justify-content-between align-items-center border-top pt-2">
-          <span class="fw-semibold">Jumlah</span>
-          <span class="fs-4 fw-bold text-primary">RM 28.62</span>
+        <div class="kp-ticket-line py-3">
+          <div class="d-flex justify-content-between gap-2">
+            <span class="fw-semibold">Nasi Goreng Kampung</span>
+            <span class="fw-semibold kp-num">7.00</span>
+          </div>
+          <div class="kp-ticket-promo">Promosi Isnin Ceria, −1.00</div>
+          <div class="d-flex justify-content-between align-items-center mt-2">
+            <div class="kp-stepper">
+              <button aria-label="Kurang">−</button><span>1</span><button aria-label="Tambah">+</button>
+            </div>
+            <small class="text-body-secondary kp-num">7.00 seunit</small>
+          </div>
         </div>
-        <button class="btn btn-primary btn-lg w-100 mt-3" data-bs-toggle="modal" data-bs-target="#paymentModal">
-          Bayar
+        <div class="kp-ticket-line py-3">
+          <div class="d-flex justify-content-between gap-2">
+            <span class="fw-semibold">Teh Tarik</span>
+            <span class="fw-semibold kp-num">3.00</span>
+          </div>
+          <div class="kp-ticket-variant">Besar, ais</div>
+          <div class="d-flex justify-content-between align-items-center mt-2">
+            <div class="kp-stepper">
+              <button aria-label="Kurang">−</button><span>1</span><button aria-label="Tambah">+</button>
+            </div>
+            <small class="text-body-secondary kp-num">3.00 seunit</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="kp-ticket-foot px-4 pt-3 pb-4">
+        <dl class="row g-0 small mb-2 kp-num">
+          <dt class="col-7 fw-normal text-body-secondary">Subjumlah</dt>
+          <dd class="col-5 text-end mb-1">28.00</dd>
+          <dt class="col-7 fw-normal kp-ticket-promo">Diskaun promosi</dt>
+          <dd class="col-5 text-end mb-1 kp-ticket-promo">−1.00</dd>
+          <dt class="col-7 fw-normal text-body-secondary">Cukai SST 6%</dt>
+          <dd class="col-5 text-end mb-1">1.62</dd>
+        </dl>
+        <div class="d-flex justify-content-between align-items-center small mb-3">
+          <label for="manualDiscount" class="text-body-secondary">Diskaun manual</label>
+          <div class="input-group input-group-sm w-50">
+            <span class="input-group-text">RM</span>
+            <input type="number" id="manualDiscount" class="form-control text-end" value="0.00">
+          </div>
+        </div>
+        <div class="d-flex justify-content-between align-items-end mb-3">
+          <span class="text-body-secondary">Jumlah (RM)</span>
+          <span class="kp-total">28.62</span>
+        </div>
+        <button class="btn btn-kunyit kp-pay w-100" data-bs-toggle="modal" data-bs-target="#paymentModal">
+          Bayar RM 28.62
         </button>
       </div>
     </aside>
@@ -247,42 +240,57 @@
 </div>
 
 <!-- MODAL BAYARAN -->
-<div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade kp-modal" id="paymentModal" tabindex="-1" aria-labelledby="paymentTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title fw-semibold">Bayaran</h5>
+    <div class="modal-content p-2">
+      <div class="modal-header border-0">
+        <div>
+          <h2 class="h5 fw-bold mb-0" id="paymentTitle">Terima bayaran</h2>
+          <div class="small text-body-secondary">Pesanan 0042</div>
+        </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
       </div>
-      <div class="modal-body">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <span class="text-body-secondary">Jumlah perlu dibayar</span>
-          <span class="fs-4 fw-bold text-primary">RM 28.62</span>
+      <div class="modal-body pt-0">
+        <div class="d-flex justify-content-between align-items-end mb-4">
+          <span class="text-body-secondary">Perlu dibayar</span>
+          <span class="kp-total text-primary">RM 28.62</span>
         </div>
-        <div class="btn-group w-100 mb-3" role="group">
-          <input type="radio" class="btn-check" name="pay" id="payCash" checked>
-          <label class="btn btn-outline-primary" for="payCash">💵 Tunai</label>
-          <input type="radio" class="btn-check" name="pay" id="payCard">
-          <label class="btn btn-outline-primary" for="payCard">💳 Kad</label>
-          <input type="radio" class="btn-check" name="pay" id="payQr">
-          <label class="btn btn-outline-primary" for="payQr">📱 QR</label>
+
+        <div class="row g-2 mb-4">
+          <div class="col-4">
+            <input type="radio" class="btn-check" name="pay" id="payCash" checked>
+            <label class="btn kp-method" for="payCash"><span class="kp-method-icon">💵</span>Tunai</label>
+          </div>
+          <div class="col-4">
+            <input type="radio" class="btn-check" name="pay" id="payCard">
+            <label class="btn kp-method" for="payCard"><span class="kp-method-icon">💳</span>Kad</label>
+          </div>
+          <div class="col-4">
+            <input type="radio" class="btn-check" name="pay" id="payQr">
+            <label class="btn kp-method" for="payQr"><span class="kp-method-icon">📱</span>DuitNow QR</label>
+          </div>
         </div>
-        <label class="form-label small">Wang diterima</label>
-        <input type="number" class="form-control form-control-lg mb-2" value="30.00">
-        <div class="d-flex flex-wrap gap-2 mb-3">
-          <button class="btn btn-outline-secondary btn-sm">RM 28.65</button>
-          <button class="btn btn-outline-secondary btn-sm">RM 30</button>
-          <button class="btn btn-outline-secondary btn-sm">RM 50</button>
-          <button class="btn btn-outline-secondary btn-sm">RM 100</button>
+
+        <label for="cashIn" class="form-label small fw-semibold">Wang diterima</label>
+        <div class="input-group mb-2">
+          <span class="input-group-text bg-white">RM</span>
+          <input type="number" id="cashIn" class="form-control kp-cash-input" value="30.00">
         </div>
-        <div class="d-flex justify-content-between bg-success-subtle rounded p-2">
-          <span>Baki</span>
-          <span class="fs-5 fw-semibold text-success">RM 1.38</span>
+        <div class="d-flex flex-wrap gap-2 mb-4">
+          <button class="btn btn-light btn-sm rounded-pill px-3 kp-num">28.65 (bundar)</button>
+          <button class="btn btn-light btn-sm rounded-pill px-3 kp-num">30</button>
+          <button class="btn btn-light btn-sm rounded-pill px-3 kp-num">50</button>
+          <button class="btn btn-light btn-sm rounded-pill px-3 kp-num">100</button>
+        </div>
+
+        <div class="kp-change d-flex justify-content-between align-items-center px-3 py-3">
+          <span class="fw-semibold">Baki dipulangkan</span>
+          <span class="h3 fw-bold mb-0 kp-num">RM 1.38</span>
         </div>
       </div>
-      <div class="modal-footer">
-        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
-        <button class="btn btn-primary">Sahkan &amp; Cetak Resit</button>
+      <div class="modal-footer border-0">
+        <button class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+        <button class="btn btn-primary px-4">Sahkan &amp; cetak resit</button>
       </div>
     </div>
   </div>
