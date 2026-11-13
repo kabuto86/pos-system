@@ -4,23 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KedaiPOS — Waiter</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="../../vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="../../vendor/fontawesome/css/all.min.css">
 <link rel="stylesheet" href="../../css/theme.css">
 </head>
 <body class="pb-5">
 
 <header class="kp-waiter-head sticky-top">
-  <div class="container-fluid px-3 pt-3 pb-2 d-flex justify-content-between align-items-start">
+  <div class="container-fluid px-3 pt-3 pb-2 d-flex justify-content-between align-items-start gap-2">
     <div>
       <div class="small opacity-75">Cawangan Bangi</div>
       <h1 class="h3 fw-bold mb-0">Selamat bertugas, Siti</h1>
     </div>
-    <div class="d-flex flex-column align-items-end gap-1">
+    <div class="d-flex align-items-center gap-1">
       <span class="kp-mockup-tag">Mockup</span>
-      <button class="btn btn-sm btn-link kp-link-light text-decoration-none p-0">Kunci</button>
+      <button class="btn btn-ghost-light kp-btn-icon" aria-label="Kunci skrin"><i class="fa-solid fa-lock"></i></button>
     </div>
   </div>
   <nav class="container-fluid px-3 pb-3 d-flex gap-2 overflow-x-auto" aria-label="Kawasan">
@@ -33,9 +31,7 @@
 
 <main class="container-fluid px-3 pt-3">
 
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="h5 fw-bold mb-0">Meja <span class="text-body-secondary fw-semibold">3 berisi daripada 9</span></h2>
-  </div>
+  <h2 class="h5 fw-bold mb-2">Meja <span class="text-body-secondary fw-semibold">3 berisi daripada 9</span></h2>
   <div class="d-flex gap-3 small text-body-secondary mb-3">
     <span><span class="kp-legend-swatch kp-swatch-free"></span>Kosong</span>
     <span><span class="kp-legend-swatch kp-swatch-busy"></span>Berisi</span>
@@ -43,63 +39,33 @@
   </div>
 
   <div class="row row-cols-3 row-cols-sm-4 g-2 mb-4">
-    <div class="col">
-      <a href="#" class="kp-table">
-        <div class="kp-table-no">1</div>
-        <div class="kp-table-meta mt-2">4 kerusi</div>
-      </a>
-    </div>
-    <div class="col">
-      <a href="#" class="kp-table kp-table-busy">
-        <div class="kp-table-no">2</div>
-        <div class="fw-bold kp-num mt-2">RM 32.40</div>
-        <div class="kp-table-meta">45 minit</div>
-      </a>
-    </div>
-    <div class="col">
-      <a href="#" class="kp-table">
-        <div class="kp-table-no">3</div>
-        <div class="kp-table-meta mt-2">2 kerusi</div>
-      </a>
-    </div>
-    <div class="col">
-      <a href="#" class="kp-table kp-table-busy">
-        <div class="kp-table-no">4</div>
-        <div class="fw-bold kp-num mt-2">RM 12.00</div>
-        <div class="kp-table-meta">8 minit</div>
-      </a>
-    </div>
-    <div class="col">
-      <a href="#" class="kp-table">
-        <div class="kp-table-no">5</div>
-        <div class="kp-table-meta mt-2">6 kerusi</div>
-      </a>
-    </div>
-    <div class="col">
-      <a href="#" class="kp-table kp-table-busy">
-        <div class="kp-table-no">6</div>
-        <div class="fw-bold kp-num mt-2">RM 58.90</div>
-        <div class="kp-table-meta">1 jam 10 minit</div>
-      </a>
-    </div>
-    <div class="col">
-      <a href="#" class="kp-table">
-        <div class="kp-table-no">7</div>
-        <div class="kp-table-meta mt-2">4 kerusi</div>
-      </a>
-    </div>
-    <div class="col">
-      <a href="#" class="kp-table">
-        <div class="kp-table-no">8</div>
-        <div class="kp-table-meta mt-2">4 kerusi</div>
-      </a>
-    </div>
-    <div class="col">
-      <a href="#" class="kp-table kp-table-held">
-        <div class="kp-table-no">9</div>
-        <div class="kp-table-meta mt-2">Ditempah 8:00 mlm</div>
-      </a>
-    </div>
+    <div class="col"><a href="#" class="kp-table">
+      <div class="kp-table-no">1</div><div class="kp-table-meta mt-2">4 kerusi</div>
+    </a></div>
+    <div class="col"><a href="#" class="kp-table kp-table-busy">
+      <div class="kp-table-no">2</div><div class="fw-bold kp-num mt-2">RM 32.40</div><div class="kp-table-meta">45 minit</div>
+    </a></div>
+    <div class="col"><a href="#" class="kp-table">
+      <div class="kp-table-no">3</div><div class="kp-table-meta mt-2">2 kerusi</div>
+    </a></div>
+    <div class="col"><a href="#" class="kp-table kp-table-busy">
+      <div class="kp-table-no">4</div><div class="fw-bold kp-num mt-2">RM 12.00</div><div class="kp-table-meta">8 minit</div>
+    </a></div>
+    <div class="col"><a href="#" class="kp-table">
+      <div class="kp-table-no">5</div><div class="kp-table-meta mt-2">6 kerusi</div>
+    </a></div>
+    <div class="col"><a href="#" class="kp-table kp-table-busy">
+      <div class="kp-table-no">6</div><div class="fw-bold kp-num mt-2">RM 58.90</div><div class="kp-table-meta">1 jam 10 minit</div>
+    </a></div>
+    <div class="col"><a href="#" class="kp-table">
+      <div class="kp-table-no">7</div><div class="kp-table-meta mt-2">4 kerusi</div>
+    </a></div>
+    <div class="col"><a href="#" class="kp-table">
+      <div class="kp-table-no">8</div><div class="kp-table-meta mt-2">4 kerusi</div>
+    </a></div>
+    <div class="col"><a href="#" class="kp-table kp-table-held">
+      <div class="kp-table-no">9</div><div class="kp-table-meta mt-2">Ditempah 8:00 mlm</div>
+    </a></div>
   </div>
 
   <h2 class="h5 fw-bold mb-3">Take away terbuka</h2>
@@ -109,25 +75,25 @@
         <div class="fw-bold">No. 007</div>
         <div class="small text-body-secondary">3 item, dibuat 12:40</div>
       </div>
-      <span class="fw-bold kp-num">RM 15.50</span>
+      <span class="fw-bold kp-num">RM 15.50 <i class="fa-solid fa-chevron-right small text-body-secondary ms-1"></i></span>
     </a>
     <a href="#" class="d-flex justify-content-between align-items-center px-3 py-3 text-decoration-none text-body">
       <div>
         <div class="fw-bold">No. 008</div>
         <div class="small text-body-secondary">1 item, dibuat 12:52</div>
       </div>
-      <span class="fw-bold kp-num">RM 6.00</span>
+      <span class="fw-bold kp-num">RM 6.00 <i class="fa-solid fa-chevron-right small text-body-secondary ms-1"></i></span>
     </a>
   </div>
 
-  <button class="btn btn-primary kp-fab w-100 mb-2">Buka take away baharu</button>
-  <p class="small text-body-secondary text-center mb-4">Bayaran diterima di kaunter sahaja.</p>
+  <button class="btn btn-primary btn-lg w-100 mb-2"><i class="fa-solid fa-plus"></i>Buka take away baharu</button>
+  <p class="small text-body-secondary text-center mb-5">Bayaran diterima di kaunter sahaja.</p>
 </main>
 
 <nav class="kp-tabbar fixed-bottom d-flex" aria-label="Navigasi utama">
-  <a href="#" class="kp-tab active"><span class="kp-tab-icon">🪑</span>Meja</a>
-  <a href="#" class="kp-tab"><span class="kp-tab-icon">🥡</span>Take away</a>
-  <a href="#" class="kp-tab"><span class="kp-tab-icon">📝</span>Pesanan saya</a>
+  <a href="#" class="kp-tab active"><i class="fa-solid fa-chair"></i>Meja</a>
+  <a href="#" class="kp-tab"><i class="fa-solid fa-bag-shopping"></i>Take away</a>
+  <a href="#" class="kp-tab"><i class="fa-solid fa-clipboard-list"></i>Pesanan saya</a>
 </nav>
 
 <script src="../../vendor/bootstrap/bootstrap.bundle.min.js"></script>

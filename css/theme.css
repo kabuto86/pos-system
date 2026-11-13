@@ -2,7 +2,23 @@
    KedaiPOS — tema "Pandan & Kunyit"
    Lapisan atas Bootstrap 5.3: kebanyakannya menukar pemboleh
    ubah --bs-*, ditambah sedikit kelas kp-* untuk komponen POS.
+   Fon & ikon disimpan dalam vendor/ — rupa sama walaupun luar talian.
    ========================================================= */
+
+@font-face {
+  font-family: "Figtree";
+  src: url("../vendor/fonts/figtree-latin-wght-normal.woff2") format("woff2");
+  font-weight: 300 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("../vendor/fonts/bricolage-grotesque-latin-wght-normal.woff2") format("woff2");
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
 
 :root {
   --kp-pandan-900: #0E3326;
@@ -20,9 +36,19 @@
   --kp-line: #DFE5DF;
   --kp-font-display: "Bricolage Grotesque", "Figtree", system-ui, sans-serif;
 
+  /* Skala saiz — satu sumber untuk semua platform */
+  --kp-text-xs: .75rem;     /* 12px — label kecil, lencana */
+  --kp-text-sm: .8125rem;   /* 13px — teks sokongan */
+  --kp-text-base: .9375rem; /* 15px — teks biasa desktop */
+  --kp-text-md: 1rem;       /* 16px — input, teks biasa telefon */
+  --kp-control-sm: 2rem;    /* 32px */
+  --kp-control: 2.5rem;     /* 40px — saiz butang & input lalai */
+  --kp-control-lg: 3rem;    /* 48px — sentuhan telefon / tindakan utama */
+
   /* Bootstrap */
-  --bs-body-font-family: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --bs-body-font-size: .9375rem;
+  --bs-body-font-family: "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --bs-body-font-size: var(--kp-text-base);
+  --bs-body-line-height: 1.5;
   --bs-body-color: var(--kp-ink);
   --bs-body-color-rgb: 24, 33, 29;
   --bs-body-bg: var(--kp-santan);
@@ -32,8 +58,8 @@
   --bs-border-color: var(--kp-line);
   --bs-border-radius: .625rem;
   --bs-border-radius-sm: .5rem;
-  --bs-border-radius-lg: 1rem;
-  --bs-border-radius-xl: 1.375rem;
+  --bs-border-radius-lg: .875rem;
+  --bs-border-radius-xl: 1.25rem;
   --bs-link-color: var(--kp-pandan-700);
   --bs-link-color-rgb: 23, 87, 63;
   --bs-link-hover-color: var(--kp-pandan-900);
@@ -59,10 +85,23 @@
   --bs-focus-ring-color: rgba(35, 132, 94, .35);
 }
 
+/* Telefon: teks asas 16px supaya mudah dibaca */
+@media (max-width: 767.98px) {
+  :root { --bs-body-font-size: var(--kp-text-md); }
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, .kp-display {
   font-family: var(--kp-font-display);
   letter-spacing: -.015em;
 }
+
+.small, small { font-size: var(--kp-text-sm); }
 
 .kp-num { font-variant-numeric: tabular-nums; }
 
@@ -71,8 +110,48 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, .kp-display {
   outline-offset: 2px;
 }
 
-/* ---------- Butang ---------- */
-.btn { font-weight: 600; }
+/* ---------- Bar skrol nipis (semua pelayar) ---------- */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(24, 33, 29, .22) transparent;
+}
+*::-webkit-scrollbar { width: 6px; height: 6px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb {
+  background: rgba(24, 33, 29, .22);
+  border-radius: 999px;
+}
+*::-webkit-scrollbar-thumb:hover { background: rgba(24, 33, 29, .38); }
+
+/* ---------- Butang: tiga saiz sahaja ---------- */
+.btn {
+  --bs-btn-padding-y: .5rem;
+  --bs-btn-padding-x: 1rem;
+  --bs-btn-font-size: var(--kp-text-base);
+  --bs-btn-line-height: 1.375rem;
+  --bs-btn-font-weight: 600;
+  min-height: var(--kp-control);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+}
+.btn-sm {
+  --bs-btn-padding-y: .3125rem;
+  --bs-btn-padding-x: .75rem;
+  --bs-btn-font-size: var(--kp-text-sm);
+  --bs-btn-line-height: 1.25rem;
+  min-height: var(--kp-control-sm);
+}
+.btn-lg {
+  --bs-btn-padding-y: .75rem;
+  --bs-btn-padding-x: 1.25rem;
+  --bs-btn-font-size: var(--kp-text-md);
+  min-height: var(--kp-control-lg);
+}
+/* Butang ikon sahaja — segi empat sama ikut saiz */
+.kp-btn-icon { padding-left: 0; padding-right: 0; width: var(--kp-control); }
+.btn-sm.kp-btn-icon { width: var(--kp-control-sm); }
 
 .btn-primary {
   --bs-btn-bg: var(--kp-pandan-700);
@@ -84,24 +163,18 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, .kp-display {
   --bs-btn-disabled-bg: var(--kp-pandan-700);
   --bs-btn-disabled-border-color: var(--kp-pandan-700);
 }
-
-.btn-outline-primary {
-  --bs-btn-color: var(--kp-pandan-700);
-  --bs-btn-border-color: var(--kp-line);
-  --bs-btn-hover-bg: var(--kp-pandan-100);
-  --bs-btn-hover-color: var(--kp-pandan-900);
-  --bs-btn-hover-border-color: var(--kp-pandan-100);
-  --bs-btn-active-bg: var(--kp-pandan-700);
-  --bs-btn-active-border-color: var(--kp-pandan-700);
-}
-
 .btn-light {
   --bs-btn-bg: #fff;
   --bs-btn-border-color: var(--kp-line);
   --bs-btn-hover-bg: var(--kp-pandan-100);
   --bs-btn-hover-border-color: var(--kp-pandan-100);
+  --bs-btn-active-bg: var(--kp-pandan-100);
+  --bs-btn-active-border-color: var(--kp-pandan-100);
 }
-
+.btn-dark {
+  --bs-btn-bg: var(--kp-ink);
+  --bs-btn-border-color: var(--kp-ink);
+}
 .btn-kunyit {
   --bs-btn-color: var(--kp-ink);
   --bs-btn-bg: var(--kp-kunyit);
@@ -113,38 +186,74 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, .kp-display {
   --bs-btn-active-bg: var(--kp-kunyit-600);
   --bs-btn-active-border-color: var(--kp-kunyit-600);
 }
+.btn-ghost-light {
+  --bs-btn-color: rgba(255, 255, 255, .75);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: rgba(255, 255, 255, .1);
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: rgba(255, 255, 255, .14);
+}
 
-/* ---------- Borang, nav, halaman ---------- */
-.form-control, .form-select { border-color: var(--kp-line); }
+/* ---------- Borang ---------- */
+.form-control, .form-select {
+  font-size: var(--kp-text-md); /* 16px — elak iPhone zum masuk */
+  min-height: var(--kp-control);
+  border-color: var(--kp-line);
+}
+.form-control-sm, .form-select-sm { min-height: var(--kp-control-sm); font-size: var(--kp-text-sm); }
 .form-control:focus, .form-select:focus {
   border-color: var(--kp-pandan-500);
   box-shadow: 0 0 0 .2rem rgba(35, 132, 94, .18);
 }
+.form-label { font-size: var(--kp-text-sm); font-weight: 600; }
+/* Buang anak panah naik/turun input nombor */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 
+/* ---------- Dropdown ---------- */
+.dropdown-menu {
+  --bs-dropdown-font-size: var(--kp-text-base);
+  --bs-dropdown-border-color: var(--kp-line);
+  --bs-dropdown-border-radius: .875rem;
+  --bs-dropdown-padding-x: .375rem;
+  --bs-dropdown-item-padding-y: .5rem;
+  --bs-dropdown-item-border-radius: .5rem;
+  --bs-dropdown-link-active-bg: var(--kp-pandan-100);
+  --bs-dropdown-link-active-color: var(--kp-pandan-900);
+  box-shadow: 0 .75rem 2rem rgba(14, 51, 38, .12);
+}
+.dropdown-item { display: flex; align-items: center; gap: .65rem; border-radius: .5rem; }
+.dropdown-item .fa-fw { color: rgba(24, 33, 29, .5); }
+.dropdown-item.text-danger .fa-fw { color: inherit; }
+
+/* ---------- Nav, halaman, kad ---------- */
 .nav-pills {
   --bs-nav-pills-link-active-bg: var(--kp-pandan-100);
   --bs-nav-pills-link-active-color: var(--kp-pandan-900);
   --bs-nav-link-color: var(--kp-ink);
   --bs-nav-link-hover-color: var(--kp-pandan-700);
+  --bs-nav-link-font-size: var(--kp-text-base);
 }
 .nav-pills .nav-link { font-weight: 500; }
 .nav-pills .nav-link.active { font-weight: 700; }
+.nav-pills .nav-link .fa-fw { color: rgba(24, 33, 29, .45); }
+.nav-pills .nav-link.active .fa-fw { color: var(--kp-pandan-700); }
 
 .pagination {
   --bs-pagination-active-bg: var(--kp-pandan-700);
   --bs-pagination-active-border-color: var(--kp-pandan-700);
   --bs-pagination-color: var(--kp-pandan-700);
+  --bs-pagination-border-color: var(--kp-line);
 }
-
 .progress { --bs-progress-bar-bg: var(--kp-pandan-500); --bs-progress-bg: var(--kp-pandan-100); }
-
 .card { --bs-card-border-color: var(--kp-line); }
 
 /* ---------- Jenama ---------- */
 .kp-brand {
   font-family: var(--kp-font-display);
   font-weight: 800;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   letter-spacing: -.03em;
   color: var(--kp-pandan-900);
   text-decoration: none;
@@ -161,20 +270,20 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, .kp-display {
 .kp-brand-light { color: #fff; }
 
 .kp-mockup-tag {
-  font-size: .7rem;
+  font-size: var(--kp-text-xs);
   font-weight: 700;
-  padding: .2rem .5rem;
+  padding: .2rem .55rem;
   border-radius: 999px;
   background: var(--kp-kunyit-100);
   color: #7A5308;
 }
 
-/* Lencana status bertitik */
+/* Status bertitik */
 .kp-status {
   display: inline-flex;
   align-items: center;
   gap: .4rem;
-  font-size: .8125rem;
+  font-size: var(--kp-text-sm);
   font-weight: 600;
 }
 .kp-status::before {
@@ -187,65 +296,71 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, .kp-display {
 .kp-status-live { color: var(--kp-pandan-500); }
 .kp-status-trial { color: var(--kp-kunyit-600); }
 .kp-status-off { color: var(--kp-cili); }
-.kp-status-muted { color: rgba(24, 33, 29, .45); }
 
 /* =========================================================
    JURUWANG
    ========================================================= */
-.kp-topbar {
-  background: #fff;
-  border-bottom: 1px solid var(--kp-line);
-}
+.kp-topbar { background: #fff; border-bottom: 1px solid var(--kp-line); }
 
 .kp-chip {
   display: inline-flex;
   align-items: center;
-  gap: .4rem;
-  padding: .3rem .7rem;
+  gap: .45rem;
+  min-height: var(--kp-control-sm);
+  padding: 0 .75rem;
   border-radius: 999px;
   background: var(--kp-santan);
   border: 1px solid var(--kp-line);
-  font-size: .8125rem;
+  font-size: var(--kp-text-sm);
   font-weight: 600;
 }
+.kp-chip .fa-solid { color: rgba(24, 33, 29, .5); }
 
-/* Kawalan segmen jenis pesanan */
+/* Segmen jenis pesanan — tinggi sama dengan butang lalai (40px) */
 .kp-segment {
   display: inline-flex;
-  padding: .25rem;
+  height: var(--kp-control);
+  padding: .1875rem;
   border-radius: 999px;
   background: #fff;
   border: 1px solid var(--kp-line);
 }
 .kp-segment .btn {
+  min-height: 0;
+  height: 100%;
   border: 0;
   border-radius: 999px;
-  padding: .4rem 1rem;
+  padding: 0 1rem;
+  font-size: var(--kp-text-sm);
   color: rgba(24, 33, 29, .7);
 }
-.kp-segment .btn-check:checked + .btn {
-  background: var(--kp-pandan-900);
-  color: #fff;
-}
+.kp-segment .btn-check:checked + .btn { background: var(--kp-pandan-900); color: #fff; }
+.kp-pill { border-radius: 999px; }
 
 .kp-search {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  height: var(--kp-control-lg);
   background: #fff;
   border: 1px solid var(--kp-line);
   border-radius: 999px;
-  padding: .2rem .4rem .2rem 1rem;
+  padding: 0 .5rem 0 1.1rem;
 }
+.kp-search > .fa-solid { color: rgba(24, 33, 29, .45); }
 .kp-search .form-control {
   border: 0;
   box-shadow: none;
   background: transparent;
-  font-size: 1rem;
+  padding-left: 0;
+  min-height: 0;
 }
 .kp-search:focus-within {
   border-color: var(--kp-pandan-500);
   box-shadow: 0 0 0 .2rem rgba(35, 132, 94, .15);
 }
 .kp-kbd {
-  font-size: .75rem;
+  font-size: var(--kp-text-xs);
   font-weight: 600;
   padding: .25rem .55rem;
   border-radius: .4rem;
@@ -257,74 +372,73 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, .kp-display {
 .kp-cat {
   border: 0;
   background: transparent;
-  padding: .35rem .2rem;
+  height: var(--kp-control-sm);
+  padding: 0 .2rem;
   margin-right: 1.1rem;
+  font-size: var(--kp-text-base);
   font-weight: 600;
+  white-space: nowrap;
   color: rgba(24, 33, 29, .55);
   border-bottom: 2px solid transparent;
 }
-.kp-cat.active {
-  color: var(--kp-ink);
-  border-bottom-color: var(--kp-kunyit);
-}
-.kp-cat .kp-count {
-  font-size: .75rem;
-  font-weight: 500;
-  color: rgba(24, 33, 29, .45);
-  margin-left: .2rem;
-}
+.kp-cat.active { color: var(--kp-ink); border-bottom-color: var(--kp-kunyit); }
+.kp-cat .kp-count { font-size: var(--kp-text-xs); font-weight: 500; color: rgba(24, 33, 29, .45); margin-left: .2rem; }
 
-/* Jubin produk */
+/* Jubin produk — gambar dahulu */
 .kp-tile {
   position: relative;
+  display: flex;
+  flex-direction: column;
   width: 100%;
   height: 100%;
+  padding: 0;
   text-align: left;
   background: #fff;
   border: 1px solid var(--kp-line);
-  border-radius: 1rem;
-  padding: .85rem;
+  border-radius: .875rem;
+  overflow: hidden;
   transition: border-color .15s ease, transform .1s ease;
 }
 .kp-tile:hover { border-color: var(--kp-pandan-500); }
 .kp-tile:active { transform: scale(.98); }
 .kp-tile:disabled { opacity: .5; }
-.kp-tile-icon {
+.kp-tile-media {
   display: grid;
   place-items: center;
-  width: 3.25rem;
-  height: 3.25rem;
-  border-radius: .85rem;
-  font-size: 1.75rem;
-  margin-bottom: .75rem;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: var(--kp-santan);
+  color: rgba(24, 33, 29, .22);
+  font-size: 2rem;
 }
-.kp-tint-food { background: var(--kp-kunyit-100); }
-.kp-tint-drink { background: var(--kp-pandan-100); }
-.kp-tint-sweet { background: var(--kp-cili-100); }
+.kp-tile-media img { width: 100%; height: 100%; object-fit: cover; }
+.kp-tile-body { padding: .7rem .8rem .8rem; }
 .kp-tile-name {
+  font-size: var(--kp-text-base);
   font-weight: 600;
-  line-height: 1.25;
-  min-height: 2.5em;
+  line-height: 1.3;
+  min-height: 2.6em;
 }
 .kp-tile-price {
   font-family: var(--kp-font-display);
   font-weight: 700;
-  font-size: 1.05rem;
+  font-size: var(--kp-text-md);
   font-variant-numeric: tabular-nums;
 }
 .kp-tile-flag {
   position: absolute;
-  top: .7rem;
-  right: .7rem;
-  font-size: .7rem;
+  top: .55rem;
+  left: .55rem;
+  font-size: var(--kp-text-xs);
   font-weight: 700;
   padding: .15rem .5rem;
   border-radius: 999px;
+  background: #fff;
 }
 .kp-flag-promo { background: var(--kp-cili); color: #fff; }
-.kp-flag-low { background: var(--kp-kunyit-100); color: #7A5308; }
-.kp-flag-out { background: var(--kp-santan); color: rgba(24, 33, 29, .6); }
-.kp-flag-var { background: var(--kp-pandan-100); color: var(--kp-pandan-700); }
+.kp-flag-low { background: var(--kp-kunyit); color: var(--kp-ink); }
+.kp-flag-out { background: var(--kp-ink); color: #fff; }
+.kp-flag-var { background: #fff; color: var(--kp-pandan-700); }
 
 /* Tiket troli — elemen paling menonjol */
 .kp-ticket {
@@ -334,11 +448,10 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, .kp-display {
   --bs-border-color: rgba(255, 255, 255, .12);
   scrollbar-color: rgba(255, 255, 255, .22) transparent;
 }
-.kp-ticket-line + .kp-ticket-line {
-  border-top: 1px dashed rgba(255, 255, 255, .16);
-}
-.kp-ticket-variant { color: rgba(255, 255, 255, .6); font-size: .8125rem; }
-.kp-ticket-promo { color: var(--kp-kunyit); font-size: .8125rem; font-weight: 600; }
+.kp-ticket *::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, .22); }
+.kp-ticket-line + .kp-ticket-line { border-top: 1px dashed rgba(255, 255, 255, .16); }
+.kp-ticket-variant { color: rgba(255, 255, 255, .6); font-size: var(--kp-text-sm); }
+.kp-ticket-promo { color: var(--kp-kunyit); font-size: var(--kp-text-sm); font-weight: 600; }
 .kp-stepper {
   display: inline-flex;
   align-items: center;
@@ -346,95 +459,119 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, .kp-display {
   background: rgba(255, 255, 255, .08);
 }
 .kp-stepper button {
-  width: 1.9rem;
-  height: 1.9rem;
+  width: var(--kp-control-sm);
+  height: var(--kp-control-sm);
   border: 0;
   border-radius: 50%;
   background: transparent;
   color: #fff;
-  font-weight: 700;
+  font-size: var(--kp-text-xs);
 }
 .kp-stepper button:hover { background: rgba(255, 255, 255, .14); }
-.kp-stepper span {
-  min-width: 1.6rem;
-  text-align: center;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-}
-.kp-ticket-foot {
-  background: var(--kp-pandan-800);
-  border-top: 1px dashed rgba(255, 255, 255, .22);
-}
-.kp-ticket .form-control {
+.kp-stepper span { min-width: 1.75rem; text-align: center; font-weight: 700; font-variant-numeric: tabular-nums; }
+.kp-ticket-foot { background: var(--kp-pandan-800); border-top: 1px dashed rgba(255, 255, 255, .22); }
+
+/* Medan diskaun — togol RM/% + input teks, tiada pemutar nombor */
+.kp-discount {
+  display: flex;
+  align-items: center;
+  height: var(--kp-control);
+  border-radius: 999px;
   background: rgba(255, 255, 255, .08);
-  border-color: transparent;
-  color: #fff;
+  padding: .1875rem;
 }
-.kp-ticket .input-group-text {
+.kp-discount .btn {
+  min-height: 0;
+  height: 100%;
+  border: 0;
+  border-radius: 999px;
+  padding: 0 .7rem;
+  font-size: var(--kp-text-sm);
+  color: rgba(255, 255, 255, .65);
+}
+.kp-discount .btn-check:checked + .btn { background: #fff; color: var(--kp-pandan-900); }
+.kp-discount input[type="text"] {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  outline: 0;
   background: transparent;
-  border-color: transparent;
-  color: rgba(255, 255, 255, .6);
+  color: #fff;
+  text-align: right;
+  font-family: var(--kp-font-display);
+  font-weight: 700;
+  font-size: var(--kp-text-md);
+  font-variant-numeric: tabular-nums;
+  padding: 0 .75rem;
 }
+.kp-discount input[type="text"]::placeholder { color: rgba(255, 255, 255, .35); }
+.kp-discount:focus-within { box-shadow: 0 0 0 2px var(--kp-kunyit); }
+
 .kp-total {
   font-family: var(--kp-font-display);
   font-weight: 800;
-  font-size: 2.4rem;
+  font-size: 2.25rem;
   line-height: 1;
   letter-spacing: -.03em;
   font-variant-numeric: tabular-nums;
 }
-.kp-pay {
-  padding: 1rem;
-  font-size: 1.15rem;
-  border-radius: 1rem;
-}
-.kp-link-light { color: rgba(255, 255, 255, .7); }
-.kp-link-light:hover { color: #fff; }
+.kp-pay { min-height: 3.5rem; border-radius: 1rem; font-size: 1.125rem; }
 
 /* Modal bayaran */
-.kp-modal .modal-content {
-  border: 0;
-  border-radius: 1.375rem;
-}
+.kp-modal .modal-content { border: 0; border-radius: 1.25rem; }
 .kp-method {
-  border: 1px solid var(--kp-line);
-  border-radius: 1rem;
-  padding: .85rem .5rem;
-  text-align: center;
-  font-weight: 600;
+  flex-direction: column;
+  gap: .35rem;
   width: 100%;
+  min-height: 4.5rem;
+  border: 1px solid var(--kp-line);
+  border-radius: .875rem;
+  font-size: var(--kp-text-sm);
 }
+.kp-method .fa-solid { font-size: 1.25rem; color: rgba(24, 33, 29, .55); }
 .btn-check:checked + .kp-method {
   border-color: var(--kp-pandan-700);
   background: var(--kp-pandan-100);
   color: var(--kp-pandan-900);
 }
-.kp-method-icon { display: block; font-size: 1.5rem; margin-bottom: .2rem; }
-.kp-cash-input {
+.btn-check:checked + .kp-method .fa-solid { color: var(--kp-pandan-700); }
+.kp-amount {
+  display: flex;
+  align-items: center;
+  height: 3.75rem;
+  border: 1px solid var(--kp-line);
+  border-radius: .875rem;
+  background: #fff;
+  padding: 0 1rem;
+  gap: .5rem;
+}
+.kp-amount span { color: rgba(24, 33, 29, .5); font-weight: 600; }
+.kp-amount input[type="text"] {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
   font-family: var(--kp-font-display);
   font-weight: 700;
   font-size: 1.75rem;
   font-variant-numeric: tabular-nums;
 }
-.kp-change {
-  background: var(--kp-pandan-100);
-  color: var(--kp-pandan-900);
-  border-radius: 1rem;
-}
+.kp-amount:focus-within { border-color: var(--kp-pandan-500); box-shadow: 0 0 0 .2rem rgba(35, 132, 94, .15); }
+.kp-change { background: var(--kp-pandan-100); color: var(--kp-pandan-900); border-radius: .875rem; }
 
 /* =========================================================
    WAITER
    ========================================================= */
-.kp-waiter-head {
-  background: var(--kp-pandan-900);
-  color: #fff;
-}
+.kp-waiter-head { background: var(--kp-pandan-900); color: #fff; }
 .kp-zone {
   border: 0;
   border-radius: 999px;
-  padding: .35rem .9rem;
+  height: var(--kp-control-sm);
+  padding: 0 .9rem;
   font-weight: 600;
-  font-size: .875rem;
+  font-size: var(--kp-text-sm);
   background: rgba(255, 255, 255, .1);
   color: rgba(255, 255, 255, .8);
   white-space: nowrap;
@@ -444,30 +581,19 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, .kp-display {
 .kp-table {
   display: block;
   height: 100%;
-  border-radius: 1rem;
+  min-height: 6rem;
+  border-radius: .875rem;
   padding: .75rem;
   text-decoration: none;
   color: var(--kp-ink);
   background: #fff;
   border: 1.5px dashed #C7D2C9;
 }
-.kp-table-no {
-  font-family: var(--kp-font-display);
-  font-weight: 800;
-  font-size: 1.6rem;
-  line-height: 1;
-}
-.kp-table-meta { font-size: .8125rem; color: rgba(24, 33, 29, .6); }
-.kp-table-busy {
-  background: var(--kp-kunyit);
-  border: 1.5px solid var(--kp-kunyit);
-}
+.kp-table-no { font-family: var(--kp-font-display); font-weight: 800; font-size: 1.5rem; line-height: 1; }
+.kp-table-meta { font-size: var(--kp-text-sm); color: rgba(24, 33, 29, .6); }
+.kp-table-busy { background: var(--kp-kunyit); border: 1.5px solid var(--kp-kunyit); }
 .kp-table-busy .kp-table-meta { color: rgba(24, 33, 29, .75); }
-.kp-table-held {
-  background: var(--kp-santan);
-  border: 1.5px solid var(--kp-line);
-  color: rgba(24, 33, 29, .5);
-}
+.kp-table-held { background: var(--kp-santan); border: 1.5px solid var(--kp-line); color: rgba(24, 33, 29, .5); }
 .kp-legend-swatch {
   display: inline-block;
   width: .8rem;
@@ -480,60 +606,81 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, .kp-display {
 .kp-swatch-busy { background: var(--kp-kunyit); }
 .kp-swatch-held { background: var(--kp-line); }
 
-.kp-tabbar {
-  background: #fff;
-  border-top: 1px solid var(--kp-line);
-}
+.kp-tabbar { background: #fff; border-top: 1px solid var(--kp-line); }
 .kp-tab {
   flex: 1;
-  text-align: center;
-  padding: .55rem 0 .65rem;
-  font-size: .75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .2rem;
+  padding: .5rem 0 .6rem;
+  font-size: var(--kp-text-xs);
   font-weight: 600;
   color: rgba(24, 33, 29, .55);
   text-decoration: none;
 }
-.kp-tab-icon { display: block; font-size: 1.25rem; line-height: 1.4; }
-.kp-tab.active { color: var(--kp-pandan-900); }
-.kp-tab.active .kp-tab-icon {
-  background: var(--kp-pandan-100);
-  border-radius: 999px;
-  margin: 0 auto;
+.kp-tab .fa-solid {
+  display: grid;
+  place-items: center;
   width: 3.5rem;
+  height: 1.875rem;
+  border-radius: 999px;
+  font-size: 1.05rem;
 }
-.kp-fab {
-  border-radius: 1rem;
-  padding: .9rem;
-}
+.kp-tab.active { color: var(--kp-pandan-900); }
+.kp-tab.active .fa-solid { background: var(--kp-pandan-100); color: var(--kp-pandan-700); }
 
 /* =========================================================
    ADMIN & SUPERADMIN
    ========================================================= */
-.kp-side { width: 16rem; }
+/* offcanvas-lg memaksa latar lutsinar pada >= lg, jadi warna
+   diletak pada pembalut; --bs-offcanvas-bg untuk skrin kecil */
+.kp-side { width: 16rem; --bs-offcanvas-bg: #fff; }
+.kp-side-wrap { background: #fff; border-right: 1px solid var(--kp-line); }
 .kp-side-group {
-  font-size: .75rem;
+  font-size: var(--kp-text-xs);
   font-weight: 600;
   color: rgba(24, 33, 29, .45);
   padding: 1rem .75rem .35rem;
 }
 .kp-side .nav-link {
   display: flex;
-  gap: .65rem;
+  gap: .7rem;
   align-items: center;
-  padding: .5rem .75rem;
-  border-radius: .65rem;
+  min-height: var(--kp-control);
+  padding: 0 .75rem;
+  border-radius: .625rem;
+}
+
+.kp-side-ink { width: 15rem; color: #fff; --bs-offcanvas-bg: var(--kp-ink); }
+.kp-side-ink-wrap { background: var(--kp-ink); }
+.kp-side-ink .nav-link {
+  display: flex;
+  gap: .7rem;
+  align-items: center;
+  min-height: var(--kp-control);
+  padding: 0 .75rem;
+  border-radius: .625rem;
+  color: rgba(255, 255, 255, .7);
+}
+.kp-side-ink .nav-link:hover { color: #fff; background: rgba(255, 255, 255, .06); }
+.kp-side-ink .nav-link.active { color: var(--kp-ink); background: var(--kp-kunyit); font-weight: 700; }
+.kp-side-ink { scrollbar-color: rgba(255, 255, 255, .2) transparent; }
+
+@media (max-width: 991.98px) {
+  .kp-side-ink-wrap, .kp-side-wrap { background: transparent; border: 0; }
 }
 
 .kp-hero {
   background: var(--kp-pandan-900);
   color: #fff;
-  border-radius: 1.375rem;
+  border-radius: 1.25rem;
   --bs-secondary-color: rgba(255, 255, 255, .62);
 }
 .kp-hero-figure {
   font-family: var(--kp-font-display);
   font-weight: 800;
-  font-size: clamp(2.4rem, 5vw, 3.5rem);
+  font-size: clamp(2.25rem, 5vw, 3.25rem);
   line-height: 1;
   letter-spacing: -.035em;
   font-variant-numeric: tabular-nums;
@@ -544,46 +691,11 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, .kp-display {
 .kp-bars rect.kp-bar-now { fill: var(--kp-kunyit); }
 .kp-bars text { fill: rgba(255, 255, 255, .55); font-size: 10px; font-family: "Figtree", sans-serif; }
 
-.kp-panel {
-  background: #fff;
-  border: 1px solid var(--kp-line);
-  border-radius: 1rem;
-}
-.kp-rank {
-  font-family: var(--kp-font-display);
-  font-weight: 800;
-  color: rgba(24, 33, 29, .3);
-  width: 1.5rem;
-}
+.kp-panel { background: #fff; border: 1px solid var(--kp-line); border-radius: .875rem; }
+.kp-rank { font-family: var(--kp-font-display); font-weight: 800; color: rgba(24, 33, 29, .3); width: 1.5rem; }
 .kp-progress-thin { height: .35rem; }
+.kp-pay-icon { width: 1.25rem; color: rgba(24, 33, 29, .45); }
 
-/* Superadmin: dakwat + kunyit, sengaja berbeza dari admin kedai */
-/* offcanvas-lg memaksa latar lutsinar pada >= lg, jadi warna
-   diletak pada pembalut; --bs-offcanvas-bg untuk skrin kecil */
-.kp-side-ink {
-  width: 15rem;
-  color: #fff;
-  --bs-offcanvas-bg: var(--kp-ink);
-}
-.kp-side-ink-wrap { background: var(--kp-ink); }
-.kp-side { --bs-offcanvas-bg: #fff; }
-.kp-side-wrap { background: #fff; border-right: 1px solid var(--kp-line); }
-@media (max-width: 991.98px) {
-  .kp-side-ink-wrap, .kp-side-wrap { background: transparent; border: 0; }
-}
-.kp-side-ink .nav-link {
-  color: rgba(255, 255, 255, .7);
-  padding: .55rem .75rem;
-  border-radius: .65rem;
-  display: flex;
-  gap: .65rem;
-}
-.kp-side-ink .nav-link:hover { color: #fff; background: rgba(255, 255, 255, .06); }
-.kp-side-ink .nav-link.active {
-  color: var(--kp-ink);
-  background: var(--kp-kunyit);
-  font-weight: 700;
-}
 .kp-summary > div + div { border-left: 1px solid var(--kp-line); }
 .kp-summary-figure {
   font-family: var(--kp-font-display);
@@ -592,23 +704,21 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, .kp-display {
   line-height: 1.1;
   font-variant-numeric: tabular-nums;
 }
-.kp-table-clean {
-  --bs-table-bg: transparent;
-  --bs-table-hover-bg: var(--kp-santan);
-}
+.kp-table-clean { --bs-table-bg: transparent; --bs-table-hover-bg: var(--kp-santan); }
 .kp-table-clean thead th {
-  font-size: .8125rem;
+  font-size: var(--kp-text-sm);
   font-weight: 600;
   color: rgba(24, 33, 29, .55);
   border-bottom-color: var(--kp-line);
 }
 .kp-table-clean > :not(caption) > * > * { padding: .85rem 1rem; }
-.kp-avatar {
+.kp-initial {
   display: grid;
   place-items: center;
+  flex-shrink: 0;
   width: 2.25rem;
   height: 2.25rem;
-  border-radius: .65rem;
+  border-radius: .625rem;
   font-weight: 800;
   font-family: var(--kp-font-display);
 }
@@ -624,25 +734,20 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, .kp-display {
   border-top: 1px solid var(--kp-line);
 }
 .kp-role:hover .kp-role-name { color: var(--kp-pandan-700); }
-.kp-role-name {
-  font-family: var(--kp-font-display);
-  font-weight: 800;
-  font-size: 1.6rem;
-  letter-spacing: -.02em;
-}
+.kp-role-name { font-family: var(--kp-font-display); font-weight: 800; font-size: 1.5rem; letter-spacing: -.02em; }
 .kp-role-swatch {
   flex-shrink: 0;
-  width: 3.5rem;
-  height: 3.5rem;
-  border-radius: 1rem;
   display: grid;
   place-items: center;
-  font-size: 1.5rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: .875rem;
+  font-size: 1.25rem;
 }
-.kp-sw-pandan { background: var(--kp-pandan-900); }
-.kp-sw-kunyit { background: var(--kp-kunyit); }
-.kp-sw-mint { background: var(--kp-pandan-100); }
-.kp-sw-ink { background: var(--kp-ink); }
+.kp-sw-pandan { background: var(--kp-pandan-900); color: #fff; }
+.kp-sw-kunyit { background: var(--kp-kunyit); color: var(--kp-ink); }
+.kp-sw-mint { background: var(--kp-pandan-100); color: var(--kp-pandan-700); }
+.kp-sw-ink { background: var(--kp-ink); color: var(--kp-kunyit); }
 
 @media (prefers-reduced-motion: reduce) {
   .kp-tile { transition: none; }
