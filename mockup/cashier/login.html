@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KedaiPOS — PIN kakitangan</title>
+<link rel="stylesheet" href="../../vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="../../vendor/fontawesome/css/all.min.css">
+<link rel="stylesheet" href="../../css/theme.css">
+</head>
+<body>
+
+<!-- Skrin PIN pada peranti berdaftar (PELAN.md 4.1–4.3).
+     Tekan nama dahulu, kemudian PIN 4–6 digit. 3 cubaan salah → dikunci
+     sehingga admin membukanya. Tiada e-mel, tiada senarai bernombor. -->
+<div class="row g-0 min-vh-100">
+
+  <main class="col-lg-7 d-flex flex-column p-4 p-lg-5">
+    <div class="d-flex align-items-center gap-3 mb-5">
+      <span class="kp-brand">KedaiPOS</span>
+      <span class="kp-mockup-tag">Mockup</span>
+      <span class="ms-auto kp-chip text-nowrap"><i class="fa-solid fa-cash-register"></i>Kaunter 1<span class="d-none d-sm-inline">, Cawangan Bangi</span></span>
+    </div>
+
+    <h1 class="h2 fw-bold mb-1">Siapa yang bertugas?</h1>
+    <p class="text-body-secondary mb-4">Tekan nama anda, kemudian masukkan PIN.</p>
+
+    <div class="row row-cols-3 row-cols-sm-4 g-2 g-lg-3" role="radiogroup" aria-label="Kakitangan">
+      <div class="col">
+        <input type="radio" class="btn-check" name="staff" id="stAli" checked>
+        <label class="kp-staff" for="stAli"><span class="kp-initial">A</span>Ali<span class="kp-staff-role">Juruwang</span></label>
+      </div>
+      <div class="col">
+        <input type="radio" class="btn-check" name="staff" id="stAisyah">
+        <label class="kp-staff" for="stAisyah"><span class="kp-initial">A</span>Aisyah<span class="kp-staff-role">Juruwang</span></label>
+      </div>
+      <div class="col">
+        <input type="radio" class="btn-check" name="staff" id="stKumar">
+        <label class="kp-staff" for="stKumar"><span class="kp-initial">K</span>Kumar<span class="kp-staff-role">Waiter</span></label>
+      </div>
+      <div class="col">
+        <input type="radio" class="btn-check" name="staff" id="stMeiLing">
+        <label class="kp-staff" for="stMeiLing"><span class="kp-initial">M</span>Mei Ling<span class="kp-staff-role">Waiter</span></label>
+      </div>
+      <div class="col">
+        <input type="radio" class="btn-check" name="staff" id="stHafiz">
+        <label class="kp-staff" for="stHafiz"><span class="kp-initial">H</span>Hafiz<span class="kp-staff-role">Waiter</span></label>
+      </div>
+      <div class="col">
+        <!-- PIN dikunci selepas 3 cubaan salah -->
+        <input type="radio" class="btn-check" name="staff" id="stSiti" disabled>
+        <label class="kp-staff" for="stSiti"><span class="kp-initial"><i class="fa-solid fa-lock"></i></span>Siti<span class="kp-staff-role">Dikunci, minta admin buka</span></label>
+      </div>
+    </div>
+
+    <div class="mt-auto pt-5 small text-body-secondary">
+      Tauke atau admin? <a href="../auth/login.html">Log masuk dengan e-mel</a>
+    </div>
+  </main>
+
+  <aside class="col-lg-5 kp-pinpad-wrap d-flex flex-column justify-content-center p-4 p-lg-5">
+    <div class="text-center mb-4">
+      <div class="small text-body-secondary mb-1">PIN untuk</div>
+      <div class="h3 fw-bold mb-4">Ali</div>
+      <div class="kp-pin-dots mb-3" aria-label="2 digit dimasukkan">
+        <span class="kp-pin-dot kp-pin-dot-on"></span>
+        <span class="kp-pin-dot kp-pin-dot-on"></span>
+        <span class="kp-pin-dot"></span>
+        <span class="kp-pin-dot"></span>
+      </div>
+      <div class="small text-body-secondary">PIN salah sekali. 2 cubaan lagi sebelum dikunci.</div>
+    </div>
+
+    <div class="kp-pinpad">
+      <button class="kp-key">1</button>
+      <button class="kp-key">2</button>
+      <button class="kp-key">3</button>
+      <button class="kp-key">4</button>
+      <button class="kp-key">5</button>
+      <button class="kp-key">6</button>
+      <button class="kp-key">7</button>
+      <button class="kp-key">8</button>
+      <button class="kp-key">9</button>
+      <button class="kp-key kp-key-muted" aria-label="Padam satu digit"><i class="fa-solid fa-delete-left"></i></button>
+      <button class="kp-key">0</button>
+      <a href="shift.html" class="kp-key kp-key-go d-grid align-items-center text-decoration-none text-center">Masuk</a>
+    </div>
+  </aside>
+</div>
+
+<script src="../../vendor/bootstrap/bootstrap.bundle.min.js"></script>
+</body>
+</html>

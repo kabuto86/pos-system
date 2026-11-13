@@ -1221,7 +1221,7 @@ claude-learn1/
 ├── uploads/        products/{vendor_id}/ (.gitignore isinya)
 ├── assets/img/     product-default.png
 ├── lang/           ms.php · en.php (cache terjemahan, dijana dari DB)
-├── css/            style.css · receipt-58mm.css · receipt-80mm.css
+├── css/            style.css · receipt.css (58 & 80 dalam satu fail, kelas .kp-receipt-58 / -80)
 ├── vendor/bootstrap/
 └── database/       lihat 15.2
     ├── migrate.php          pelari CLI — up · status · seed · fresh · dump

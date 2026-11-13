@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KedaiPOS — Resit 58mm &amp; 80mm</title>
+<link rel="stylesheet" href="../../vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="../../vendor/fontawesome/css/all.min.css">
+<link rel="stylesheet" href="../../css/theme.css">
+<link rel="stylesheet" href="../../css/receipt.css">
+</head>
+<body>
+
+<main class="container py-5">
+  <div class="d-flex align-items-center gap-2 mb-4">
+    <a href="../index.html" class="kp-brand">KedaiPOS</a>
+    <span class="kp-mockup-tag">Mockup</span>
+  </div>
+  <h1 class="h2 fw-bold mb-1">Resit bercetak</h1>
+  <p class="text-body-secondary mb-5">
+    Lebar kertas ikut tetapan vendor, boleh ditindih per kedai. Kandungan sama; 80mm muat
+    lebih banyak dalam satu baris. Bahasa resit ikut bahasa vendor, bukan bahasa juruwang.
+  </p>
+
+  <div class="row g-5 justify-content-center align-items-start">
+
+    <!-- 58mm -->
+    <div class="col-auto">
+      <div class="d-flex justify-content-between align-items-baseline mb-3">
+        <span class="fw-bold">58mm</span>
+        <span class="small text-body-secondary">Lalai, pencetak mudah alih</span>
+      </div>
+      <div class="kp-receipt kp-receipt-58 kp-receipt-paper">
+        <div class="kp-receipt-shop">Restoran Selera Kampung</div>
+        <div class="kp-receipt-center">Cawangan Bangi<br>No 12, Jalan 7/1, Seksyen 7<br>43650 Bangi, Selangor<br>Tel 03-8925 1234</div>
+        <hr class="kp-receipt-rule">
+        <div class="kp-receipt-row"><span>Resit</span><span>K1-0042</span></div>
+        <div class="kp-receipt-row"><span>Tarikh</span><span>13/11/2026 13:42</span></div>
+        <div class="kp-receipt-row"><span>Juruwang</span><span>Ali</span></div>
+        <hr class="kp-receipt-rule">
+        <div class="kp-receipt-row"><span>2 x Nasi Lemak</span><span>18.00</span></div>
+        <div class="kp-receipt-sub">Rendang daging, extra pedas</div>
+        <div class="kp-receipt-row"><span>1 x Nasi Goreng Kampung</span><span>7.00</span></div>
+        <div class="kp-receipt-row kp-receipt-sub"><span>Isnin Ceria</span><span>-1.00</span></div>
+        <div class="kp-receipt-row"><span>1 x Teh Tarik</span><span>3.00</span></div>
+        <div class="kp-receipt-sub">Besar, ais</div>
+        <hr class="kp-receipt-rule">
+        <div class="kp-receipt-row"><span>Subjumlah</span><span>28.00</span></div>
+        <div class="kp-receipt-row"><span>Diskaun</span><span>-1.00</span></div>
+        <div class="kp-receipt-row"><span>SST 6%</span><span>1.62</span></div>
+        <div class="kp-receipt-row kp-receipt-total"><span>JUMLAH</span><span>28.62</span></div>
+        <div class="kp-receipt-row"><span>Tunai</span><span>30.00</span></div>
+        <div class="kp-receipt-row"><span>Baki</span><span>1.38</span></div>
+        <hr class="kp-receipt-rule">
+        <div class="kp-receipt-center">Terima kasih, datang lagi</div>
+      </div>
+    </div>
+
+    <!-- 80mm -->
+    <div class="col-auto">
+      <div class="d-flex justify-content-between align-items-baseline mb-3">
+        <span class="fw-bold">80mm</span>
+        <span class="small text-body-secondary">Pencetak kaunter biasa</span>
+      </div>
+      <div class="kp-receipt kp-receipt-80 kp-receipt-paper">
+        <div class="kp-receipt-shop">Restoran Selera Kampung</div>
+        <div class="kp-receipt-center">Cawangan Bangi<br>No 12, Jalan 7/1, Seksyen 7, 43650 Bangi, Selangor<br>Tel 03-8925 1234</div>
+        <hr class="kp-receipt-rule">
+        <div class="kp-receipt-row"><span>Resit K1-0042</span><span>13/11/2026 13:42</span></div>
+        <div class="kp-receipt-row"><span>Juruwang Ali</span><span>Kaunter 1</span></div>
+        <div class="kp-receipt-row"><span>Pesanan</span><span>Kaunter</span></div>
+        <hr class="kp-receipt-rule">
+        <div class="kp-receipt-row"><span>2 x Nasi Lemak @ 9.00</span><span>18.00</span></div>
+        <div class="kp-receipt-sub">Rendang daging, extra pedas</div>
+        <div class="kp-receipt-row"><span>1 x Nasi Goreng Kampung @ 7.00</span><span>7.00</span></div>
+        <div class="kp-receipt-row kp-receipt-sub"><span>Promosi Isnin Ceria</span><span>-1.00</span></div>
+        <div class="kp-receipt-row"><span>1 x Teh Tarik @ 3.00</span><span>3.00</span></div>
+        <div class="kp-receipt-sub">Besar, ais</div>
+        <hr class="kp-receipt-rule">
+        <div class="kp-receipt-row"><span>Subjumlah</span><span>28.00</span></div>
+        <div class="kp-receipt-row"><span>Diskaun promosi</span><span>-1.00</span></div>
+        <div class="kp-receipt-row"><span>SST 6%</span><span>1.62</span></div>
+        <div class="kp-receipt-row kp-receipt-total"><span>JUMLAH (RM)</span><span>28.62</span></div>
+        <div class="kp-receipt-row"><span>Tunai</span><span>30.00</span></div>
+        <div class="kp-receipt-row"><span>Baki</span><span>1.38</span></div>
+        <hr class="kp-receipt-rule">
+        <div class="kp-receipt-center">Terima kasih, datang lagi<br>Barang yang dibeli tidak boleh ditukar tanpa resit</div>
+      </div>
+    </div>
+
+    <!-- 58mm, void: dicetak semula selepas resit dibatalkan -->
+    <div class="col-auto">
+      <div class="d-flex justify-content-between align-items-baseline mb-3">
+        <span class="fw-bold">Cetak semula, void</span>
+        <span class="small text-body-secondary">58mm</span>
+      </div>
+      <div class="kp-receipt kp-receipt-58 kp-receipt-paper">
+        <div class="kp-receipt-shop">Restoran Selera Kampung</div>
+        <div class="kp-receipt-center">Cawangan Bangi</div>
+        <div class="kp-receipt-void">VOID</div>
+        <div class="kp-receipt-row"><span>Resit</span><span>K1-0040</span></div>
+        <div class="kp-receipt-row"><span>Tarikh</span><span>13/11/2026 13:31</span></div>
+        <div class="kp-receipt-row"><span>Take away</span><span>007</span></div>
+        <hr class="kp-receipt-rule">
+        <div class="kp-receipt-row"><span>1 x Mee Goreng Mamak</span><span>6.00</span></div>
+        <div class="kp-receipt-row"><span>1 x Ayam Goreng Berempah</span><span>5.50</span></div>
+        <hr class="kp-receipt-rule">
+        <div class="kp-receipt-row"><span>Subjumlah</span><span>11.50</span></div>
+        <div class="kp-receipt-row"><span>SST 6%</span><span>0.69</span></div>
+        <div class="kp-receipt-row kp-receipt-total"><span>JUMLAH</span><span>12.19</span></div>
+        <hr class="kp-receipt-rule">
+        <div>Void 13:36 oleh Ali</div>
+        <div>Sebab: Salah tekan item</div>
+        <div class="kp-receipt-center mt-2">SALINAN, BUKAN RESIT JUALAN</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="../../vendor/bootstrap/bootstrap.bundle.min.js"></script>
+</body>
+</html>

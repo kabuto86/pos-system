@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KedaiPOS — Syif</title>
+<link rel="stylesheet" href="../../vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="../../vendor/fontawesome/css/all.min.css">
+<link rel="stylesheet" href="../../css/theme.css">
+</head>
+<body>
+
+<header class="kp-topbar">
+  <div class="d-flex align-items-center gap-3 px-3 px-lg-4 py-2">
+    <span class="kp-brand">KedaiPOS</span>
+    <span class="kp-mockup-tag">Mockup</span>
+    <div class="vr d-none d-lg-block"></div>
+    <div class="d-none d-lg-block lh-sm">
+      <div class="fw-bold">Restoran Selera Kampung</div>
+      <div class="small text-body-secondary">Cawangan Bangi</div>
+    </div>
+    <div class="ms-auto d-flex align-items-center gap-2">
+      <span class="kp-chip"><i class="fa-solid fa-cash-register"></i>Kaunter 1</span>
+      <span class="kp-chip"><i class="fa-regular fa-user"></i>Ali</span>
+    </div>
+  </div>
+</header>
+
+<main class="container py-4 py-lg-5">
+
+  <!-- Hanya untuk mockup: tukar antara dua keadaan skrin -->
+  <ul class="nav nav-pills justify-content-center mb-4" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#openShift" type="button" role="tab" aria-selected="true">Buka syif</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" data-bs-toggle="pill" data-bs-target="#closeShift" type="button" role="tab" aria-selected="false">Tutup syif</button>
+    </li>
+  </ul>
+
+  <div class="tab-content">
+
+    <!-- BUKA SYIF: dipapar selepas PIN jika kaunter ini tiada syif terbuka -->
+    <section class="tab-pane fade show active" id="openShift" role="tabpanel">
+      <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-5">
+          <div class="kp-panel p-4 p-lg-5">
+            <h1 class="h3 fw-bold mb-1">Selamat pagi, Ali</h1>
+            <p class="text-body-secondary mb-4">Khamis, 13 November 2026. Kira wang dalam laci sebelum mula.</p>
+
+            <label for="openingFloat" class="form-label">Wang permulaan dalam laci</label>
+            <div class="kp-amount mb-2">
+              <span>RM</span>
+              <input type="text" id="openingFloat" inputmode="decimal" autocomplete="off" value="150.00">
+            </div>
+            <div class="d-flex flex-wrap gap-2 mb-4">
+              <button class="btn btn-light btn-sm kp-pill kp-num">Sama seperti semalam, 150.00</button>
+              <button class="btn btn-light btn-sm kp-pill kp-num">100</button>
+              <button class="btn btn-light btn-sm kp-pill kp-num">200</button>
+            </div>
+
+            <a href="index.html" class="btn btn-kunyit btn-lg w-100">Buka syif</a>
+            <p class="small text-body-secondary mt-3 mb-0">
+              <i class="fa-solid fa-volume-high me-1"></i>Bunyi amaran pesanan QR akan dihidupkan sebaik syif dibuka.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TUTUP SYIF: kiraan tunai mengikut nilai, beza dikira automatik -->
+    <section class="tab-pane fade" id="closeShift" role="tabpanel">
+      <div class="row g-4 justify-content-center">
+
+        <div class="col-lg-5">
+          <div class="kp-panel p-4 h-100">
+            <h1 class="h4 fw-bold mb-1">Tutup syif</h1>
+            <p class="small text-body-secondary mb-4">Ali, Kaunter 1. Dibuka 08:02, kini 16:10.</p>
+
+            <dl class="row g-0 mb-0 kp-num">
+              <dt class="col-7 fw-normal text-body-secondary">Transaksi</dt>
+              <dd class="col-5 text-end mb-2">47</dd>
+              <dt class="col-7 fw-normal"><i class="fa-solid fa-money-bill-wave kp-pay-icon me-1"></i>Tunai</dt>
+              <dd class="col-5 text-end mb-2">842.50</dd>
+              <dt class="col-7 fw-normal"><i class="fa-solid fa-credit-card kp-pay-icon me-1"></i>Kad</dt>
+              <dd class="col-5 text-end mb-2">410.00</dd>
+              <dt class="col-7 fw-normal"><i class="fa-solid fa-qrcode kp-pay-icon me-1"></i>DuitNow QR</dt>
+              <dd class="col-5 text-end mb-2">198.00</dd>
+              <dt class="col-7 fw-normal text-body-secondary">Void, 1 resit</dt>
+              <dd class="col-5 text-end mb-2 text-body-secondary">12.19</dd>
+            </dl>
+            <hr>
+            <dl class="row g-0 mb-0 kp-num">
+              <dt class="col-7 fw-normal text-body-secondary">Wang permulaan</dt>
+              <dd class="col-5 text-end mb-2">150.00</dd>
+              <dt class="col-7 fw-normal text-body-secondary">Jualan tunai</dt>
+              <dd class="col-5 text-end mb-2">842.50</dd>
+              <dt class="col-7">Sepatutnya dalam laci</dt>
+              <dd class="col-5 text-end mb-0 fw-bold">992.50</dd>
+            </dl>
+            <p class="small text-body-secondary mt-3 mb-0">Bayaran online pelanggan tidak masuk syif ini. Wang itu terus ke akaun gerbang kedai.</p>
+          </div>
+        </div>
+
+        <div class="col-lg-5">
+          <div class="kp-panel p-4 h-100 d-flex flex-column">
+            <h2 class="h5 fw-bold mb-3">Kira wang dalam laci</h2>
+
+            <div class="kp-denom"><span class="kp-denom-label">RM 100</span><input type="text" class="form-control form-control-sm" inputmode="numeric" value="6" aria-label="Bilangan RM 100"><span class="text-end kp-num">600.00</span></div>
+            <div class="kp-denom"><span class="kp-denom-label">RM 50</span><input type="text" class="form-control form-control-sm" inputmode="numeric" value="4" aria-label="Bilangan RM 50"><span class="text-end kp-num">200.00</span></div>
+            <div class="kp-denom"><span class="kp-denom-label">RM 20</span><input type="text" class="form-control form-control-sm" inputmode="numeric" value="6" aria-label="Bilangan RM 20"><span class="text-end kp-num">120.00</span></div>
+            <div class="kp-denom"><span class="kp-denom-label">RM 10</span><input type="text" class="form-control form-control-sm" inputmode="numeric" value="5" aria-label="Bilangan RM 10"><span class="text-end kp-num">50.00</span></div>
+            <div class="kp-denom"><span class="kp-denom-label">RM 5</span><input type="text" class="form-control form-control-sm" inputmode="numeric" value="3" aria-label="Bilangan RM 5"><span class="text-end kp-num">15.00</span></div>
+            <div class="kp-denom"><span class="kp-denom-label">RM 1</span><input type="text" class="form-control form-control-sm" inputmode="numeric" value="5" aria-label="Bilangan RM 1"><span class="text-end kp-num">5.00</span></div>
+            <div class="kp-denom"><span class="kp-denom-label">Syiling</span><input type="text" class="form-control form-control-sm" inputmode="decimal" value="0.50" aria-label="Jumlah syiling"><span class="text-end kp-num">0.50</span></div>
+
+            <div class="d-flex justify-content-between align-items-end border-top pt-3 mt-2 mb-3">
+              <span class="fw-semibold">Dikira</span>
+              <span class="kp-variance-figure">990.50</span>
+            </div>
+
+            <div class="kp-variance d-flex justify-content-between align-items-center px-3 py-3 mb-3">
+              <span class="fw-semibold"><i class="fa-solid fa-triangle-exclamation me-1"></i>Kurang daripada sepatutnya</span>
+              <span class="h4 fw-bold mb-0 kp-num">RM 2.00</span>
+            </div>
+
+            <label for="closeNote" class="form-label">Catatan <span class="text-danger fw-normal">wajib bila ada beza</span></label>
+            <textarea class="form-control mb-4" id="closeNote" rows="2" placeholder="Contoh: baki tersalah beri kepada pelanggan"></textarea>
+
+            <button class="btn btn-primary btn-lg w-100 mt-auto"><i class="fa-solid fa-print"></i>Tutup syif &amp; cetak laporan</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script src="../../vendor/bootstrap/bootstrap.bundle.min.js"></script>
+</body>
+</html>
