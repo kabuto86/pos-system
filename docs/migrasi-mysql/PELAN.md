@@ -876,7 +876,16 @@ tambahan per vendor.
 | `stock` | Terima stok, pelarasan, log pergerakan, amaran stok rendah | | semua |
 | `reports` | Laporan lanjutan, Z-report, eksport CSV | | semua |
 | `csv_import` | Import produk pukal dari CSV | | semua |
+| `waiter_app` | Aplikasi waiter — ambil pesanan di meja dari telefon | | kedai makan |
 | `qr_order` | Pesanan QR pelanggan | | kedai makan |
+
+> **Tanpa `waiter_app`:** kedai makan masih boleh buka meja dan ambil pesanan
+> dari **skrin juruwang** (Fasa 7). Peranan `waiter` tidak boleh log masuk,
+> `SaveUserJob` menolak pengguna baharu berperanan waiter, dan semua
+> endpoint `waiter/` memanggil `Module::require('waiter_app')`.
+>
+> **Tanpa `qr_order`:** halaman `order/` papar "tidak tersedia" (3.9).
+> Kedua-dua modul bebas — pelan boleh ada satu, kedua-dua, atau tiada.
 
 > Stok **tetap ditolak** semasa jualan walaupun tanpa modul `stock` — modul
 > itu hanya menambah alat pengurusannya. Menutup modul tidak boleh
@@ -985,7 +994,12 @@ claude-learn1/
 ├── lang/           ms.php · en.php (cache terjemahan, dijana dari DB)
 ├── css/            style.css · receipt-58mm.css · receipt-80mm.css
 ├── vendor/bootstrap/
-└── database/       schema.sql · seed.sql
+└── database/       lihat 15.2
+    ├── migrate.php          pelari CLI — up · status · seed · fresh · dump
+    ├── migrations/          001_platform.sql … 007_operations.sql
+    ├── seeds/core/          wajib di semua persekitaran (modul, bahasa)
+    ├── seeds/demo/          data demo — dev sahaja (pelan, vendor, produk)
+    └── schema.sql           JANA oleh `migrate.php dump` — rujukan, jangan sunting
 ```
 
 ## 13. Keselamatan — senarai semak wajib
@@ -1071,12 +1085,12 @@ Langkah pemasangan:
 1. Pastikan Apache + MySQL berjalan dalam XAMPP Control Panel
 2. `CREATE DATABASE pos_saas CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`
    kemudian cipta `pos_user` dengan akses ke `pos_saas` sahaja
-3. Import (perhatikan flag charset — lihat 15.1):
-   `mysql --default-character-set=utf8mb4 -u root pos_saas < database/schema.sql`
-   diikuti `seed.sql`
-4. Salin `config/database.example.php` → `config/database.php`, isi kredensial
-5. Log masuk dengan e-mel akaun seed — vendor KEDAI01 (runcit) atau
-   KEDAI02 (kedai makan). E-mel sebenar ada dalam `database/seed.sql`
+3. Salin `config/database.example.php` → `config/database.php`, isi
+   kredensial dan `'env' => 'local'`
+4. `php database/migrate.php fresh --demo` — cipta semua jadual, isi data
+   teras dan data demo (lihat 15.2)
+5. Log masuk dengan akaun demo — senarainya dicetak di hujung arahan
+   langkah 4, dan dalam `database/seeds/demo/README.md`
 6. Superadmin: `http://localhost/{folder}/superadmin/`
 
 ### 15.1 Emoji dan `mysql.exe` di Windows — perangkap yang sudah disahkan
@@ -1107,6 +1121,56 @@ Peraturan yang mesti diikut:
 5. Sahkan selepas import, jangan andaikan:
    `SELECT HEX(icon), CHAR_LENGTH(icon), LENGTH(icon) FROM products LIMIT 3;`
    — `🍛` mesti `F09F8D9B`, 1 aksara, 4 bait
+
+> **Pelari migrasi (15.2) mengelak perangkap ini sepenuhnya** kerana ia
+> menjalankan fail melalui PDO utf8mb4, bukan `mysql.exe`. Peraturan di atas
+> masih terpakai jika sesiapa mengimport fail SQL secara manual.
+
+### 15.2 Migrasi, schema & seed
+
+**Diputuskan Sufi, 13 Nov 2026:** pangkalan data dibina melalui migrasi
+bernombor + seed, supaya mesin baharu atau pelayan sebenar boleh disediakan
+dengan satu arahan, dan perubahan skema selepas ini tidak perlu disunting
+tangan dalam phpMyAdmin.
+
+**`database/migrate.php`** — PHP vanila, CLI sahaja (`php_sapi_name()` mesti
+`cli`), sambung melalui `core/Database.php` (PDO utf8mb4):
+
+| Arahan | Buat apa |
+|---|---|
+| `php database/migrate.php up` | Jalankan migrasi yang belum dijalankan, ikut nombor |
+| `php database/migrate.php status` | Senarai migrasi: sudah / belum |
+| `php database/migrate.php seed` | Jalankan `seeds/core/` sahaja |
+| `php database/migrate.php seed --demo` | `seeds/core/` + `seeds/demo/` |
+| `php database/migrate.php fresh --demo` | **Padam semua jadual**, `up`, kemudian seed demo |
+| `php database/migrate.php dump` | Jana semula `schema.sql` dari pangkalan data semasa |
+| `php database/migrate.php superadmin` | Cipta akaun superadmin — tanya e-mel & kata laluan di terminal. Untuk pelayan sebenar, di mana seed demo tidak dijalankan |
+
+- Rekod migrasi dalam jadual sistem **`schema_migrations`**(version PK,
+  applied_at) — jadual ke-37, bukan sebahagian model aplikasi
+- **Migrasi tidak disunting selepas di-commit.** Ubah skema = fail baharu
+  (`008_add_xxx.sql`). Inilah yang membolehkan pelayan sebenar dinaik taraf
+  tanpa kehilangan data
+- Satu kenyataan SQL berakhir dengan `;` di hujung baris — pelari memecah
+  fail pada sempadan itu supaya ralat menunjuk kenyataan yang tepat
+- DDL MySQL auto-commit, jadi migrasi yang gagal separuh jalan **tidak**
+  digulung balik. Pelari berhenti serta-merta dan cetak fail + kenyataan
+- `fresh` dan `--demo` **ditolak** jika `config.env` bukan `local`
+- Seed boleh `.sql` atau `.php`. Akaun demo mesti `.php` kerana kata laluan
+  dan PIN perlu `password_hash()` Argon2id — hash tidak boleh ditulis tangan
+- Seed demo **idempotent**: dijalankan dua kali tidak menggandakan data
+  (`INSERT … ON DUPLICATE KEY UPDATE`)
+
+**Pembahagian seed:**
+
+| `seeds/core/` — wajib, semua persekitaran | `seeds/demo/` — `local` sahaja |
+|---|---|
+| `modules` (7 modul, 9.4) | `plans` Asas / Pro / Percubaan — **harga contoh**, Sufi tetapkan sebenar melalui panel superadmin |
+| `languages` (ms, en) | `plan_modules`, `plan_outlet_tiers` |
+| `translations` rentetan sistem | KEDAI01 (runcit, Asas, 1 kedai) · KEDAI02 (kedai makan, Pro, 2 kedai) |
+| | 18 produk setiap vendor, kategori, variasi, kaedah bayaran, tetapan |
+| | Kaunter, meja + `qr_token`, akaun admin / juruwang / waiter, superadmin demo |
+| | Beberapa transaksi lepas — supaya dashboard & laporan ada isi |
 
 ## 16. Logik sedia ada yang boleh dipindah terus
 
