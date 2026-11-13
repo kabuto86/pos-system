@@ -144,26 +144,38 @@ vendor mana, dan satu penyusuran yang terlepas menjadi kebocoran.
 `ValidateOutletJob` mengesahkan `outlet_id` milik vendor semasa. Setiap
 endpoint yang menerima `outlet_id` mesti memanggilnya.
 
-### 3.9 Halaman awam pesanan QR — satu-satunya pengecualian
+### 3.9 Halaman awam — satu-satunya pengecualian
 
-`order/` ialah satu-satunya bahagian sistem tanpa log masuk. Peraturan 3.1
-masih dipatuhi dalam semangatnya: `vendor_id` **tidak pernah** dihantar oleh
-pelanggan. Pelanggan hanya membawa `qr_token`, dan pelayan mencari
-`vendor_id`, `outlet_id` dan `table_id` daripadanya.
+Tiga bahagian sistem tanpa log masuk:
+
+| Laluan | Untuk | Pelanggan bawa | Pelayan cari |
+|---|---|---|---|
+| `order/?t=…` | Pesanan QR di meja | `qr_token` meja | vendor, outlet, meja |
+| `s/{shop_slug}` | Kedai online, ambil sendiri (9.7) | `shop_slug` kedai | vendor, outlet |
+| `pay/callback.php` | Panggilan balik gerbang pembayaran (9.6) | rujukan bayaran kita | vendor, pesanan |
+
+Peraturan 3.1 masih dipatuhi dalam semangatnya: `vendor_id` **tidak pernah**
+dihantar oleh pelanggan atau gerbang. Pelayan sentiasa mencarinya daripada
+pengecam yang disimpan dalam pangkalan data kita sendiri.
+
+Peraturan khusus QR meja:
 
 - `qr_token` 32 aksara heks dari `random_bytes(16)` — tidak boleh diteka,
   bukan id meja berjujukan
 - Token tidak sah, meja tidak aktif, modul `qr_order` tiada dalam pelan, atau
   tetapan `qr_order_enabled` dimatikan → **halaman sama** "Pesanan QR tidak
   tersedia", tanpa membezakan sebabnya
-- Pesanan masuk sebagai `status = pending`. **Stok tidak ditolak** dan dapur
-  tidak nampak apa-apa sehingga waiter/juruwang tekan **Terima**
+- **Bayar online** → `awaiting_payment`; bila gerbang sahkan bayaran, pesanan
+  **terus aktif dan masuk dapur** tanpa Terima (9.6)
+- **Bayar di kaunter** → `pending`. **Stok tidak ditolak** dan dapur tidak
+  nampak apa-apa sehingga kakitangan tekan **Terima** — dengan amaran berlapis
+  supaya tiada pesanan terlepas (9.8)
+- Vendor tetapkan pilihan bayaran yang dibenarkan: online sahaja, kaunter
+  sahaja, atau kedua-duanya (`qr_payment_options`)
 - Hanya **satu** pesanan `pending` setiap meja pada satu masa, had 20 baris
   dan 20 unit setiap baris — menghalang usikan dari luar kedai
 - Harga, promosi dan cukai dikira semula di pelayan; harga dari pelayar diabaikan
 - Admin boleh **jana semula** token meja → QR lama yang dicetak terus mati
-- Pelanggan **tidak membayar** melalui QR — bayaran di kaunter seperti biasa
-  (gerbang pembayaran masih tertangguh)
 
 ## 4. Log masuk & keselamatan kata laluan
 
@@ -302,7 +314,7 @@ aksara, bcrypt 60. 255 memberi ruang untuk algoritma masa depan.
 | `admin` | Ada | Semua dalam vendornya | Melihat vendor lain |
 | `cashier` | Ada | POS, bayaran, syif, sejarah syif sendiri | Katalog, laporan penuh, tetapan |
 | `waiter` | Ada | Buka meja, ambil & tambah pesanan, **terima pesanan QR** | **Bayaran, tutup bil, void, refund, laporan** |
-| *pelanggan* | *dari token meja* | Lihat menu, hantar pesanan untuk mejanya sahaja | Apa-apa selain itu — **bukan akaun**, tiada log masuk |
+| *pelanggan* | *dari token meja / slug kedai* | Lihat menu, hantar pesanan, bayar online, lihat status pesanannya sendiri | Apa-apa selain itu — **bukan akaun**, tiada log masuk |
 
 > `superadmin` ialah pemilik platform (Sufi). `vendor_id` NULL menjadikannya
 > jelas dalam kod bahawa akaun ini tiada kedai — dan menjadikan mana-mana
@@ -311,7 +323,7 @@ aksara, bcrypt 60. 255 memberi ruang untuk algoritma masa depan.
 > Sekatan waiter **mesti disemak di dalam setiap endpoint**. Menyorok butang
 > di UI bukan kawalan keselamatan.
 
-## 6. Skema pangkalan data — 37 jadual
+## 6. Skema pangkalan data — 39 jadual
 
 Pangkalan data: `pos_saas` · `utf8mb4_unicode_ci` · InnoDB
 
@@ -335,6 +347,7 @@ status ENUM(trial/active/suspended/cancelled), phone, address,
 created_at, updated_at
 
 **`outlets`** — id, **vendor_id**(FK), code, name, address, phone,
+**shop_slug**(nullable, UNIQUE **global** — `s/kak-ani`, lihat 9.7),
 is_active, opened_at, closed_at, created_at
 · UNIQUE(vendor_id, code)
 
@@ -429,11 +442,14 @@ price_delta, sort_order, is_active
 ### C. Pesanan (5) — teras mod kedai makan
 
 **`orders`** — id, **vendor_id**, **outlet_id**(FK), order_no, **business_day**(DATE),
-**order_type** ENUM(dine_in/takeaway/counter),
+**order_type** ENUM(dine_in/takeaway/counter/**pickup**),
 table_id(FK, nullable), **takeaway_no**(nullable),
-status ENUM(**pending**/open/billed/paid/cancelled), guest_count,
-**source** ENUM(staff/qr),
-opened_by(FK users, **nullable** — NULL bila `source = qr`),
+status ENUM(**awaiting_payment**/**pending**/open/billed/paid/cancelled), guest_count,
+**source** ENUM(staff/qr/**online**),
+**payment_choice** ENUM(counter/online, nullable — NULL untuk pesanan kakitangan),
+**customer_name**, **customer_phone**, **pickup_at** (nullable — pesanan `pickup` sahaja),
+**public_token** CHAR(32) (nullable — pautan status pesanan untuk pelanggan),
+opened_by(FK users, **nullable** — NULL bila `source` = qr / online),
 confirmed_by(FK users, nullable), confirmed_at,
 terminal_id(FK, nullable), note, opened_at, closed_at
 · UNIQUE(outlet_id, business_day, takeaway_no)
@@ -472,11 +488,13 @@ created_at, started_at, ready_at, printed_at
 status ENUM(free/occupied/reserved), current_order_id, is_active, sort_order,
 **qr_token** CHAR(32) UNIQUE (global, rawak — lihat 3.9)
 
-### D. Bayaran (4)
+### D. Bayaran (6)
 
 **`transactions`** — id, **vendor_id**, **outlet_id**(FK), receipt_no, **business_day**(DATE),
 type ENUM(sale/refund), ref_transaction_id(nullable),
-terminal_id(FK), shift_id(FK), user_id(FK),
+terminal_id(FK, **nullable**), shift_id(FK, **nullable**), user_id(FK, **nullable**)
+— ketiga-tiganya NULL untuk bayaran online (tiada kaunter, tiada syif),
+**online_payment_id**(FK, nullable),
 **order_type**, **table_label**, **takeaway_no** (salinan gambaran),
 subtotal, tax_rate, tax, **service_charge**, **packaging_fee**,
 **promo_discount**, **manual_discount**, discount,
@@ -498,6 +516,24 @@ qty, line_total, variant_label, refunded_qty
 
 **`transaction_item_options`** — id, **vendor_id**, item_id(FK),
 **group_name**, **option_label**, **price_delta**
+
+**`vendor_payment_gateways`** — id, **vendor_id**, gateway
+ENUM(toyyibpay/billplz/senangpay/stripe), **credentials_enc** (JSON
+disulitkan), is_sandbox, is_active, verified_at, updated_by, updated_at
+· UNIQUE(vendor_id, gateway)
+
+> Kunci API **milik vendor** — wang pelanggan terus ke akaun vendor, platform
+> tidak memegang wang (keputusan Sufi, 13 Nov 2026). Disulitkan dengan
+> `sodium_crypto_secretbox`, kunci induk dalam `config/app.php` (luar git).
+> Kunci tidak pernah dipapar semula selepas disimpan — hanya 4 aksara akhir.
+> Satu sahaja boleh `is_active = 1` setiap vendor.
+
+**`online_payments`** — id, **vendor_id**, **outlet_id**, order_id(FK),
+gateway, **reference** CHAR(32) UNIQUE (rawak — dihantar kepada gerbang),
+gateway_bill_id, amount, currency, status
+ENUM(pending/paid/failed/expired/refunded), paid_at, expires_at,
+callback_payload (JSON, untuk audit), created_at
+· UNIQUE(gateway, gateway_bill_id)
 
 **`transaction_orders`** — **vendor_id**, transaction_id(FK), order_id(FK)
 > Jadual penghubung untuk **gabung bil**: satu bayaran menutup beberapa
@@ -579,7 +615,11 @@ updated_by · PK(vendor_id, outlet_id, setting_key)
 > **`discount_tax_mode`** (`after_tax` — kekalkan kelakuan sekarang),
 > **`manual_discount_max_percent`** (0 = tiada had),
 > **`manual_discount_needs_approval`** (0), **`default_language`** (ms),
-> **`qr_order_enabled`** (0 — per kedai; hanya bermakna jika modul `qr_order` ada)
+> **`qr_order_enabled`** (0 — per kedai; hanya bermakna jika modul `qr_order` ada),
+> **`qr_payment_options`** (`counter` / `online` / `both`),
+> **`online_order_enabled`** (0), **`pickup_payment_options`** (`counter` / `online` / `both`),
+> **`pickup_lead_minutes`** (30), **`pickup_hours`** (JSON jam buka ambil),
+> **`online_payment_expiry_minutes`** (15)
 >
 > `business_type` **tiada di sini** — ia dalam `vendors`, kerana ia menentukan
 > ciri yang dilanggan, bukan pilihan yang boleh ditukar sesuka hati.
@@ -803,15 +843,38 @@ WAITER / KAUNTER                KAUNTER
 ### Kedai makan — pesanan QR pelanggan (modul `qr_order`)
 
 ```
-PELANGGAN (telefon sendiri)        WAITER / JURUWANG
+PELANGGAN (telefon sendiri)        SISTEM / KAKITANGAN
   Imbas QR di meja 5
-  Lihat menu, pilih item
-  Hantar pesanan ------------->  Notifikasi: "Meja 5 — pesanan baharu"
-  "Menunggu disahkan"              Semak → TERIMA (atau tolak)
-                                   Stok ditolak, meja jadi berisi
-  "Pesanan diterima"
-  Tambah lagi → pending baharu -->  Terima → masuk pesanan terbuka sama
-                                 Pelanggan bayar di kaunter seperti biasa
+  Pilih item, pilih cara bayar
+
+  (a) BAYAR ONLINE
+  Ke halaman gerbang (FPX/kad)
+  Bayar ---------------------->  Gerbang panggil pay/callback.php
+                                 Tandatangan + amaun disahkan
+                                 Stok ditolak → TERUS ke dapur
+  "Dibayar, sedang disediakan"   (tiada butang Terima)
+
+  (b) BAYAR DI KAUNTER
+  Hantar pesanan ------------->  Bunyi + sepanduk: "Meja 5 — pesanan QR"
+  "Menunggu disahkan · 1 min"      (kaunter, waiter, DAN skrin dapur)
+                                 Kakitangan / dapur tekan TERIMA
+                                 Stok ditolak → ke dapur
+  "Pesanan diterima"             Bayar di kaunter selepas makan
+```
+
+### Peniaga dari rumah — kedai online, ambil sendiri (modul `online_order`)
+
+```
+PELANGGAN (pautan dari WhatsApp/IG)  PENIAGA
+  Buka kedaipos.my/s/kak-ani
+  Pilih barang, isi nama, telefon,
+  masa ambil, cara bayar
+  (a) Bayar online ---------------->  Disahkan gerbang → terus aktif
+                                     (masuk dapur jika makanan)
+  (b) Bayar semasa ambil ---------->  Perlu TERIMA (sama seperti QR kaunter)
+  Halaman status (pautan rawak)       Tandakan "Siap untuk diambil"
+  "Siap — sila datang ambil"          Pelanggan datang, ambil, (bayar)
+                                     Tandakan "Sudah diambil"
 ```
 
 ## 9. Langganan, had pelan & bil
@@ -897,6 +960,12 @@ tambahan per vendor.
 | `waiter_app` | Aplikasi waiter — ambil pesanan di meja dari telefon | | kedai makan |
 | `qr_order` | Pesanan QR pelanggan | | kedai makan |
 | `kitchen` | Dapur — skrin pesanan + slip automatik | | kedai makan |
+| `online_payment` | Bayaran online melalui gerbang vendor sendiri (9.6) | | semua |
+| `online_order` | Kedai online, ambil sendiri — untuk peniaga dari rumah (9.7) | | semua |
+
+> `online_payment` ialah modul **sokongan**: ia menambah pilihan "bayar online"
+> pada `qr_order` dan `online_order`. Tanpanya, kedua-dua modul itu masih
+> berfungsi dengan "bayar di kaunter / semasa ambil" sahaja.
 
 > **Tanpa `waiter_app`:** kedai makan masih boleh buka meja dan ambil pesanan
 > dari **skrin juruwang** (Fasa 7). Peranan `waiter` tidak boleh log masuk,
@@ -968,6 +1037,94 @@ dalam huruf besar. **Tiada harga.** Tiada emoji (sama seperti resit).
 `printed_at` ditanda **di pelayan dalam satu UPDATE bersyarat**
 (`… WHERE printed_at IS NULL`) supaya dua tab dapur tidak mencetak dua kali.
 
+### 9.6 Bayaran online (`online_payment`)
+
+**Diputuskan Sufi, 13 Nov 2026:** wang terus ke **akaun gerbang vendor
+sendiri**; platform tidak memegang wang pelanggan. Empat gerbang disokong:
+**ToyyibPay, Billplz, SenangPay, Stripe**.
+
+**Reka bentuk — satu antara muka, empat penyesuai** (`core/Payment/`):
+
+```php
+interface PaymentGateway {
+    public function createBill(OnlinePayment $p, array $customer): string; // URL bayar
+    public function verifyCallback(array $request): CallbackResult;        // tandatangan
+    public function fetchStatus(string $gatewayBillId): string;            // semak semula
+}
+// ToyyibPayGateway · BillplzGateway · SenangPayGateway · StripeGateway
+```
+
+Kod pesanan tidak tahu gerbang mana yang digunakan. Gerbang kelima nanti =
+satu kelas baharu, tiada perubahan lain.
+
+**Peraturan yang tidak boleh dilanggar:**
+
+1. **Hanya panggilan balik pelayan-ke-pelayan menandakan "dibayar".** Halaman
+   "kembali" yang pelanggan lihat selepas bayar **tidak dipercayai** — ia
+   boleh dipalsukan dengan menaip URL. Ia hanya memaparkan status semasa.
+2. **Tandatangan disahkan** dengan kunci vendor itu (dicari melalui
+   `online_payments.reference` → vendor), **dan** amaun + mata wang dibanding
+   dengan rekod kita. Tidak sepadan → tolak dan log.
+3. **Semak semula** dengan `fetchStatus()` sebelum menanda dibayar, jika
+   gerbang menyokongnya — pertahanan kedua jika kunci tandatangan bocor.
+4. **Idempotent:** gerbang sering memanggil balik lebih sekali. `UPDATE …
+   WHERE status = 'pending'` — panggilan kedua tidak menolak stok dua kali.
+5. **Tamat tempoh** selepas `online_payment_expiry_minutes` (15): pesanan
+   `awaiting_payment` dibatalkan. Stok tidak pernah ditolak, jadi tiada apa
+   untuk dipulangkan. Tiada cron diwajibkan: `ExpireUnpaidOrdersJob` dipanggil
+   secara malas setiap kali senarai pesanan atau skrin dapur dimuat; cron /
+   Task Scheduler pilihan sahaja. Panggilan balik yang tiba **selepas** tamat
+   tempoh tetap diterima jika amaun betul — wang sudah ditolak dari pelanggan.
+6. **Stok habis semasa bayaran disahkan** (dijual di kaunter dalam 15 minit
+   itu): pesanan tetap dibayar, ditanda **"Perlu tindakan"** di skrin admin —
+   vendor sama ada sediakan juga atau pulangkan wang melalui papan pemuka
+   gerbang. Sistem tidak memulangkan wang secara automatik.
+7. Bayaran disahkan → `transactions` dicipta dengan `online_payment_id`,
+   tanpa kaunter/syif/juruwang, supaya laporan jualan merangkumi semuanya.
+
+**Pulangan wang:** dibuat vendor dalam papan pemuka gerbang; admin tanda
+"dipulangkan" dalam sistem → transaksi refund dicipta. Pemulangan automatik
+melalui API tertangguh.
+
+### 9.7 Kedai online, ambil sendiri (`online_order`)
+
+**Diputuskan Sufi, 13 Nov 2026** — untuk peniaga dari rumah (makanan atau
+barang) dan kedai biasa yang mahu terima tempahan.
+
+- Setiap kedai boleh ada **`shop_slug`** → pautan `s/kak-ani` untuk dikongsi
+  di WhatsApp / Instagram. Slug unik **global**, huruf kecil, nombor, sengkang
+- Pelanggan isi **nama, telefon, masa ambil** — tiada akaun. Masa ambil
+  dihadkan oleh `pickup_hours` dan `pickup_lead_minutes`
+- Bayar online → terus aktif. Bayar semasa ambil → perlu **Terima** (9.8)
+- Pelanggan dapat **pautan status** (`public_token` rawak) — "Diterima",
+  "Sedang disediakan", "Siap untuk diambil". Tanpa SMS: butang WhatsApp
+  (`wa.me/…`) dengan mesej siap ditulis, dihantar dari telefon peniaga sendiri
+- **Tiada jenis perniagaan baharu.** Peniaga makanan → `restaurant` (pesanan
+  masuk dapur jika ada modul `kitchen`); peniaga barang → `retail`
+- **Data peribadi (PDPA):** nama dan telefon pelanggan hanya dipapar kepada
+  vendor itu, dan dipadam/dikaburkan selepas 90 hari
+- Had sama seperti QR: 20 baris, 20 unit, satu pesanan belum-dibayar setiap
+  nombor telefon pada satu masa
+
+**Tertangguh:** penghantaran ke rumah pelanggan (delivery), caj
+penghantaran, zon kawasan.
+
+### 9.8 Pesanan yang perlu ditekan Terima — jangan sampai terlepas
+
+Hanya pesanan **bayar di kaunter / semasa ambil** perlu Terima. Risikonya:
+tiada siapa perasan, pelanggan menunggu, makanan tidak dimasak. Lapisan:
+
+1. **Bunyi + sepanduk kekal** di skrin juruwang dan waiter sehingga diterima
+   atau ditolak; telefon waiter Android bergetar. (Pelayar hanya benarkan
+   bunyi selepas pengguna menekan skrin sekali — butang "Buka syif" memenuhi
+   syarat itu.)
+2. **Skrin dapur juga papar** lajur "Menunggu disahkan" dengan butang
+   **Terima** — tiga tempat boleh perasan, bukan satu.
+3. **Naik tahap selepas 2 minit:** sepanduk merah berkelip, bunyi berulang.
+4. **Pelanggan nampak masa menunggu.** Selepas 3 minit: "Sila maklumkan
+   pelayan berdekatan" (QR meja) atau butang WhatsApp kepada peniaga (ambil
+   sendiri).
+
 ## 10. Barcode — lebih mudah daripada yang disangka
 
 Pengimbas barcode USB **berkelakuan sebagai papan kekunci**. Ia menaip digit
@@ -1001,7 +1158,9 @@ disimpan dalam `uploads/products/{vendor_id}/`,
 claude-learn1/
 ├── config/         database.php (.gitignore) · database.example.php · app.php
 ├── core/           Database.php · Auth.php · Csrf.php · Request.php
-│                   Response.php · Validator.php · Uploader.php
+│                   Response.php · Validator.php · Uploader.php · Crypto.php
+│                   Payment/ — PaymentGateway · ToyyibPayGateway · BillplzGateway
+│                              SenangPayGateway · StripeGateway
 │                   BusinessDay.php · VendorScope.php · PlanLimit.php · Module.php · Lang.php
 ├── jobs/           SATU KELAS = SATU KERJA — semua terima vendor_id
 │   ├── Auth/        LoginJob · LogoutJob · CheckSubscriptionJob · ThrottleJob
@@ -1028,6 +1187,9 @@ claude-learn1/
 │   │                RegenerateTableQrJob
 │   ├── QrOrder/     ResolveTableTokenJob · PublicMenuJob · SubmitQrOrderJob
 │   │                ListPendingQrOrdersJob · AcceptQrOrderJob · RejectQrOrderJob
+│   ├── Payment/     CreateOnlinePaymentJob · HandleGatewayCallbackJob
+│   │                ExpireUnpaidOrdersJob · SaveGatewayCredentialsJob · MarkRefundedJob
+│   ├── Storefront/  ResolveShopSlugJob · SubmitPickupOrderJob · OrderStatusJob
 │   ├── Kitchen/     ListKitchenTicketsJob · CreateKitchenTicketJob
 │   │                AdvanceTicketJob · ClaimTicketPrintJob · CancelTicketItemJob
 │   ├── Cart/        CalculateCartJob · ValidateStockJob
@@ -1052,6 +1214,8 @@ claude-learn1/
 ├── superadmin/     panel platform — vendor, pelan, modul, langganan
 ├── kitchen/        skrin dapur — peranti dapur berdaftar, tiada PIN (9.5)
 ├── order/          AWAM — pesanan QR pelanggan, tiada log masuk (3.9)
+├── s/              AWAM — kedai online, ambil sendiri: s/{shop_slug} (9.7)
+├── pay/            AWAM — callback.php (gerbang) · return.php (papar status sahaja)
 │                   index.php?t={qr_token} · mobile-first
 ├── print/          receipt.php · kitchen-slip.php
 ├── uploads/        products/{vendor_id}/ (.gitignore isinya)
@@ -1212,7 +1376,7 @@ tangan dalam phpMyAdmin.
 | `php database/migrate.php superadmin` | Cipta akaun superadmin — tanya e-mel & kata laluan di terminal. Untuk pelayan sebenar, di mana seed demo tidak dijalankan |
 
 - Rekod migrasi dalam jadual sistem **`schema_migrations`**(version PK,
-  applied_at) — jadual ke-38, bukan sebahagian model aplikasi
+  applied_at) — jadual ke-40, bukan sebahagian model aplikasi
 - **Migrasi tidak disunting selepas di-commit.** Ubah skema = fail baharu
   (`008_add_xxx.sql`). Inilah yang membolehkan pelayan sebenar dinaik taraf
   tanpa kehilangan data
@@ -1230,9 +1394,11 @@ tangan dalam phpMyAdmin.
 
 | `seeds/core/` — wajib, semua persekitaran | `seeds/demo/` — `local` sahaja |
 |---|---|
-| `modules` (8 modul, 9.4) | `plans` Asas / Pro / Percubaan — **harga contoh**, Sufi tetapkan sebenar melalui panel superadmin |
+| `modules` (10 modul, 9.4) | `plans` Asas / Pro / Percubaan — **harga contoh**, Sufi tetapkan sebenar melalui panel superadmin |
 | `languages` (ms, en) | `plan_modules`, `plan_outlet_tiers` |
 | `translations` rentetan sistem | KEDAI01 (runcit, Asas, 1 kedai) · KEDAI02 (kedai makan, Pro, 2 kedai) |
+| | KEDAI03 — **peniaga dari rumah** (makanan, `online_order` + `online_payment`, `s/kak-ani`, tiada meja) |
+| | Gerbang **sandbox** untuk KEDAI02 & KEDAI03 — kunci kosong, diisi sendiri dari akaun ujian gerbang |
 | | 18 produk setiap vendor, kategori, variasi, kaedah bayaran, tetapan |
 | | Kaunter, meja + `qr_token`, akaun admin / juruwang / waiter, superadmin demo |
 | | Beberapa transaksi lepas — supaya dashboard & laporan ada isi |

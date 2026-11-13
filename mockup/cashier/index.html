@@ -41,6 +41,18 @@
     </div>
   </header>
 
+  <!-- SEPANDUK: pesanan QR bayar-di-kaunter belum diterima (PELAN.md 9.8).
+       Kekal sehingga diterima/ditolak; merah + bunyi berulang selepas 2 minit. -->
+  <div class="kp-alertbar d-flex align-items-center gap-3 px-3 px-lg-4 py-2 flex-shrink-0" role="alert">
+    <i class="fa-solid fa-bell fa-shake"></i>
+    <div class="flex-grow-1">
+      <strong>Meja 8 — pesanan QR menunggu 2 min 40 s.</strong>
+      <span class="d-none d-lg-inline">3 item, bayar di kaunter.</span>
+    </div>
+    <button class="btn btn-sm btn-ghost-light">Tolak</button>
+    <button class="btn btn-sm btn-light">Terima pesanan</button>
+  </div>
+
   <div class="row g-0 flex-grow-1 overflow-hidden">
 
     <!-- PANEL PRODUK -->
@@ -184,7 +196,7 @@
           <h2 class="h4 fw-bold mb-0">Pesanan 0042</h2>
           <div class="small text-body-secondary">Kaunter, 3 item</div>
         </div>
-        <button class="btn btn-sm btn-ghost-light"><i class="fa-regular fa-trash-can"></i>Kosongkan</button>
+        <button class="btn btn-sm btn-ghost-light kp-btn-icon" aria-label="Kosongkan troli" title="Kosongkan troli"><i class="fa-regular fa-trash-can"></i></button>
       </div>
 
       <div class="flex-grow-1 overflow-y-auto px-4">
