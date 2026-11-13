@@ -103,9 +103,13 @@ HTML statik dalam `mockup/`, Bootstrap sahaja, data palsu. Buka di
 ### Fasa 1 — Skema & teras
 - [ ] Cipta pangkalan data `pos_saas` (utf8mb4_unicode_ci)
 - [ ] Cipta pengguna MySQL `pos_user` (akses `pos_saas` sahaja)
-- [ ] `database/schema.sql` — **36 jadual**, `vendor_id` pada setiap jadual
-      perniagaan, setiap UNIQUE jadi unik per vendor (PELAN.md 3.5),
-      setiap indeks bermula dengan `vendor_id` (PELAN.md 3.6)
+- [ ] `database/migrate.php` — pelari migrasi CLI (PELAN.md 15.2):
+      `up`, `status`, `seed [--demo]`, `fresh --demo`, `dump`, `superadmin`;
+      jadual `schema_migrations`; `fresh`/`--demo` ditolak bila `env` bukan `local`
+- [ ] `database/migrations/001…007_*.sql` — **36 jadual**, `vendor_id` pada
+      setiap jadual perniagaan, setiap UNIQUE jadi unik per vendor
+      (PELAN.md 3.5), setiap indeks bermula dengan `vendor_id` (PELAN.md 3.6)
+- [ ] `database/schema.sql` — dijana dengan `migrate.php dump`, bukan ditulis tangan
 - [ ] Jadual promosi wujud sejak sekarang walaupun UI dibina di Fasa 10:
       `promotions`, `promotion_products`, `promotion_categories`,
       `transaction_promotions`
@@ -113,14 +117,22 @@ HTML statik dalam `mockup/`, Bootstrap sahaja, data palsu. Buka di
 - [ ] Lajur diskaun pada `transactions`: `promo_discount`, `manual_discount`,
       `discount_tax_mode`; pada `transaction_items`: `promotion_id`,
       `promotion_name`, `discount_amount`
-- [ ] `database/seed.sql` — **DUA vendor**: KEDAI01 (retail), KEDAI02
+- [ ] `database/seeds/core/` — 7 modul (PELAN.md 9.4), bahasa ms/en,
+      rentetan terjemahan sistem
+- [ ] `database/seeds/demo/` — **DUA vendor**: KEDAI01 (retail), KEDAI02
       (restaurant), setiap satu dengan 18 produk, kategori, kaedah bayaran,
-      tetapan, admin, kaunter; KEDAI02 dapat meja contoh
-- [ ] Satu akaun `superadmin` (vendor_id NULL)
-- [ ] **`modules` + `plan_modules`** (PELAN.md 9.4). Seed 6 modul dan dua
-      pelan: **Asas** (`pos` sahaja) · **Pro** (semua). KEDAI01 = Asas,
-      KEDAI02 = Pro — supaya sekatan modul teruji sejak awal, sama sebabnya
-      seperti dua vendor
+      tetapan, admin, kaunter; KEDAI02 dapat meja contoh **dengan `qr_token`**
+      dan akaun waiter; satu `superadmin` demo (vendor_id NULL); beberapa
+      transaksi lepas supaya dashboard berisi
+- [ ] Akaun demo dalam seed `.php` (Argon2id melalui `password_hash()`);
+      senarai log masuk dicetak hujung `fresh --demo` + `seeds/demo/README.md`
+- [ ] Pelan demo dengan **harga contoh**: **Asas** (`pos` sahaja) ·
+      **Pro** (semua 7 modul) · **Percubaan**. KEDAI01 = Asas, KEDAI02 = Pro —
+      supaya sekatan modul teruji sejak awal, sama sebabnya seperti dua vendor
+- [ ] Sahkan: `fresh --demo` dua kali berturut-turut → hasil sama, tiada
+      data berganda, tiada ralat
+- [ ] Sahkan: emoji produk selepas `fresh --demo` → `HEX(icon)` = `F09F8D9B`
+      (pelari guna PDO, jadi perangkap `cp850` dalam 15.1 tidak berlaku)
 - [ ] `orders.status` tambah `pending`, `orders.source`, `confirmed_by`;
       `opened_by` dan `order_items.added_by` jadi nullable;
       `dining_tables.qr_token` (untuk Fasa 9B)
@@ -400,8 +412,13 @@ Uji sebagai vendor **KEDAI02** (restaurant).
 - [ ] Sahkan: nombor take-away pada jam 01:00 masih ikut hari semalam
 - [ ] Sahkan: dua vendor boleh ada take-away `001` pada hari sama
 
-### Fasa 8 — Aplikasi waiter
+### Fasa 8 — Aplikasi waiter (modul `waiter_app`)
 - [ ] `waiter/login.php`, `waiter/index.php` — **mobile-first**
+- [ ] Setiap endpoint `waiter/` panggil `Module::require('waiter_app')`;
+      `PinLoginJob` tolak peranan waiter bila modul tiada; `SaveUserJob`
+      tolak pengguna waiter baharu bila modul tiada
+- [ ] Sahkan: buang `waiter_app` dari pelan → waiter tidak boleh log masuk,
+      tetapi juruwang masih boleh ambil pesanan meja dari kaunter
 - [ ] Paparan meja: kosong / berisi
 - [ ] Buka meja → tambah pesanan → hantar
 - [ ] Take away → sistem beri nombor
@@ -719,5 +736,7 @@ Uji sebagai vendor **KEDAI02** (restaurant).
 | 13 Nov 2026 | **Lebar resit jadi tetapan vendor** (`paper_width` 58/80, tindihan per kedai), bukan satu lalai sistem | Keputusan Sufi. Kedai berbeza guna printer berbeza; satu vendor boleh ada kaunter 58mm dan 80mm |
 | 13 Nov 2026 | **Emoji dibuang dari resit bercetak**, kekal pada skrin | Keputusan Sufi. Driver termal murah cetak emoji sebagai kotak hitam |
 | 13 Nov 2026 | **Modul per pelan** — `plans.features_json` diganti `modules` + `plan_modules`. 34 jadual → 36 | Keputusan Sufi: superadmin tentukan modul dalam setiap pelan, gaya ringkas. Jadual sebenar boleh di-JOIN dan disemak dengan kekunci asing; JSON tidak |
+| 13 Nov 2026 | **`waiter_app` jadi modul** (7 modul) | Keputusan Sufi. Tanpanya kedai makan masih ambil pesanan meja dari skrin juruwang |
+| 13 Nov 2026 | `schema.sql` + `seed.sql` tulisan tangan → **`database/migrate.php`** + migrasi bernombor + seed `core`/`demo` | Keputusan Sufi: persediaan satu arahan, dan skema boleh berubah di pelayan sebenar tanpa sunting tangan. Bonus: PDO utf8mb4 mengelak perangkap `cp850` |
 | 13 Nov 2026 | **Pesanan QR pelanggan** ditambah sebagai modul `qr_order` — Fasa 9B, 19 → 20 fasa | Permintaan Sufi. Pesanan masuk `pending` dan perlu diterima kakitangan supaya QR yang diimbas dari luar kedai tidak boleh menolak stok |
 | 27 Ogos 2026 | Kedai dibuka pertengahan kitaran diprorata | Jangkaan pelanggan, dan menghapuskan insentif menunggu awal bulan sebelum membuka kedai |

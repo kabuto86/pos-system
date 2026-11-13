@@ -50,15 +50,17 @@ Peraturan multi-tenant (paling penting):
   dengan vendor_id (PELAN.md 3.6).
 
 Peraturan lain:
-- Ikut skema 34 jadual dalam PELAN.md. Kalau ada yang tak masuk akal semasa
+- Ikut skema 36 jadual dalam PELAN.md. Kalau ada yang tak masuk akal semasa
   kerja, beritahu aku dulu sebelum ubah, dan catat dalam log keputusan
   di hujung PROGRES.md.
 - business_day dikira dari settings.day_cutoff_time, BUKAN CURDATE().
 - Jadual promosi dan bil dicipta sekarang walaupun UI dibina jauh kemudian
   (Fasa 10 dan 16). Skema lengkap dari awal; UI menyusul.
-- Import seed.sql WAJIB guna --default-character-set=utf8mb4. mysql.exe di
-  Windows lalai cp850 dan akan merosakkan setiap emoji tanpa amaran.
-  Baca PELAN.md 15.1, dan sahkan dengan HEX() selepas import.
+- Pangkalan data dibina melalui database/migrate.php (migrasi bernombor +
+  seed core/demo), bukan import manual — PELAN.md 15.2. Pelari guna PDO
+  utf8mb4, jadi perangkap cp850 mysql.exe (15.1) dielak; tetap sahkan emoji
+  dengan HEX() selepas `fresh --demo`. Migrasi yang sudah di-commit tidak
+  disunting — ubah skema = fail migrasi baharu.
 - Guna pengguna MySQL pos_user, bukan root. Jangan sentuh database tuisyen.
 - Empat peranan: superadmin, admin, cashier, waiter. Waiter tiada akses
   bayaran, disemak di dalam endpoint, bukan sekadar sorok butang.
