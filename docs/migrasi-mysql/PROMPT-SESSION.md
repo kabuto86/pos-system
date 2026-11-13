@@ -50,7 +50,7 @@ Peraturan multi-tenant (paling penting):
   dengan vendor_id (PELAN.md 3.6).
 
 Peraturan lain:
-- Ikut skema 37 jadual dalam PELAN.md. Kalau ada yang tak masuk akal semasa
+- Ikut skema 39 jadual dalam PELAN.md. Kalau ada yang tak masuk akal semasa
   kerja, beritahu aku dulu sebelum ubah, dan catat dalam log keputusan
   di hujung PROGRES.md.
 - business_day dikira dari settings.day_cutoff_time, BUKAN CURDATE().

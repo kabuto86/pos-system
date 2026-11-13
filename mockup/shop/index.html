@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Dapur Kak Ani — Tempah</title>
+<link rel="stylesheet" href="../../vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="../../vendor/fontawesome/css/all.min.css">
+<link rel="stylesheet" href="../../css/theme.css">
+</head>
+<body>
+
+<!-- Halaman awam s/kak-ani — peniaga dari rumah. Langkah semak & bayar. -->
+<header class="kp-shop-hero">
+  <div class="container-fluid px-3 pt-3 pb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <a href="#" class="btn btn-ghost-light kp-btn-icon" aria-label="Kembali ke menu"><i class="fa-solid fa-arrow-left"></i></a>
+      <span class="kp-mockup-tag">Mockup</span>
+    </div>
+    <h1 class="h3 fw-bold mb-1">Dapur Kak Ani</h1>
+    <div class="small text-body-secondary"><i class="fa-solid fa-location-dot me-1"></i>Ambil sendiri di Taman Seri Bangi, Seksyen 9</div>
+  </div>
+</header>
+
+<main class="container-fluid px-3 pt-3 pb-5 mb-5">
+
+  <h2 class="h5 fw-bold mb-2">Pesanan anda</h2>
+  <div class="kp-panel px-3 mb-4">
+    <div class="kp-menu-item">
+      <span class="kp-thumb"><i class="fa-solid fa-utensils"></i></span>
+      <div class="flex-grow-1 min-w-0">
+        <div class="fw-semibold">Nasi Lemak Ayam Berempah</div>
+        <div class="small text-body-secondary">Sambal lebih</div>
+      </div>
+      <div class="text-end text-nowrap">
+        <div class="small text-body-secondary">2 ×</div>
+        <div class="fw-bold kp-num">RM 18.00</div>
+      </div>
+    </div>
+    <div class="kp-menu-item">
+      <span class="kp-thumb"><i class="fa-solid fa-cookie"></i></span>
+      <div class="flex-grow-1 min-w-0">
+        <div class="fw-semibold">Kuih Seri Muka</div>
+        <div class="small text-body-secondary">Kotak 10 keping</div>
+      </div>
+      <div class="text-end text-nowrap">
+        <div class="small text-body-secondary">1 ×</div>
+        <div class="fw-bold kp-num">RM 12.00</div>
+      </div>
+    </div>
+    <div class="d-flex justify-content-between py-3 border-top">
+      <span class="fw-semibold">Jumlah</span>
+      <span class="fw-bold fs-5 kp-num">RM 30.00</span>
+    </div>
+  </div>
+
+  <h2 class="h5 fw-bold mb-2">Masa ambil</h2>
+  <div class="d-flex gap-2 kp-scroll-x pb-1 mb-1">
+    <input type="radio" class="btn-check" name="slot" id="s1" disabled>
+    <label class="kp-slot d-inline-flex align-items-center" for="s1">11:30 pg</label>
+    <input type="radio" class="btn-check" name="slot" id="s2" checked>
+    <label class="kp-slot d-inline-flex align-items-center" for="s2">12:00 tgh</label>
+    <input type="radio" class="btn-check" name="slot" id="s3">
+    <label class="kp-slot d-inline-flex align-items-center" for="s3">12:30 tgh</label>
+    <input type="radio" class="btn-check" name="slot" id="s4">
+    <label class="kp-slot d-inline-flex align-items-center" for="s4">1:00 ptg</label>
+    <input type="radio" class="btn-check" name="slot" id="s5">
+    <label class="kp-slot d-inline-flex align-items-center" for="s5">1:30 ptg</label>
+  </div>
+  <p class="small text-body-secondary mb-4">Hari ini, Jumaat. Tempah sekurang-kurangnya 30 minit lebih awal.</p>
+
+  <h2 class="h5 fw-bold mb-2">Butiran anda</h2>
+  <div class="mb-3">
+    <label for="custName" class="form-label">Nama</label>
+    <input type="text" id="custName" class="form-control" autocomplete="name" value="Farah">
+  </div>
+  <div class="mb-4">
+    <label for="custPhone" class="form-label">No. telefon</label>
+    <input type="tel" id="custPhone" class="form-control" autocomplete="tel" inputmode="tel" value="012-345 6789">
+    <div class="form-text">Untuk Kak Ani hubungi anda jika ada perubahan.</div>
+  </div>
+
+  <h2 class="h5 fw-bold mb-2">Cara bayar</h2>
+  <div class="d-flex flex-column gap-2 mb-3">
+    <input type="radio" class="btn-check" name="pay" id="payOnline" checked>
+    <label class="kp-paychoice" for="payOnline">
+      <span class="kp-paychoice-icon"><i class="fa-solid fa-building-columns"></i></span>
+      <span>
+        <span class="fw-bold d-block">Bayar online sekarang</span>
+        <span class="small text-body-secondary">FPX atau kad. Pesanan terus disediakan.</span>
+      </span>
+    </label>
+    <input type="radio" class="btn-check" name="pay" id="payPickup">
+    <label class="kp-paychoice" for="payPickup">
+      <span class="kp-paychoice-icon"><i class="fa-solid fa-money-bill-wave"></i></span>
+      <span>
+        <span class="fw-bold d-block">Bayar semasa ambil</span>
+        <span class="small text-body-secondary">Tunai atau QR. Kak Ani perlu sahkan pesanan dahulu.</span>
+      </span>
+    </label>
+  </div>
+</main>
+
+<div class="fixed-bottom kp-cartbar">
+  <button class="btn btn-kunyit btn-lg w-100 justify-content-between kp-pay">
+    <span><i class="fa-solid fa-lock me-2"></i>Bayar online</span>
+    <span class="kp-num">RM 30.00</span>
+  </button>
+</div>
+
+<script src="../../vendor/bootstrap/bootstrap.bundle.min.js"></script>
+</body>
+</html>

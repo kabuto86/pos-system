@@ -28,7 +28,7 @@
 kepada `cp850`, merosakkan emoji semasa import `seed.sql` **tanpa sebarang
 amaran**. Resepi pembetulan dalam PELAN.md 15.1 — baca sebelum Fasa 1.
 
-**Struktur:** 21 fasa merentas 7 session (Session 1 dipecah 1A + 1B; Fasa 9B dan 9C ditambah).
+**Struktur:** 23 fasa merentas 8 session (Session 1 dipecah 1A + 1B; Fasa 9B–9C; Session 3B baharu untuk 9D–9E).
 
 Sejarah skop:
 9 fasa/3 session → 13 fasa/5 session (dua jenis perniagaan, waiter, meja)
@@ -37,7 +37,8 @@ Sejarah skop:
 → 18 fasa/6 session (dwibahasa & modul terjemahan)
 → 19 fasa/7 session (kedai berbilang, PIN, bil; Session 1 dipecah, 27 Ogos 2026)
 → 20 fasa/7 session (modul per pelan + pesanan QR pelanggan, Fasa 9B, 13 Nov 2026).
-→ **21 fasa/7 session** (modul dapur, Fasa 9C, 13 Nov 2026).
+→ 21 fasa/7 session (modul dapur, Fasa 9C, 13 Nov 2026)
+→ **23 fasa/8 session** (bayaran online + kedai online ambil sendiri, Session 3B, 13 Nov 2026).
 
 ---
 
@@ -88,6 +89,8 @@ HTML statik dalam `mockup/`, Bootstrap sahaja, data palsu. Buka di
 - [x] `mockup/superadmin/plans.html` — pelan & tanda modul
 - [x] `mockup/order/index.html` — menu pesanan QR pelanggan (telefon)
 - [x] `mockup/kitchen/index.html` — skrin dapur (tablet landskap, 3 lajur)
+- [x] `mockup/shop/index.html` — kedai online peniaga dari rumah: semak, masa ambil, cara bayar
+- [x] Amaran berlapis: sepanduk merah di `cashier/`, lajur "Menunggu disahkan" di `kitchen/`
 - [ ] **Sufi setuju rangka & gaya** sebelum pusingan 2
 
 **Pusingan 2 — skrin Session 1A/1B** (sebelum Fasa 1 dimulakan)
@@ -108,7 +111,7 @@ HTML statik dalam `mockup/`, Bootstrap sahaja, data palsu. Buka di
 - [ ] `database/migrate.php` — pelari migrasi CLI (PELAN.md 15.2):
       `up`, `status`, `seed [--demo]`, `fresh --demo`, `dump`, `superadmin`;
       jadual `schema_migrations`; `fresh`/`--demo` ditolak bila `env` bukan `local`
-- [ ] `database/migrations/001…007_*.sql` — **37 jadual**, `vendor_id` pada
+- [ ] `database/migrations/001…007_*.sql` — **39 jadual**, `vendor_id` pada
       setiap jadual perniagaan, setiap UNIQUE jadi unik per vendor
       (PELAN.md 3.5), setiap indeks bermula dengan `vendor_id` (PELAN.md 3.6)
 - [ ] `database/schema.sql` — dijana dengan `migrate.php dump`, bukan ditulis tangan
@@ -119,17 +122,20 @@ HTML statik dalam `mockup/`, Bootstrap sahaja, data palsu. Buka di
 - [ ] Lajur diskaun pada `transactions`: `promo_discount`, `manual_discount`,
       `discount_tax_mode`; pada `transaction_items`: `promotion_id`,
       `promotion_name`, `discount_amount`
-- [ ] `database/seeds/core/` — 8 modul (PELAN.md 9.4), bahasa ms/en,
+- [ ] `database/seeds/core/` — 10 modul (PELAN.md 9.4), bahasa ms/en,
       rentetan terjemahan sistem
 - [ ] `database/seeds/demo/` — **DUA vendor**: KEDAI01 (retail), KEDAI02
       (restaurant), setiap satu dengan 18 produk, kategori, kaedah bayaran,
       tetapan, admin, kaunter; KEDAI02 dapat meja contoh **dengan `qr_token`**
       dan akaun waiter; satu `superadmin` demo (vendor_id NULL); beberapa
       transaksi lepas supaya dashboard berisi
+- [ ] Vendor demo ketiga **KEDAI03 — peniaga dari rumah** (restaurant, tiada
+      meja, `shop_slug = kak-ani`, modul `online_order` + `online_payment`),
+      gerbang sandbox dengan kunci kosong untuk KEDAI02 & KEDAI03
 - [ ] Akaun demo dalam seed `.php` (Argon2id melalui `password_hash()`);
       senarai log masuk dicetak hujung `fresh --demo` + `seeds/demo/README.md`
 - [ ] Pelan demo dengan **harga contoh**: **Asas** (`pos` sahaja) ·
-      **Pro** (semua 8 modul) · **Percubaan**. KEDAI01 = Asas, KEDAI02 = Pro —
+      **Pro** (semua 10 modul) · **Percubaan**. KEDAI01 = Asas, KEDAI02 = Pro —
       supaya sekatan modul teruji sejak awal, sama sebabnya seperti dua vendor
 - [ ] Sahkan: `fresh --demo` dua kali berturut-turut → hasil sama, tiada
       data berganda, tiada ralat
@@ -456,12 +462,18 @@ Uji sebagai vendor **KEDAI02** (restaurant).
       semak modul `qr_order`, tetapan `qr_order_enabled`, meja aktif
 - [ ] `PublicMenuJob` — produk aktif + harga kedai + promosi semasa
       (hanya medan yang perlu — **tiada** `cost_price`, tiada stok sebenar)
-- [ ] `SubmitQrOrderJob` — `status = pending`, `source = qr`, harga dikira
-      semula di pelayan, **stok belum ditolak**
+- [ ] `SubmitQrOrderJob` — **bayar di kaunter** sahaja dalam fasa ini:
+      `status = pending`, `source = qr`, harga dikira semula di pelayan,
+      **stok belum ditolak**. Pilihan bayar online disambung di Fasa 9D
 - [ ] `ListPendingQrOrdersJob`, `AcceptQrOrderJob` (tolak stok, gabung ke
       pesanan terbuka meja itu), `RejectQrOrderJob`
-- [ ] Notifikasi pesanan QR baharu di skrin waiter dan juruwang (tinjau
+- [ ] **Amaran berlapis (PELAN.md 9.8):** bunyi + sepanduk kekal di skrin
+      juruwang & waiter, getar Android, naik tahap selepas 2 minit (tinjau
       setiap 10 saat — tiada WebSocket)
+- [ ] Telefon pelanggan papar "Menunggu disahkan · N min"; selepas 3 minit
+      "Sila maklumkan pelayan berdekatan"
+- [ ] Sahkan: pesanan `pending` 2 minit tanpa tindakan → sepanduk jadi merah,
+      bunyi berulang
 - [ ] `admin/tables.php`: cetak kad QR setiap meja, **jana semula** token
 - [ ] Sahkan: token rawak / token meja vendor lain → halaman "tidak tersedia"
       yang sama, tiada kebocoran nama kedai
@@ -493,12 +505,70 @@ Uji sebagai vendor **KEDAI02** (restaurant).
 - [ ] Sahkan: meja tambah pesanan kedua → **tiket kedua**, bukan tiket
       pertama dikemas kini
 - [ ] Sahkan: dua tab dapur dibuka serentak → slip dicetak **sekali** sahaja
-- [ ] Sahkan: pesanan QR yang belum diterima **tidak** muncul di dapur
+- [ ] Lajur kecil **"Menunggu disahkan"** di skrin dapur dengan butang
+      **Terima** untuk pesanan QR bayar-di-kaunter (PELAN.md 9.8 lapisan 2)
+- [ ] Sahkan: pesanan QR yang belum diterima muncul **hanya** di lajur
+      "Menunggu disahkan", bukan sebagai tiket — tiket dicipta bila diterima
 - [ ] Sahkan: token peranti dapur panggil endpoint harga/bayaran/laporan → **403**
 - [ ] Sahkan: pesanan air kotak sahaja → tiada tiket langsung
 - [ ] Sahkan: KEDAI02 dapur tidak nampak tiket vendor lain
 
 **Hujung Session 3: kedai makan boleh guna sistem ini sepenuhnya.**
+
+---
+
+## Session 3B — Bayaran & Kedai Online (Fasa 9D–9E)
+
+> Ditambah 13 Nov 2026. Baca PELAN.md 9.6–9.8 dahulu. Ini kali pertama
+> sistem menyentuh wang sebenar dari luar kaunter.
+
+### Fasa 9D — Bayaran online (modul `online_payment`)
+
+- [ ] `core/Crypto.php` — `sodium_crypto_secretbox`, kunci induk dalam
+      `config/app.php` (luar git)
+- [ ] `core/Payment/PaymentGateway.php` + **ToyyibPay, Billplz, SenangPay,
+      Stripe** — `createBill`, `verifyCallback`, `fetchStatus`
+- [ ] `admin/payment-gateway.php` — pilih gerbang, masukkan kunci (papar 4
+      aksara akhir sahaja), mod sandbox, butang "Uji sambungan"
+- [ ] `CreateOnlinePaymentJob` — `reference` rawak, `expires_at`, URL bayar
+- [ ] `pay/callback.php` → `HandleGatewayCallbackJob` — tandatangan, amaun,
+      `fetchStatus`, `UPDATE … WHERE status = 'pending'`, tolak stok,
+      cipta `transactions` (tanpa kaunter/syif), cipta tiket dapur
+- [ ] `pay/return.php` — **papar status sahaja**, tidak menukar apa-apa
+- [ ] `ExpireUnpaidOrdersJob` — dipanggil secara malas
+- [ ] Sambung ke QR meja: pilihan "Bayar online" ikut `qr_payment_options`
+- [ ] Skrin admin "Perlu tindakan" — dibayar tetapi stok habis
+- [ ] `MarkRefundedJob` — admin tanda dipulangkan → transaksi refund
+- [ ] Sahkan: buka `pay/return.php` dengan URL palsu "berjaya" → pesanan
+      **kekal** belum dibayar
+- [ ] Sahkan: callback dengan tandatangan salah / amaun diubah → ditolak, dilog
+- [ ] Sahkan: callback sama dihantar 3 kali → stok ditolak **sekali**
+- [ ] Sahkan: callback rujukan KEDAI02 ditandatangan kunci KEDAI03 → ditolak
+- [ ] Sahkan: tidak bayar 15 minit → pesanan batal, stok tidak berubah
+- [ ] Sahkan: kunci gerbang dalam DB ialah teks tersulit, bukan teks biasa
+- [ ] Sahkan setiap gerbang dalam **sandbox** sebelum mod sebenar
+
+### Fasa 9E — Kedai online, ambil sendiri (modul `online_order`)
+
+- [ ] `outlets.shop_slug` + tetapan `online_order_enabled`,
+      `pickup_payment_options`, `pickup_lead_minutes`, `pickup_hours`
+- [ ] `s/{shop_slug}` — menu, troli, borang nama/telefon/masa ambil,
+      pilihan bayar (mobile-first)
+- [ ] `SubmitPickupOrderJob` — `order_type = pickup`, `source = online`
+- [ ] Halaman status pelanggan melalui `public_token`
+- [ ] Senarai pesanan ambil sendiri di admin/juruwang: Terima, Siap untuk
+      diambil, Sudah diambil; butang WhatsApp `wa.me` dengan mesej siap
+- [ ] Bayar semasa ambil → bayar di kaunter seperti biasa bila diambil
+- [ ] Padam/kaburkan nama & telefon pelanggan selepas 90 hari (PDPA)
+- [ ] Sahkan: slug kedai lain / slug tidak wujud → halaman "tidak tersedia"
+- [ ] Sahkan: masa ambil di luar `pickup_hours` → ditolak di pelayan
+- [ ] Sahkan: `public_token` pesanan lain → tiada data bocor
+- [ ] Sahkan: KEDAI03 (peniaga dari rumah) — tempah, bayar sandbox, siap,
+      ambil — dari awal hingga akhir
+- [ ] Sahkan pada viewport telefon (390x844)
+
+**Hujung Session 3B: pelanggan boleh pesan dan bayar sendiri, di meja atau
+dari rumah.**
 
 ---
 
@@ -612,7 +682,7 @@ Uji sebagai vendor **KEDAI02** (restaurant).
       sebarang langkah manual dalam DB
 - [ ] Sahkan: had pelan ditolak melalui API terus, bukan hanya butang disable
 - [ ] Audit modul: setiap endpoint `stock`, `reports`, `csv_import`,
-      `promotions`, `waiter_app`, `qr_order`, `kitchen` memanggil `Module::require()` — grep, bukan anggapan
+      `promotions`, `waiter_app`, `qr_order`, `kitchen`, `online_payment`, `online_order` memanggil `Module::require()` — grep, bukan anggapan
 - [ ] Sidebar admin sorok menu modul yang tiada; halaman "Naik taraf pelan"
       bila URL modul dibuka terus
 
@@ -719,7 +789,7 @@ Uji sebagai vendor **KEDAI02** (restaurant).
 
 ---
 
-## Perkara tertangguh (bukan sebahagian 21 fasa)
+## Perkara tertangguh (bukan sebahagian 23 fasa)
 
 - **Bayaran langganan dalam talian** — superadmin tandakan status secara
   manual buat masa ini. Gerbang pembayaran belum dibincangkan
@@ -727,8 +797,10 @@ Uji sebagai vendor **KEDAI02** (restaurant).
   admin vendor set semula untuk kakitangannya, superadmin untuk admin vendor
 - **Modul tambahan per vendor** (add-on di luar pelan) — gaya ringkas dipilih:
   modul ikut pelan sahaja. `vendor_modules` boleh ditambah kemudian
-- **Bayaran dalam talian untuk pesanan QR** — perlu gerbang pembayaran
 - **Pesanan QR untuk take away / tanpa meja** — versi pertama untuk meja sahaja
+- **Penghantaran ke rumah pelanggan (delivery)** — kedai online versi pertama untuk ambil sendiri sahaja; caj & zon penghantaran belum dibincangkan
+- **Pemulangan wang automatik melalui API gerbang** — buat masa ini vendor pulangkan dari papan pemuka gerbang
+- **Komisen platform atas bayaran online** — wang terus ke vendor; platform hanya caj langganan
 - **`user_vendors`** — satu e-mel menguruskan beberapa kedai. Hanya perlu
   bila ada pelanggan sebenar dengan dua cawangan (PELAN.md 4.1)
 - **`product_translations`** — terjemahan nama produk (PELAN.md 7.10)
@@ -763,6 +835,9 @@ Uji sebagai vendor **KEDAI02** (restaurant).
 | 13 Nov 2026 | **Lebar resit jadi tetapan vendor** (`paper_width` 58/80, tindihan per kedai), bukan satu lalai sistem | Keputusan Sufi. Kedai berbeza guna printer berbeza; satu vendor boleh ada kaunter 58mm dan 80mm |
 | 13 Nov 2026 | **Emoji dibuang dari resit bercetak**, kekal pada skrin | Keputusan Sufi. Driver termal murah cetak emoji sebagai kotak hitam |
 | 13 Nov 2026 | **Modul per pelan** — `plans.features_json` diganti `modules` + `plan_modules`. 34 jadual → 36 | Keputusan Sufi: superadmin tentukan modul dalam setiap pelan, gaya ringkas. Jadual sebenar boleh di-JOIN dan disemak dengan kekunci asing; JSON tidak |
+| 13 Nov 2026 | **Bayaran online** — modul `online_payment`, wang terus ke **akaun gerbang vendor sendiri**; ToyyibPay, Billplz, SenangPay, Stripe melalui satu antara muka. Jadual `vendor_payment_gateways`, `online_payments` (37 → 39) | Keputusan Sufi. Platform tidak memegang wang pelanggan — tiada pembayaran balik kepada vendor, tiada isu pelesenan. Bayar online → terus ke dapur; bayar di kaunter → perlu Terima |
+| 13 Nov 2026 | **Kedai online, ambil sendiri** — modul `online_order`, `s/{shop_slug}`, Session 3B baharu (Fasa 9D–9E), 21 → 23 fasa, 10 modul | Keputusan Sufi: sistem juga untuk peniaga dari rumah (makanan atau barang). Tiada jenis perniagaan baharu — peniaga makanan guna `restaurant`, barang guna `retail`. Delivery tertangguh |
+| 13 Nov 2026 | **Amaran berlapis** untuk pesanan yang perlu Terima (PELAN.md 9.8) | Sufi bimbang kakitangan tidak perasan pesanan QR. Bunyi + sepanduk kekal, skrin dapur juga boleh Terima, naik tahap selepas 2 minit, pelanggan nampak masa menunggu |
 | 13 Nov 2026 | **Modul dapur `kitchen`** — skrin + slip automatik, Fasa 9C; jadual `kitchen_tickets` (36 → 37), 8 modul, 20 → 21 fasa | Keputusan Sufi. Pelan sebelum ini tiada saluran ke dapur langsung. Pelayar hanya mencetak ke printer komputernya sendiri, jadi dapur perlukan peranti sendiri; skrin dan slip digabung dalam satu modul |
 | 13 Nov 2026 | **`waiter_app` jadi modul** (7 modul) | Keputusan Sufi. Tanpanya kedai makan masih ambil pesanan meja dari skrin juruwang |
 | 13 Nov 2026 | `schema.sql` + `seed.sql` tulisan tangan → **`database/migrate.php`** + migrasi bernombor + seed `core`/`demo` | Keputusan Sufi: persediaan satu arahan, dan skema boleh berubah di pelayan sebenar tanpa sunting tangan. Bonus: PDO utf8mb4 mengelak perangkap `cp850` |
