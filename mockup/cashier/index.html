@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KedaiPOS — Juruwang</title>
+<link rel="stylesheet" href="../../vendor/bootstrap/bootstrap.min.css">
+</head>
+<body class="bg-body-tertiary">
+
+<div class="d-flex flex-column vh-100">
+
+  <!-- NAVBAR: kedai, kaunter, juruwang, syif sentiasa kelihatan -->
+  <nav class="navbar navbar-expand bg-dark flex-shrink-0" data-bs-theme="dark">
+    <div class="container-fluid px-3">
+      <span class="navbar-brand mb-0 h1 fw-semibold">
+        🛒 Kedai<span class="text-primary-emphasis">POS</span>
+        <span class="badge text-bg-warning ms-2 align-middle">MOCKUP</span>
+      </span>
+      <div class="d-flex align-items-center gap-3 small">
+        <span class="navbar-text d-none d-lg-inline">
+          <strong class="text-white">Restoran Selera Kampung</strong> · Cawangan Bangi
+        </span>
+        <span class="badge text-bg-secondary">Kaunter 1</span>
+        <span class="badge text-bg-success">Syif dibuka 08:02</span>
+        <div class="dropdown">
+          <button class="btn btn-sm btn-outline-light dropdown-toggle" data-bs-toggle="dropdown">
+            Ali bin Abu
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="#">📜 Sejarah transaksi</a></li>
+            <li><a class="dropdown-item" href="#">🔒 Kunci skrin</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#">Tutup syif</a></li>
+            <li><a class="dropdown-item text-danger" href="#">Log keluar</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="row g-0 flex-grow-1 overflow-hidden">
+
+    <!-- PANEL PRODUK -->
+    <main class="col-md-8 col-xl-9 d-flex flex-column p-3 h-100">
+
+      <!-- Jenis pesanan (mod kedai makan) -->
+      <div class="d-flex flex-wrap gap-2 mb-3 flex-shrink-0">
+        <div class="btn-group" role="group">
+          <input type="radio" class="btn-check" name="orderType" id="otCounter" checked>
+          <label class="btn btn-outline-primary btn-sm" for="otCounter">Kaunter</label>
+          <input type="radio" class="btn-check" name="orderType" id="otDineIn">
+          <label class="btn btn-outline-primary btn-sm" for="otDineIn">Dine-in</label>
+          <input type="radio" class="btn-check" name="orderType" id="otTakeaway">
+          <label class="btn btn-outline-primary btn-sm" for="otTakeaway">Take away</label>
+        </div>
+        <button class="btn btn-outline-secondary btn-sm">📋 Panggil pesanan meja / take-away</button>
+      </div>
+
+      <!-- Imbas barcode + carian -->
+      <div class="input-group mb-3 flex-shrink-0">
+        <span class="input-group-text bg-white">🔍</span>
+        <input type="text" class="form-control" placeholder="Imbas barcode atau cari nama / SKU..." autofocus>
+      </div>
+
+      <div class="d-flex flex-wrap gap-2 mb-3 flex-shrink-0">
+        <button class="btn btn-primary btn-sm rounded-pill">Semua</button>
+        <button class="btn btn-outline-secondary btn-sm rounded-pill">Makanan</button>
+        <button class="btn btn-outline-secondary btn-sm rounded-pill">Minuman</button>
+        <button class="btn btn-outline-secondary btn-sm rounded-pill">Kuih</button>
+        <button class="btn btn-outline-secondary btn-sm rounded-pill">Promosi 🔥</button>
+      </div>
+
+      <div class="flex-grow-1 overflow-y-auto overflow-x-hidden">
+        <div class="row row-cols-2 row-cols-lg-4 row-cols-xxl-5 g-2">
+          <div class="col">
+            <button class="card h-100 w-100 text-center shadow-sm border-0 p-0">
+              <div class="card-body p-2">
+                <div class="fs-1">🍛</div>
+                <div class="fw-semibold small">Nasi Lemak</div>
+                <div class="text-primary small">RM 4.50</div>
+                <span class="badge text-bg-light border">Variasi</span>
+              </div>
+            </button>
+          </div>
+          <div class="col">
+            <button class="card h-100 w-100 text-center shadow-sm border-0 p-0">
+              <div class="card-body p-2">
+                <div class="fs-1">🍜</div>
+                <div class="fw-semibold small">Mee Goreng</div>
+                <div class="text-primary small">RM 6.00</div>
+              </div>
+            </button>
+          </div>
+          <div class="col">
+            <button class="card h-100 w-100 text-center shadow-sm border-0 p-0">
+              <div class="card-body p-2">
+                <div class="fs-1">🥘</div>
+                <div class="fw-semibold small">Nasi Goreng Kampung</div>
+                <div class="small">
+                  <span class="text-decoration-line-through text-body-secondary">RM 7.00</span>
+                  <span class="text-danger fw-semibold">RM 6.00</span>
+                </div>
+              </div>
+            </button>
+          </div>
+          <div class="col">
+            <button class="card h-100 w-100 text-center shadow-sm border-0 p-0">
+              <div class="card-body p-2">
+                <div class="fs-1">☕</div>
+                <div class="fw-semibold small">Teh Tarik</div>
+                <div class="text-primary small">RM 2.50</div>
+                <span class="badge text-bg-light border">Variasi</span>
+              </div>
+            </button>
+          </div>
+          <div class="col">
+            <button class="card h-100 w-100 text-center shadow-sm border-0 p-0">
+              <div class="card-body p-2">
+                <div class="fs-1">🥤</div>
+                <div class="fw-semibold small">Sirap Bandung</div>
+                <div class="text-primary small">RM 3.00</div>
+              </div>
+            </button>
+          </div>
+          <div class="col">
+            <button class="card h-100 w-100 text-center shadow-sm border-0 p-0">
+              <div class="card-body p-2">
+                <div class="fs-1">🍩</div>
+                <div class="fw-semibold small">Kuih Keria</div>
+                <div class="text-primary small">RM 1.00</div>
+                <span class="badge text-bg-warning">Stok: 3</span>
+              </div>
+            </button>
+          </div>
+          <div class="col">
+            <button class="card h-100 w-100 text-center shadow-sm border-0 p-0 opacity-50" disabled>
+              <div class="card-body p-2">
+                <div class="fs-1">🍰</div>
+                <div class="fw-semibold small">Kek Lapis</div>
+                <div class="text-primary small">RM 3.50</div>
+                <span class="badge text-bg-danger">Habis</span>
+              </div>
+            </button>
+          </div>
+          <div class="col">
+            <button class="card h-100 w-100 text-center shadow-sm border-0 p-0">
+              <div class="card-body p-2">
+                <div class="fs-1">🧃</div>
+                <div class="fw-semibold small">Air Kotak Laici</div>
+                <div class="text-primary small">RM 1.80</div>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- PANEL TROLI -->
+    <aside class="col-md-4 col-xl-3 bg-white border-start d-flex flex-column h-100">
+
+      <div class="d-flex justify-content-between align-items-center px-3 pt-3 pb-2">
+        <div>
+          <h2 class="h6 mb-0 fw-semibold">🧾 Troli</h2>
+          <div class="small text-body-secondary">Kaunter · Pesanan #0042</div>
+        </div>
+        <button class="btn btn-sm btn-link text-danger text-decoration-none p-0">Kosongkan</button>
+      </div>
+
+      <div class="flex-grow-1 overflow-auto px-3">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item px-0">
+            <div class="d-flex justify-content-between">
+              <span class="fw-semibold small">Nasi Lemak</span>
+              <span class="small">RM 18.00</span>
+            </div>
+            <div class="small text-body-secondary">Rendang daging, Extra pedas</div>
+            <div class="d-flex justify-content-between align-items-center mt-1">
+              <div class="btn-group btn-group-sm">
+                <button class="btn btn-outline-secondary">−</button>
+                <span class="btn btn-outline-secondary disabled">2</span>
+                <button class="btn btn-outline-secondary">+</button>
+              </div>
+              <small class="text-body-secondary">@ RM 9.00</small>
+            </div>
+          </li>
+          <li class="list-group-item px-0">
+            <div class="d-flex justify-content-between">
+              <span class="fw-semibold small">Nasi Goreng Kampung</span>
+              <span class="small">RM 7.00</span>
+            </div>
+            <div class="small text-danger">🔥 Promosi Isnin Ceria −RM 1.00</div>
+            <div class="d-flex justify-content-between align-items-center mt-1">
+              <div class="btn-group btn-group-sm">
+                <button class="btn btn-outline-secondary">−</button>
+                <span class="btn btn-outline-secondary disabled">1</span>
+                <button class="btn btn-outline-secondary">+</button>
+              </div>
+              <small class="text-body-secondary">@ RM 7.00</small>
+            </div>
+          </li>
+          <li class="list-group-item px-0">
+            <div class="d-flex justify-content-between">
+              <span class="fw-semibold small">Teh Tarik</span>
+              <span class="small">RM 3.00</span>
+            </div>
+            <div class="small text-body-secondary">Besar, Ais</div>
+            <div class="d-flex justify-content-between align-items-center mt-1">
+              <div class="btn-group btn-group-sm">
+                <button class="btn btn-outline-secondary">−</button>
+                <span class="btn btn-outline-secondary disabled">1</span>
+                <button class="btn btn-outline-secondary">+</button>
+              </div>
+              <small class="text-body-secondary">@ RM 3.00</small>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="border-top p-3">
+        <div class="d-flex justify-content-between small text-body-secondary mb-1">
+          <span>Subjumlah</span><span>RM 28.00</span>
+        </div>
+        <div class="d-flex justify-content-between small text-danger mb-1">
+          <span>Diskaun promosi</span><span>−RM 1.00</span>
+        </div>
+        <div class="d-flex justify-content-between small text-body-secondary mb-1">
+          <span>Cukai (6%)</span><span>RM 1.62</span>
+        </div>
+        <div class="d-flex justify-content-between align-items-center small text-body-secondary mb-2">
+          <span>Diskaun manual</span>
+          <div class="input-group input-group-sm w-50">
+            <span class="input-group-text">RM</span>
+            <input type="number" class="form-control text-end" value="0">
+          </div>
+        </div>
+        <div class="d-flex justify-content-between align-items-center border-top pt-2">
+          <span class="fw-semibold">Jumlah</span>
+          <span class="fs-4 fw-bold text-primary">RM 28.62</span>
+        </div>
+        <button class="btn btn-primary btn-lg w-100 mt-3" data-bs-toggle="modal" data-bs-target="#paymentModal">
+          Bayar
+        </button>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- MODAL BAYARAN -->
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fw-semibold">Bayaran</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+      </div>
+      <div class="modal-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <span class="text-body-secondary">Jumlah perlu dibayar</span>
+          <span class="fs-4 fw-bold text-primary">RM 28.62</span>
+        </div>
+        <div class="btn-group w-100 mb-3" role="group">
+          <input type="radio" class="btn-check" name="pay" id="payCash" checked>
+          <label class="btn btn-outline-primary" for="payCash">💵 Tunai</label>
+          <input type="radio" class="btn-check" name="pay" id="payCard">
+          <label class="btn btn-outline-primary" for="payCard">💳 Kad</label>
+          <input type="radio" class="btn-check" name="pay" id="payQr">
+          <label class="btn btn-outline-primary" for="payQr">📱 QR</label>
+        </div>
+        <label class="form-label small">Wang diterima</label>
+        <input type="number" class="form-control form-control-lg mb-2" value="30.00">
+        <div class="d-flex flex-wrap gap-2 mb-3">
+          <button class="btn btn-outline-secondary btn-sm">RM 28.65</button>
+          <button class="btn btn-outline-secondary btn-sm">RM 30</button>
+          <button class="btn btn-outline-secondary btn-sm">RM 50</button>
+          <button class="btn btn-outline-secondary btn-sm">RM 100</button>
+        </div>
+        <div class="d-flex justify-content-between bg-success-subtle rounded p-2">
+          <span>Baki</span>
+          <span class="fs-5 fw-semibold text-success">RM 1.38</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+        <button class="btn btn-primary">Sahkan &amp; Cetak Resit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../../vendor/bootstrap/bootstrap.bundle.min.js"></script>
+</body>
+</html>

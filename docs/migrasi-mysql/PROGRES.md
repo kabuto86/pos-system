@@ -54,6 +54,36 @@ ia ditulis, bukan enam session kemudian.
 
 ---
 
+## Mockup UI — sebelum kod backend
+
+> **Peraturan Sufi (13 Nov 2026):** UI mockup dibina dan dipersetujui
+> **sebelum** kod backend/API mana-mana bahagian ditulis. UI lama
+> (`index.html` satu halaman + modal admin) dipecah ikut peranan.
+
+HTML statik dalam `mockup/`, Bootstrap sahaja, data palsu. Buka di
+`http://localhost/claude-learn1/mockup/`.
+
+**Pusingan 1 — rangka + satu skrin setiap peranan**
+
+- [x] `mockup/index.html` — indeks semua mockup
+- [x] `mockup/cashier/index.html` — skrin POS kaunter + modal bayaran
+      (navbar papar kedai, kaunter, syif, juruwang)
+- [x] `mockup/waiter/index.html` — paparan meja, mobile-first (390px),
+      **tiada UI bayaran**
+- [x] `mockup/admin/index.html` — layout sidebar + pemilih kedai, dashboard
+- [x] `mockup/superadmin/index.html` — layout sidebar gelap, senarai vendor
+- [ ] **Sufi setuju rangka & gaya** sebelum pusingan 2
+
+**Pusingan 2 — skrin Session 1A/1B** (sebelum Fasa 1 dimulakan)
+
+- [ ] Log masuk e-mel (admin) · log masuk PIN (juruwang/waiter)
+- [ ] Pemilih kedai selepas log masuk · buka/tutup syif
+- [ ] Modal variasi · sejarah transaksi juruwang · resit (58mm & 80mm)
+
+> Skrin session lain dimockup pada permulaan session masing-masing.
+
+---
+
 ## Session 1A — Skema, Teras & Auth (Fasa 1–2)
 
 ### Fasa 1 — Skema & teras
