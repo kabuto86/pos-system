@@ -519,7 +519,8 @@ updated_by · PK(vendor_id, outlet_id, setting_key)
 
 > Isi awal setiap vendor: `day_cutoff_time` (04:00), `shop_name`,
 > `shop_address`, `tax_rate` (0.06), `service_charge_rate` (0),
-> `packaging_fee` (0), `receipt_footer`, `paper_width` (58/80),
+> `packaging_fee` (0), `receipt_footer`, `paper_width` (58/80, seed `58`;
+> vendor tetapkan sendiri, boleh ditindih per kedai),
 > `printer_name`, `currency_prefix` (RM),
 > **`discount_tax_mode`** (`after_tax` — kekalkan kelakuan sekarang),
 > **`manual_discount_max_percent`** (0 = tiada had),

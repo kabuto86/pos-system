@@ -82,6 +82,8 @@ ia ditulis, bukan enam session kemudian.
 - [ ] `plan_outlet_tiers`, `invoices`, `invoice_lines`
 - [ ] Seed: KEDAI01 satu kedai · **KEDAI02 DUA kedai** — supaya isu kedai
       berbilang terserlah awal, sama sebabnya seperti dua vendor (3.4)
+- [ ] Seed `paper_width`: lalai `58` setiap vendor · kedai kedua KEDAI02
+      ada baris tindihan `80` (untuk ujian lebar resit di Fasa 5)
 - [ ] `config/database.php` + `.example.php` + kemas kini `.gitignore`
 - [ ] `core/Database.php` (PDO utf8mb4), `Response.php`, `Request.php`,
       `Validator.php`, `BusinessDay.php`, **`VendorScope.php`**,
@@ -218,6 +220,12 @@ baharu, tiada masalah popup blocker.
       dalam URL, jadi ia sasaran kebocoran paling jelas dalam sistem
 - [ ] `css/receipt-58mm.css` — `@page { size: 58mm auto; margin: 0 }`, 9pt monospace
 - [ ] `css/receipt-80mm.css` — sama, 80mm, 10pt
+- [ ] `print/receipt.php` baca `paper_width` dari `settings` (tindihan kedai
+      dahulu, kemudian lalai vendor) dan muatkan **satu** fail CSS yang sepadan.
+      Nilai selain `58`/`80` → jatuh balik ke `58`
+- [ ] **Buang emoji dari resit bercetak** — tapis nama produk, variasi dan
+      nota dalam `GetReceiptJob` (mod cetak). Rapikan ruang berganda dan ruang
+      di hujung selepas emoji dibuang. Skrin juruwang **kekal** papar emoji
 - [ ] `cashier/js/print.js` — cetak melalui iframe tersembunyi
 - [ ] Luaskan `GetReceiptJob` — nama kedai, alamat, juruwang, kaunter, footer
       (dari `settings` vendor), **jenis pesanan, nombor meja / take-away**
@@ -269,6 +277,11 @@ juruwang boleh cetak resit kedua dan serahkan sebagai asal.
       pada lebar 32 aksara. Mesti membalut, bukan terpotong
 - [ ] Cetak ke PDF → 1 halaman, tiada halaman kosong di hujung
 - [ ] Ulang untuk 58mm dan 80mm
+- [ ] **Lebar ikut tetapan**: seed KEDAI01 = 58, satu kedai KEDAI02 tindih
+      ke 80 → resit kedua-duanya keluar pada lebar masing-masing tanpa ubah kod
+- [ ] **Tiada emoji pada resit**: `🍛 Nasi Lemak` → `Nasi Lemak` (tiada ruang
+      di depan); produk yang namanya emoji sahaja tidak tinggal baris kosong
+- [ ] Cari bait `F0 9F` dalam HTML resit yang dijana → **tiada**
 - [ ] **KEDAI02 cuba buka resit KEDAI01 melalui URL → ditolak**
 
 **Sufi kena sahkan sekali dengan printer sebenar.** Kod boleh dipastikan
@@ -287,10 +300,12 @@ dijangka.
    driver murah. Cadangan: **buang emoji dari resit bercetak, kekalkan pada
    skrin**.
 
-**Dua keputusan diperlukan dari Sufi**
+**Keputusan Sufi (13 Nov 2026)**
 
-- [ ] **Lebar lalai — 58mm atau 80mm?**
-- [ ] **Emoji pada resit bercetak — buang atau kekal?** Cadangan: buang
+- [x] **Lebar resit — vendor tetapkan sendiri** melalui `paper_width`
+      (58/80). Lalai vendor, boleh ditindih per kedai. Nilai seed: `58`.
+      UI tetapan dibina di Fasa 13; sebelum itu nilai datang dari seed
+- [x] **Emoji pada resit bercetak — buang.** Kekal pada skrin
 
 ### Fasa 6 — Admin kedai: katalog
 - [ ] Rangka `admin/` — login, sidebar, semak peranan **dan vendor** pada
@@ -430,7 +445,8 @@ Uji sebagai vendor **KEDAI02** (restaurant).
 - [ ] `admin/tables.php` — susun atur meja, kawasan, kapasiti
 - [ ] `admin/payment-methods.php`
 - [ ] `admin/settings.php` — nama kedai, kadar cukai, caj perkhidmatan,
-      caj bungkus, `day_cutoff_time`, footer, lebar kertas
+      caj bungkus, `day_cutoff_time`, footer, lebar kertas (58/80 —
+      lalai vendor, boleh ditindih per kedai)
 - [ ] `admin/logs.php` — log aktiviti vendor
 - [ ] Sahkan: tukar kadar cukai KEDAI01 → jualan KEDAI02 tidak terjejas
 - [ ] Sahkan: jualan lama tidak berubah bila kadar ditukar
@@ -607,4 +623,6 @@ Uji sebagai vendor **KEDAI02** (restaurant).
 | 27 Ogos 2026 | Stok berpindah dari `products` ke `product_outlets`; harga boleh ditindih per kedai | Satu lajur stok pada produk tiada makna apabila vendor ada tiga kedai. Keputusan Sufi: katalog dikongsi, harga & stok per kedai |
 | 27 Ogos 2026 | **PIN untuk juruwang & waiter**, e-mel untuk admin sahaja | Waiter log masuk 20–30 kali sehari pada tablet berkongsi. Kalau menyusahkan, mereka akan berkongsi satu akaun dan sistem hilang jejak siapa buat apa. `users.email` jadi nullable |
 | 27 Ogos 2026 | Kedai tambahan dicaj mengikut **peringkat**, bukan diskaun % tetap | Caj per lokasi ialah norma industri POS SaaS. Peringkat dipilih kerana peratus tetap tidak menjawab kedai ke-5 atau ke-20, dan peringkat boleh menghasilkan peratus rata juga |
+| 13 Nov 2026 | **Lebar resit jadi tetapan vendor** (`paper_width` 58/80, tindihan per kedai), bukan satu lalai sistem | Keputusan Sufi. Kedai berbeza guna printer berbeza; satu vendor boleh ada kaunter 58mm dan 80mm |
+| 13 Nov 2026 | **Emoji dibuang dari resit bercetak**, kekal pada skrin | Keputusan Sufi. Driver termal murah cetak emoji sebagai kotak hitam |
 | 27 Ogos 2026 | Kedai dibuka pertengahan kitaran diprorata | Jangkaan pelanggan, dan menghapuskan insentif menunggu awal bulan sebelum membuka kedai |
