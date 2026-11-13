@@ -4,165 +4,202 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KedaiPOS — Admin Kedai</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="../../vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="../../css/theme.css">
 </head>
-<body class="bg-body-tertiary">
+<body>
 
-<!-- TOPBAR: pemilih kedai sentiasa di atas -->
-<nav class="navbar bg-white border-bottom sticky-top">
-  <div class="container-fluid">
-    <div class="d-flex align-items-center gap-2">
-      <button class="btn btn-outline-secondary btn-sm d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#sidebar">☰</button>
-      <span class="navbar-brand mb-0 h1 fw-semibold">
-        Kedai<span class="text-warning">POS</span>
-        <span class="badge text-bg-warning ms-1 align-middle">MOCKUP</span>
-      </span>
+<div class="d-flex min-vh-100">
+
+  <!-- SIDEBAR -->
+  <div class="kp-side-wrap flex-shrink-0">
+  <aside class="offcanvas-lg offcanvas-start kp-side h-100" tabindex="-1" id="sidebar">
+    <div class="offcanvas-header">
+      <span class="kp-brand">KedaiPOS</span>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Tutup"></button>
     </div>
-    <div class="d-flex align-items-center gap-2">
-      <select class="form-select form-select-sm">
-        <option>Semua kedai</option>
+    <div class="offcanvas-body d-flex flex-column px-3 pb-3">
+      <div class="d-none d-lg-flex align-items-center gap-2 px-2 pt-4 pb-3">
+        <span class="kp-brand">KedaiPOS</span>
+        <span class="kp-mockup-tag">Mockup</span>
+      </div>
+      <nav class="nav nav-pills flex-column">
+        <a class="nav-link active" href="#">📊 Ringkasan hari ini</a>
+        <a class="nav-link" href="#">📈 Laporan</a>
+      </nav>
+      <div class="kp-side-group">Jualan</div>
+      <nav class="nav nav-pills flex-column">
+        <a class="nav-link" href="#">📦 Produk</a>
+        <a class="nav-link" href="#">🗂️ Kategori</a>
+        <a class="nav-link" href="#">🎛️ Pilihan &amp; variasi</a>
+        <a class="nav-link" href="#">🏷️ Promosi</a>
+      </nav>
+      <div class="kp-side-group">Operasi</div>
+      <nav class="nav nav-pills flex-column">
+        <a class="nav-link" href="#">📋 Stok</a>
+        <a class="nav-link" href="#">🧾 Transaksi</a>
+        <a class="nav-link" href="#">🪑 Meja</a>
+      </nav>
+      <div class="kp-side-group">Kedai</div>
+      <nav class="nav nav-pills flex-column">
+        <a class="nav-link" href="#">👥 Kakitangan</a>
+        <a class="nav-link" href="#">🖥️ Kaunter &amp; peranti</a>
+        <a class="nav-link" href="#">🏪 Cawangan</a>
+        <a class="nav-link" href="#">⚙️ Tetapan</a>
+        <a class="nav-link" href="#">💼 Langganan</a>
+      </nav>
+    </div>
+  </aside>
+  </div>
+
+  <div class="flex-grow-1 min-w-0">
+
+    <!-- BAR ATAS -->
+    <header class="d-flex align-items-center gap-2 px-3 px-lg-5 pt-4 pb-2">
+      <button class="btn btn-light btn-sm d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-label="Menu">☰</button>
+      <select class="form-select form-select-sm w-auto fw-semibold rounded-pill" aria-label="Pilih cawangan">
+        <option>Semua cawangan</option>
         <option selected>Cawangan Bangi</option>
         <option>Cawangan Kajang</option>
       </select>
-      <div class="dropdown">
-        <button class="btn btn-sm btn-light dropdown-toggle" data-bs-toggle="dropdown">Encik Rahman</button>
-        <ul class="dropdown-menu dropdown-menu-end">
+      <div class="ms-auto dropdown">
+        <button class="btn btn-light rounded-pill d-flex align-items-center gap-2 ps-1 pe-3 py-1" data-bs-toggle="dropdown">
+          <span class="kp-avatar bg-warning-subtle text-warning-emphasis">R</span>
+          <span class="small">Encik Rahman</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end shadow border-0">
           <li><a class="dropdown-item" href="#">Profil</a></li>
           <li><a class="dropdown-item" href="#">Bahasa: Melayu</a></li>
           <li><hr class="dropdown-divider"></li>
           <li><a class="dropdown-item text-danger" href="#">Log keluar</a></li>
         </ul>
       </div>
-    </div>
+    </header>
+
+    <main class="px-3 px-lg-5 pb-5">
+      <h1 class="h2 fw-bold mt-2 mb-1">Selamat petang, Encik Rahman</h1>
+      <p class="text-body-secondary mb-4">Jualan Cawangan Bangi pada hari Jumaat, 13 November, sehingga 3:45 petang.</p>
+
+      <!-- HERO: jualan hari ini + carta jam -->
+      <section class="kp-hero p-4 p-lg-5 mb-4">
+        <div class="row g-4 align-items-end">
+          <div class="col-lg-7">
+            <div class="text-body-secondary mb-2">Jualan hari ini</div>
+            <div class="kp-hero-figure mb-2">RM 2,184.50</div>
+            <div><span class="kp-delta-up">+12%</span> <span class="text-body-secondary">berbanding Jumaat lepas pada waktu sama</span></div>
+
+            <svg class="kp-bars w-100 mt-4" viewBox="0 0 420 96" role="img" aria-label="Jualan mengikut jam, 7 pagi hingga 3 petang">
+              <rect x="0"   y="70" width="36" height="14" rx="4"></rect>
+              <rect x="48"  y="44" width="36" height="40" rx="4"></rect>
+              <rect x="96"  y="30" width="36" height="54" rx="4"></rect>
+              <rect x="144" y="52" width="36" height="32" rx="4"></rect>
+              <rect x="192" y="40" width="36" height="44" rx="4"></rect>
+              <rect x="240" y="6"  width="36" height="78" rx="4"></rect>
+              <rect x="288" y="14" width="36" height="70" rx="4"></rect>
+              <rect x="336" y="48" width="36" height="36" rx="4"></rect>
+              <rect x="384" y="62" width="36" height="22" rx="4" class="kp-bar-now"></rect>
+              <text x="18"  y="96" text-anchor="middle">7</text>
+              <text x="114" y="96" text-anchor="middle">9</text>
+              <text x="210" y="96" text-anchor="middle">11</text>
+              <text x="306" y="96" text-anchor="middle">1</text>
+              <text x="402" y="96" text-anchor="middle">3</text>
+            </svg>
+          </div>
+          <div class="col-lg-4 offset-lg-1">
+            <div class="kp-hero-split py-3">
+              <div class="text-body-secondary small">Transaksi</div>
+              <div class="h3 fw-bold mb-0 kp-num">87 <span class="fs-6 fw-normal text-body-secondary">purata RM 25.11</span></div>
+            </div>
+            <div class="kp-hero-split py-3">
+              <div class="text-body-secondary small">Meja berisi sekarang</div>
+              <div class="h3 fw-bold mb-0 kp-num">3 / 9 <span class="fs-6 fw-normal text-body-secondary">2 take away</span></div>
+            </div>
+            <div class="kp-hero-split py-3">
+              <div class="text-body-secondary small">Jam paling sibuk</div>
+              <div class="h3 fw-bold mb-0">12 – 1 tengah hari</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="row g-4">
+        <!-- Produk terlaris -->
+        <div class="col-xl-7">
+          <section class="kp-panel p-4 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h2 class="h5 fw-bold mb-0">Paling laku hari ini</h2>
+              <a href="#" class="small fw-semibold">Laporan penuh</a>
+            </div>
+            <ol class="list-unstyled mb-0">
+              <li class="d-flex align-items-center gap-3 py-2">
+                <span class="kp-rank">1</span>
+                <div class="flex-grow-1">
+                  <div class="d-flex justify-content-between"><span class="fw-semibold">Nasi Lemak</span><span class="kp-num">RM 412.00</span></div>
+                  <div class="progress kp-progress-thin mt-1" role="progressbar" aria-label="64 unit" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar w-100"></div></div>
+                  <div class="small text-body-secondary mt-1">64 unit</div>
+                </div>
+              </li>
+              <li class="d-flex align-items-center gap-3 py-2">
+                <span class="kp-rank">2</span>
+                <div class="flex-grow-1">
+                  <div class="d-flex justify-content-between"><span class="fw-semibold">Teh Tarik</span><span class="kp-num">RM 269.50</span></div>
+                  <div class="progress kp-progress-thin mt-1" role="progressbar" aria-label="98 unit" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar w-75"></div></div>
+                  <div class="small text-body-secondary mt-1">98 unit</div>
+                </div>
+              </li>
+              <li class="d-flex align-items-center gap-3 py-2">
+                <span class="kp-rank">3</span>
+                <div class="flex-grow-1">
+                  <div class="d-flex justify-content-between"><span class="fw-semibold">Mee Goreng Mamak</span><span class="kp-num">RM 186.00</span></div>
+                  <div class="progress kp-progress-thin mt-1" role="progressbar" aria-label="31 unit" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar w-50"></div></div>
+                  <div class="small text-body-secondary mt-1">31 unit</div>
+                </div>
+              </li>
+              <li class="d-flex align-items-center gap-3 py-2">
+                <span class="kp-rank">4</span>
+                <div class="flex-grow-1">
+                  <div class="d-flex justify-content-between"><span class="fw-semibold">Nasi Goreng Kampung</span><span class="kp-num">RM 140.00</span></div>
+                  <div class="progress kp-progress-thin mt-1" role="progressbar" aria-label="22 unit" aria-valuenow="34" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar w-25"></div></div>
+                  <div class="small text-body-secondary mt-1">22 unit</div>
+                </div>
+              </li>
+            </ol>
+          </section>
+        </div>
+
+        <div class="col-xl-5 d-flex flex-column gap-4">
+          <!-- Stok rendah: perlu tindakan -->
+          <section class="kp-panel p-4 border-danger-subtle">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h2 class="h5 fw-bold mb-0">Perlu ditambah stok</h2>
+              <span class="badge rounded-pill text-bg-danger">4</span>
+            </div>
+            <ul class="list-unstyled mb-3 small">
+              <li class="d-flex justify-content-between py-1"><span>Kuih Keria</span><span class="text-danger fw-semibold">tinggal 3</span></li>
+              <li class="d-flex justify-content-between py-1"><span>Kek Lapis Sarawak</span><span class="text-danger fw-semibold">habis</span></li>
+              <li class="d-flex justify-content-between py-1"><span>Air Kotak Laici</span><span class="text-danger fw-semibold">tinggal 6</span></li>
+            </ul>
+            <a href="#" class="btn btn-light btn-sm">Terima stok</a>
+          </section>
+
+          <!-- Kaedah bayaran & syif -->
+          <section class="kp-panel p-4">
+            <h2 class="h5 fw-bold mb-3">Cara pelanggan bayar</h2>
+            <div class="d-flex justify-content-between py-1"><span>💵 Tunai</span><span class="kp-num fw-semibold">RM 1,302.00</span></div>
+            <div class="d-flex justify-content-between py-1"><span>📱 DuitNow QR</span><span class="kp-num fw-semibold">RM 641.50</span></div>
+            <div class="d-flex justify-content-between py-1"><span>💳 Kad</span><span class="kp-num fw-semibold">RM 241.00</span></div>
+            <hr>
+            <h3 class="h6 fw-bold mb-2">Kaunter dibuka</h3>
+            <div class="d-flex justify-content-between small py-1"><span>Kaunter 1, Ali</span><span class="kp-status kp-status-live">sejak 08:02</span></div>
+            <div class="d-flex justify-content-between small py-1"><span>Kaunter 2, Mei Ling</span><span class="kp-status kp-status-live">sejak 11:30</span></div>
+          </section>
+        </div>
+      </div>
+    </main>
   </div>
-</nav>
-
-<div class="d-flex">
-
-  <!-- SIDEBAR: offcanvas pada skrin kecil, tetap pada skrin besar -->
-  <aside class="offcanvas-lg offcanvas-start bg-white border-end" tabindex="-1" id="sidebar">
-    <div class="offcanvas-header">
-      <h5 class="offcanvas-title">Menu</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebar"></button>
-    </div>
-    <div class="offcanvas-body d-flex flex-column p-2">
-      <div class="small text-uppercase text-body-secondary px-2 mt-2">Ringkasan</div>
-      <nav class="nav nav-pills flex-column">
-        <a class="nav-link active" href="#">📊 Dashboard</a>
-        <a class="nav-link text-body" href="#">📈 Laporan</a>
-      </nav>
-      <div class="small text-uppercase text-body-secondary px-2 mt-3">Katalog</div>
-      <nav class="nav nav-pills flex-column">
-        <a class="nav-link text-body" href="#">📦 Produk</a>
-        <a class="nav-link text-body" href="#">🗂️ Kategori</a>
-        <a class="nav-link text-body" href="#">🎛️ Variasi</a>
-        <a class="nav-link text-body" href="#">🔥 Promosi</a>
-      </nav>
-      <div class="small text-uppercase text-body-secondary px-2 mt-3">Operasi</div>
-      <nav class="nav nav-pills flex-column">
-        <a class="nav-link text-body" href="#">📋 Stok</a>
-        <a class="nav-link text-body" href="#">🧾 Transaksi</a>
-        <a class="nav-link text-body" href="#">🪑 Meja</a>
-      </nav>
-      <div class="small text-uppercase text-body-secondary px-2 mt-3">Tetapan</div>
-      <nav class="nav nav-pills flex-column">
-        <a class="nav-link text-body" href="#">👥 Kakitangan</a>
-        <a class="nav-link text-body" href="#">🖥️ Kaunter &amp; peranti</a>
-        <a class="nav-link text-body" href="#">🏪 Kedai</a>
-        <a class="nav-link text-body" href="#">💳 Kaedah bayaran</a>
-        <a class="nav-link text-body" href="#">⚙️ Tetapan</a>
-        <a class="nav-link text-body" href="#">💼 Langganan &amp; bil</a>
-      </nav>
-    </div>
-  </aside>
-
-  <!-- KANDUNGAN -->
-  <main class="flex-grow-1 p-3 p-lg-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <div>
-        <h1 class="h4 fw-semibold mb-0">Dashboard</h1>
-        <div class="small text-body-secondary">Cawangan Bangi · Hari perniagaan 13/11/2026</div>
-      </div>
-      <button class="btn btn-outline-secondary btn-sm">Muat semula</button>
-    </div>
-
-    <div class="row row-cols-2 row-cols-xl-4 g-3 mb-4">
-      <div class="col">
-        <div class="card shadow-sm h-100">
-          <div class="card-body">
-            <div class="small text-body-secondary">Jualan hari ini</div>
-            <div class="fs-4 fw-bold">RM 2,184.50</div>
-            <div class="small text-success">▲ 12% berbanding semalam</div>
-          </div>
-        </div>
-      </div>
-      <div class="col">
-        <div class="card shadow-sm h-100">
-          <div class="card-body">
-            <div class="small text-body-secondary">Transaksi</div>
-            <div class="fs-4 fw-bold">87</div>
-            <div class="small text-body-secondary">Purata RM 25.11</div>
-          </div>
-        </div>
-      </div>
-      <div class="col">
-        <div class="card shadow-sm h-100">
-          <div class="card-body">
-            <div class="small text-body-secondary">Meja berisi</div>
-            <div class="fs-4 fw-bold">3 / 9</div>
-            <div class="small text-body-secondary">2 take away terbuka</div>
-          </div>
-        </div>
-      </div>
-      <div class="col">
-        <div class="card shadow-sm h-100 border-danger">
-          <div class="card-body">
-            <div class="small text-body-secondary">Stok rendah</div>
-            <div class="fs-4 fw-bold text-danger">4 produk</div>
-            <a href="#" class="small">Lihat senarai</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="row g-3">
-      <div class="col-lg-7">
-        <div class="card shadow-sm">
-          <div class="card-header bg-white fw-semibold">Produk terlaris hari ini</div>
-          <div class="table-responsive">
-            <table class="table table-sm mb-0 align-middle">
-              <thead>
-                <tr><th>Produk</th><th class="text-end">Unit</th><th class="text-end">Jualan</th></tr>
-              </thead>
-              <tbody>
-                <tr><td>Nasi Lemak</td><td class="text-end">64</td><td class="text-end">RM 412.00</td></tr>
-                <tr><td>Teh Tarik</td><td class="text-end">98</td><td class="text-end">RM 269.50</td></tr>
-                <tr><td>Mee Goreng</td><td class="text-end">31</td><td class="text-end">RM 186.00</td></tr>
-                <tr><td>Nasi Goreng Kampung</td><td class="text-end">22</td><td class="text-end">RM 140.00</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-5">
-        <div class="card shadow-sm mb-3">
-          <div class="card-header bg-white fw-semibold">Ikut kaedah bayaran</div>
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item d-flex justify-content-between"><span>💵 Tunai</span><span>RM 1,302.00</span></li>
-            <li class="list-group-item d-flex justify-content-between"><span>📱 QR</span><span>RM 641.50</span></li>
-            <li class="list-group-item d-flex justify-content-between"><span>💳 Kad</span><span>RM 241.00</span></li>
-          </ul>
-        </div>
-        <div class="card shadow-sm">
-          <div class="card-header bg-white fw-semibold">Syif aktif</div>
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item d-flex justify-content-between"><span>Kaunter 1 · Ali</span><span class="badge text-bg-success">sejak 08:02</span></li>
-            <li class="list-group-item d-flex justify-content-between"><span>Kaunter 2 · Mei Ling</span><span class="badge text-bg-success">sejak 11:30</span></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </main>
 </div>
 
 <script src="../../vendor/bootstrap/bootstrap.bundle.min.js"></script>

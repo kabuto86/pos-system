@@ -1,0 +1,650 @@
+/* =========================================================
+   KedaiPOS — tema "Pandan & Kunyit"
+   Lapisan atas Bootstrap 5.3: kebanyakannya menukar pemboleh
+   ubah --bs-*, ditambah sedikit kelas kp-* untuk komponen POS.
+   ========================================================= */
+
+:root {
+  --kp-pandan-900: #0E3326;
+  --kp-pandan-800: #133F2F;
+  --kp-pandan-700: #17573F;
+  --kp-pandan-500: #23845E;
+  --kp-pandan-100: #E3F0E8;
+  --kp-santan: #F4F6F2;
+  --kp-ink: #18211D;
+  --kp-kunyit: #F0A81C;
+  --kp-kunyit-600: #D99208;
+  --kp-kunyit-100: #FCF0D4;
+  --kp-cili: #C23B2E;
+  --kp-cili-100: #F8E3E0;
+  --kp-line: #DFE5DF;
+  --kp-font-display: "Bricolage Grotesque", "Figtree", system-ui, sans-serif;
+
+  /* Bootstrap */
+  --bs-body-font-family: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --bs-body-font-size: .9375rem;
+  --bs-body-color: var(--kp-ink);
+  --bs-body-color-rgb: 24, 33, 29;
+  --bs-body-bg: var(--kp-santan);
+  --bs-emphasis-color: var(--kp-ink);
+  --bs-secondary-color: rgba(24, 33, 29, .62);
+  --bs-tertiary-bg: var(--kp-santan);
+  --bs-border-color: var(--kp-line);
+  --bs-border-radius: .625rem;
+  --bs-border-radius-sm: .5rem;
+  --bs-border-radius-lg: 1rem;
+  --bs-border-radius-xl: 1.375rem;
+  --bs-link-color: var(--kp-pandan-700);
+  --bs-link-color-rgb: 23, 87, 63;
+  --bs-link-hover-color: var(--kp-pandan-900);
+  --bs-link-hover-color-rgb: 14, 51, 38;
+  --bs-primary: var(--kp-pandan-700);
+  --bs-primary-rgb: 23, 87, 63;
+  --bs-success: var(--kp-pandan-500);
+  --bs-success-rgb: 35, 132, 94;
+  --bs-warning: var(--kp-kunyit);
+  --bs-warning-rgb: 240, 168, 28;
+  --bs-danger: var(--kp-cili);
+  --bs-danger-rgb: 194, 59, 46;
+  --bs-dark: var(--kp-ink);
+  --bs-dark-rgb: 24, 33, 29;
+  --bs-primary-bg-subtle: var(--kp-pandan-100);
+  --bs-primary-text-emphasis: var(--kp-pandan-700);
+  --bs-success-bg-subtle: var(--kp-pandan-100);
+  --bs-success-text-emphasis: var(--kp-pandan-700);
+  --bs-warning-bg-subtle: var(--kp-kunyit-100);
+  --bs-warning-text-emphasis: #7A5308;
+  --bs-danger-bg-subtle: var(--kp-cili-100);
+  --bs-danger-text-emphasis: #8E2318;
+  --bs-focus-ring-color: rgba(35, 132, 94, .35);
+}
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, .kp-display {
+  font-family: var(--kp-font-display);
+  letter-spacing: -.015em;
+}
+
+.kp-num { font-variant-numeric: tabular-nums; }
+
+:focus-visible {
+  outline: 2px solid var(--kp-kunyit);
+  outline-offset: 2px;
+}
+
+/* ---------- Butang ---------- */
+.btn { font-weight: 600; }
+
+.btn-primary {
+  --bs-btn-bg: var(--kp-pandan-700);
+  --bs-btn-border-color: var(--kp-pandan-700);
+  --bs-btn-hover-bg: var(--kp-pandan-900);
+  --bs-btn-hover-border-color: var(--kp-pandan-900);
+  --bs-btn-active-bg: var(--kp-pandan-900);
+  --bs-btn-active-border-color: var(--kp-pandan-900);
+  --bs-btn-disabled-bg: var(--kp-pandan-700);
+  --bs-btn-disabled-border-color: var(--kp-pandan-700);
+}
+
+.btn-outline-primary {
+  --bs-btn-color: var(--kp-pandan-700);
+  --bs-btn-border-color: var(--kp-line);
+  --bs-btn-hover-bg: var(--kp-pandan-100);
+  --bs-btn-hover-color: var(--kp-pandan-900);
+  --bs-btn-hover-border-color: var(--kp-pandan-100);
+  --bs-btn-active-bg: var(--kp-pandan-700);
+  --bs-btn-active-border-color: var(--kp-pandan-700);
+}
+
+.btn-light {
+  --bs-btn-bg: #fff;
+  --bs-btn-border-color: var(--kp-line);
+  --bs-btn-hover-bg: var(--kp-pandan-100);
+  --bs-btn-hover-border-color: var(--kp-pandan-100);
+}
+
+.btn-kunyit {
+  --bs-btn-color: var(--kp-ink);
+  --bs-btn-bg: var(--kp-kunyit);
+  --bs-btn-border-color: var(--kp-kunyit);
+  --bs-btn-hover-color: var(--kp-ink);
+  --bs-btn-hover-bg: var(--kp-kunyit-600);
+  --bs-btn-hover-border-color: var(--kp-kunyit-600);
+  --bs-btn-active-color: var(--kp-ink);
+  --bs-btn-active-bg: var(--kp-kunyit-600);
+  --bs-btn-active-border-color: var(--kp-kunyit-600);
+}
+
+/* ---------- Borang, nav, halaman ---------- */
+.form-control, .form-select { border-color: var(--kp-line); }
+.form-control:focus, .form-select:focus {
+  border-color: var(--kp-pandan-500);
+  box-shadow: 0 0 0 .2rem rgba(35, 132, 94, .18);
+}
+
+.nav-pills {
+  --bs-nav-pills-link-active-bg: var(--kp-pandan-100);
+  --bs-nav-pills-link-active-color: var(--kp-pandan-900);
+  --bs-nav-link-color: var(--kp-ink);
+  --bs-nav-link-hover-color: var(--kp-pandan-700);
+}
+.nav-pills .nav-link { font-weight: 500; }
+.nav-pills .nav-link.active { font-weight: 700; }
+
+.pagination {
+  --bs-pagination-active-bg: var(--kp-pandan-700);
+  --bs-pagination-active-border-color: var(--kp-pandan-700);
+  --bs-pagination-color: var(--kp-pandan-700);
+}
+
+.progress { --bs-progress-bar-bg: var(--kp-pandan-500); --bs-progress-bg: var(--kp-pandan-100); }
+
+.card { --bs-card-border-color: var(--kp-line); }
+
+/* ---------- Jenama ---------- */
+.kp-brand {
+  font-family: var(--kp-font-display);
+  font-weight: 800;
+  font-size: 1.2rem;
+  letter-spacing: -.03em;
+  color: var(--kp-pandan-900);
+  text-decoration: none;
+}
+.kp-brand::after {
+  content: "";
+  display: inline-block;
+  width: .45rem;
+  height: .45rem;
+  margin-left: .15rem;
+  border-radius: 50%;
+  background: var(--kp-kunyit);
+}
+.kp-brand-light { color: #fff; }
+
+.kp-mockup-tag {
+  font-size: .7rem;
+  font-weight: 700;
+  padding: .2rem .5rem;
+  border-radius: 999px;
+  background: var(--kp-kunyit-100);
+  color: #7A5308;
+}
+
+/* Lencana status bertitik */
+.kp-status {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  font-size: .8125rem;
+  font-weight: 600;
+}
+.kp-status::before {
+  content: "";
+  width: .5rem;
+  height: .5rem;
+  border-radius: 50%;
+  background: currentColor;
+}
+.kp-status-live { color: var(--kp-pandan-500); }
+.kp-status-trial { color: var(--kp-kunyit-600); }
+.kp-status-off { color: var(--kp-cili); }
+.kp-status-muted { color: rgba(24, 33, 29, .45); }
+
+/* =========================================================
+   JURUWANG
+   ========================================================= */
+.kp-topbar {
+  background: #fff;
+  border-bottom: 1px solid var(--kp-line);
+}
+
+.kp-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .3rem .7rem;
+  border-radius: 999px;
+  background: var(--kp-santan);
+  border: 1px solid var(--kp-line);
+  font-size: .8125rem;
+  font-weight: 600;
+}
+
+/* Kawalan segmen jenis pesanan */
+.kp-segment {
+  display: inline-flex;
+  padding: .25rem;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid var(--kp-line);
+}
+.kp-segment .btn {
+  border: 0;
+  border-radius: 999px;
+  padding: .4rem 1rem;
+  color: rgba(24, 33, 29, .7);
+}
+.kp-segment .btn-check:checked + .btn {
+  background: var(--kp-pandan-900);
+  color: #fff;
+}
+
+.kp-search {
+  background: #fff;
+  border: 1px solid var(--kp-line);
+  border-radius: 999px;
+  padding: .2rem .4rem .2rem 1rem;
+}
+.kp-search .form-control {
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+  font-size: 1rem;
+}
+.kp-search:focus-within {
+  border-color: var(--kp-pandan-500);
+  box-shadow: 0 0 0 .2rem rgba(35, 132, 94, .15);
+}
+.kp-kbd {
+  font-size: .75rem;
+  font-weight: 600;
+  padding: .25rem .55rem;
+  border-radius: .4rem;
+  background: var(--kp-santan);
+  color: rgba(24, 33, 29, .6);
+}
+
+/* Kategori */
+.kp-cat {
+  border: 0;
+  background: transparent;
+  padding: .35rem .2rem;
+  margin-right: 1.1rem;
+  font-weight: 600;
+  color: rgba(24, 33, 29, .55);
+  border-bottom: 2px solid transparent;
+}
+.kp-cat.active {
+  color: var(--kp-ink);
+  border-bottom-color: var(--kp-kunyit);
+}
+.kp-cat .kp-count {
+  font-size: .75rem;
+  font-weight: 500;
+  color: rgba(24, 33, 29, .45);
+  margin-left: .2rem;
+}
+
+/* Jubin produk */
+.kp-tile {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: left;
+  background: #fff;
+  border: 1px solid var(--kp-line);
+  border-radius: 1rem;
+  padding: .85rem;
+  transition: border-color .15s ease, transform .1s ease;
+}
+.kp-tile:hover { border-color: var(--kp-pandan-500); }
+.kp-tile:active { transform: scale(.98); }
+.kp-tile:disabled { opacity: .5; }
+.kp-tile-icon {
+  display: grid;
+  place-items: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: .85rem;
+  font-size: 1.75rem;
+  margin-bottom: .75rem;
+}
+.kp-tint-food { background: var(--kp-kunyit-100); }
+.kp-tint-drink { background: var(--kp-pandan-100); }
+.kp-tint-sweet { background: var(--kp-cili-100); }
+.kp-tile-name {
+  font-weight: 600;
+  line-height: 1.25;
+  min-height: 2.5em;
+}
+.kp-tile-price {
+  font-family: var(--kp-font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  font-variant-numeric: tabular-nums;
+}
+.kp-tile-flag {
+  position: absolute;
+  top: .7rem;
+  right: .7rem;
+  font-size: .7rem;
+  font-weight: 700;
+  padding: .15rem .5rem;
+  border-radius: 999px;
+}
+.kp-flag-promo { background: var(--kp-cili); color: #fff; }
+.kp-flag-low { background: var(--kp-kunyit-100); color: #7A5308; }
+.kp-flag-out { background: var(--kp-santan); color: rgba(24, 33, 29, .6); }
+.kp-flag-var { background: var(--kp-pandan-100); color: var(--kp-pandan-700); }
+
+/* Tiket troli — elemen paling menonjol */
+.kp-ticket {
+  background: var(--kp-pandan-900);
+  color: #fff;
+  --bs-secondary-color: rgba(255, 255, 255, .6);
+  --bs-border-color: rgba(255, 255, 255, .12);
+  scrollbar-color: rgba(255, 255, 255, .22) transparent;
+}
+.kp-ticket-line + .kp-ticket-line {
+  border-top: 1px dashed rgba(255, 255, 255, .16);
+}
+.kp-ticket-variant { color: rgba(255, 255, 255, .6); font-size: .8125rem; }
+.kp-ticket-promo { color: var(--kp-kunyit); font-size: .8125rem; font-weight: 600; }
+.kp-stepper {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .08);
+}
+.kp-stepper button {
+  width: 1.9rem;
+  height: 1.9rem;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #fff;
+  font-weight: 700;
+}
+.kp-stepper button:hover { background: rgba(255, 255, 255, .14); }
+.kp-stepper span {
+  min-width: 1.6rem;
+  text-align: center;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.kp-ticket-foot {
+  background: var(--kp-pandan-800);
+  border-top: 1px dashed rgba(255, 255, 255, .22);
+}
+.kp-ticket .form-control {
+  background: rgba(255, 255, 255, .08);
+  border-color: transparent;
+  color: #fff;
+}
+.kp-ticket .input-group-text {
+  background: transparent;
+  border-color: transparent;
+  color: rgba(255, 255, 255, .6);
+}
+.kp-total {
+  font-family: var(--kp-font-display);
+  font-weight: 800;
+  font-size: 2.4rem;
+  line-height: 1;
+  letter-spacing: -.03em;
+  font-variant-numeric: tabular-nums;
+}
+.kp-pay {
+  padding: 1rem;
+  font-size: 1.15rem;
+  border-radius: 1rem;
+}
+.kp-link-light { color: rgba(255, 255, 255, .7); }
+.kp-link-light:hover { color: #fff; }
+
+/* Modal bayaran */
+.kp-modal .modal-content {
+  border: 0;
+  border-radius: 1.375rem;
+}
+.kp-method {
+  border: 1px solid var(--kp-line);
+  border-radius: 1rem;
+  padding: .85rem .5rem;
+  text-align: center;
+  font-weight: 600;
+  width: 100%;
+}
+.btn-check:checked + .kp-method {
+  border-color: var(--kp-pandan-700);
+  background: var(--kp-pandan-100);
+  color: var(--kp-pandan-900);
+}
+.kp-method-icon { display: block; font-size: 1.5rem; margin-bottom: .2rem; }
+.kp-cash-input {
+  font-family: var(--kp-font-display);
+  font-weight: 700;
+  font-size: 1.75rem;
+  font-variant-numeric: tabular-nums;
+}
+.kp-change {
+  background: var(--kp-pandan-100);
+  color: var(--kp-pandan-900);
+  border-radius: 1rem;
+}
+
+/* =========================================================
+   WAITER
+   ========================================================= */
+.kp-waiter-head {
+  background: var(--kp-pandan-900);
+  color: #fff;
+}
+.kp-zone {
+  border: 0;
+  border-radius: 999px;
+  padding: .35rem .9rem;
+  font-weight: 600;
+  font-size: .875rem;
+  background: rgba(255, 255, 255, .1);
+  color: rgba(255, 255, 255, .8);
+  white-space: nowrap;
+}
+.kp-zone.active { background: #fff; color: var(--kp-pandan-900); }
+
+.kp-table {
+  display: block;
+  height: 100%;
+  border-radius: 1rem;
+  padding: .75rem;
+  text-decoration: none;
+  color: var(--kp-ink);
+  background: #fff;
+  border: 1.5px dashed #C7D2C9;
+}
+.kp-table-no {
+  font-family: var(--kp-font-display);
+  font-weight: 800;
+  font-size: 1.6rem;
+  line-height: 1;
+}
+.kp-table-meta { font-size: .8125rem; color: rgba(24, 33, 29, .6); }
+.kp-table-busy {
+  background: var(--kp-kunyit);
+  border: 1.5px solid var(--kp-kunyit);
+}
+.kp-table-busy .kp-table-meta { color: rgba(24, 33, 29, .75); }
+.kp-table-held {
+  background: var(--kp-santan);
+  border: 1.5px solid var(--kp-line);
+  color: rgba(24, 33, 29, .5);
+}
+.kp-legend-swatch {
+  display: inline-block;
+  width: .8rem;
+  height: .8rem;
+  border-radius: .25rem;
+  vertical-align: -.1rem;
+  margin-right: .3rem;
+}
+.kp-swatch-free { border: 1.5px dashed #C7D2C9; background: #fff; }
+.kp-swatch-busy { background: var(--kp-kunyit); }
+.kp-swatch-held { background: var(--kp-line); }
+
+.kp-tabbar {
+  background: #fff;
+  border-top: 1px solid var(--kp-line);
+}
+.kp-tab {
+  flex: 1;
+  text-align: center;
+  padding: .55rem 0 .65rem;
+  font-size: .75rem;
+  font-weight: 600;
+  color: rgba(24, 33, 29, .55);
+  text-decoration: none;
+}
+.kp-tab-icon { display: block; font-size: 1.25rem; line-height: 1.4; }
+.kp-tab.active { color: var(--kp-pandan-900); }
+.kp-tab.active .kp-tab-icon {
+  background: var(--kp-pandan-100);
+  border-radius: 999px;
+  margin: 0 auto;
+  width: 3.5rem;
+}
+.kp-fab {
+  border-radius: 1rem;
+  padding: .9rem;
+}
+
+/* =========================================================
+   ADMIN & SUPERADMIN
+   ========================================================= */
+.kp-side { width: 16rem; }
+.kp-side-group {
+  font-size: .75rem;
+  font-weight: 600;
+  color: rgba(24, 33, 29, .45);
+  padding: 1rem .75rem .35rem;
+}
+.kp-side .nav-link {
+  display: flex;
+  gap: .65rem;
+  align-items: center;
+  padding: .5rem .75rem;
+  border-radius: .65rem;
+}
+
+.kp-hero {
+  background: var(--kp-pandan-900);
+  color: #fff;
+  border-radius: 1.375rem;
+  --bs-secondary-color: rgba(255, 255, 255, .62);
+}
+.kp-hero-figure {
+  font-family: var(--kp-font-display);
+  font-weight: 800;
+  font-size: clamp(2.4rem, 5vw, 3.5rem);
+  line-height: 1;
+  letter-spacing: -.035em;
+  font-variant-numeric: tabular-nums;
+}
+.kp-hero-split + .kp-hero-split { border-top: 1px solid rgba(255, 255, 255, .12); }
+.kp-delta-up { color: var(--kp-kunyit); font-weight: 700; }
+.kp-bars rect { fill: rgba(255, 255, 255, .16); }
+.kp-bars rect.kp-bar-now { fill: var(--kp-kunyit); }
+.kp-bars text { fill: rgba(255, 255, 255, .55); font-size: 10px; font-family: "Figtree", sans-serif; }
+
+.kp-panel {
+  background: #fff;
+  border: 1px solid var(--kp-line);
+  border-radius: 1rem;
+}
+.kp-rank {
+  font-family: var(--kp-font-display);
+  font-weight: 800;
+  color: rgba(24, 33, 29, .3);
+  width: 1.5rem;
+}
+.kp-progress-thin { height: .35rem; }
+
+/* Superadmin: dakwat + kunyit, sengaja berbeza dari admin kedai */
+/* offcanvas-lg memaksa latar lutsinar pada >= lg, jadi warna
+   diletak pada pembalut; --bs-offcanvas-bg untuk skrin kecil */
+.kp-side-ink {
+  width: 15rem;
+  color: #fff;
+  --bs-offcanvas-bg: var(--kp-ink);
+}
+.kp-side-ink-wrap { background: var(--kp-ink); }
+.kp-side { --bs-offcanvas-bg: #fff; }
+.kp-side-wrap { background: #fff; border-right: 1px solid var(--kp-line); }
+@media (max-width: 991.98px) {
+  .kp-side-ink-wrap, .kp-side-wrap { background: transparent; border: 0; }
+}
+.kp-side-ink .nav-link {
+  color: rgba(255, 255, 255, .7);
+  padding: .55rem .75rem;
+  border-radius: .65rem;
+  display: flex;
+  gap: .65rem;
+}
+.kp-side-ink .nav-link:hover { color: #fff; background: rgba(255, 255, 255, .06); }
+.kp-side-ink .nav-link.active {
+  color: var(--kp-ink);
+  background: var(--kp-kunyit);
+  font-weight: 700;
+}
+.kp-summary > div + div { border-left: 1px solid var(--kp-line); }
+.kp-summary-figure {
+  font-family: var(--kp-font-display);
+  font-weight: 800;
+  font-size: 1.75rem;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.kp-table-clean {
+  --bs-table-bg: transparent;
+  --bs-table-hover-bg: var(--kp-santan);
+}
+.kp-table-clean thead th {
+  font-size: .8125rem;
+  font-weight: 600;
+  color: rgba(24, 33, 29, .55);
+  border-bottom-color: var(--kp-line);
+}
+.kp-table-clean > :not(caption) > * > * { padding: .85rem 1rem; }
+.kp-avatar {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: .65rem;
+  font-weight: 800;
+  font-family: var(--kp-font-display);
+}
+
+/* Indeks mockup */
+.kp-role {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.5rem 0;
+  text-decoration: none;
+  color: var(--kp-ink);
+  border-top: 1px solid var(--kp-line);
+}
+.kp-role:hover .kp-role-name { color: var(--kp-pandan-700); }
+.kp-role-name {
+  font-family: var(--kp-font-display);
+  font-weight: 800;
+  font-size: 1.6rem;
+  letter-spacing: -.02em;
+}
+.kp-role-swatch {
+  flex-shrink: 0;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 1rem;
+  display: grid;
+  place-items: center;
+  font-size: 1.5rem;
+}
+.kp-sw-pandan { background: var(--kp-pandan-900); }
+.kp-sw-kunyit { background: var(--kp-kunyit); }
+.kp-sw-mint { background: var(--kp-pandan-100); }
+.kp-sw-ink { background: var(--kp-ink); }
+
+@media (prefers-reduced-motion: reduce) {
+  .kp-tile { transition: none; }
+  .kp-tile:active { transform: none; }
+}

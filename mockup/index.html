@@ -4,97 +4,59 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KedaiPOS — Mockup UI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="../vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="../css/theme.css">
 </head>
-<body class="bg-body-tertiary">
+<body>
 
-<div class="container py-5">
-  <h1 class="h3 fw-semibold mb-1">KedaiPOS — Mockup UI</h1>
-  <p class="text-body-secondary mb-4">
-    Rangka setiap bahagian sistem, dipecah ikut peranan. HTML statik dengan
-    data palsu — tiada backend. Untuk dipersetujui sebelum kod API ditulis.
-  </p>
-
-  <div class="row row-cols-1 row-cols-md-2 g-3">
-
-    <div class="col">
-      <div class="card h-100 shadow-sm">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-start mb-2">
-            <h2 class="h5 card-title mb-0">🧾 Juruwang</h2>
-            <span class="badge text-bg-primary">cashier/</span>
-          </div>
-          <p class="card-text small text-body-secondary">
-            Skrin POS kaunter — desktop/tablet landskap. Produk di kiri, troli
-            di kanan, bayaran dalam modal. Satu-satunya peranan yang boleh
-            terima bayaran.
-          </p>
-          <a href="cashier/index.html" class="btn btn-primary btn-sm">Buka skrin POS</a>
-        </div>
+<main class="container py-5">
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="d-flex align-items-center gap-2 mb-5">
+        <span class="kp-brand">KedaiPOS</span>
+        <span class="kp-mockup-tag">Mockup pusingan 1</span>
       </div>
-    </div>
+      <h1 class="display-5 fw-bold mb-3">Satu sistem, empat cara bekerja.</h1>
+      <p class="lead text-body-secondary mb-5">
+        Setiap peranan dapat skrin yang dibina untuk kerjanya sendiri. Ini
+        halaman statik dengan data contoh, untuk dipersetujui sebelum backend
+        ditulis.
+      </p>
 
-    <div class="col">
-      <div class="card h-100 shadow-sm">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-start mb-2">
-            <h2 class="h5 card-title mb-0">🍽️ Waiter</h2>
-            <span class="badge text-bg-success">waiter/</span>
-          </div>
-          <p class="card-text small text-body-secondary">
-            Mobile-first untuk telefon. Paparan meja dan take-away, ambil
-            pesanan. <strong>Tiada UI bayaran langsung.</strong> Buka dengan
-            lebar telefon (390px) untuk rupa sebenar.
-          </p>
-          <a href="waiter/index.html" class="btn btn-success btn-sm">Buka paparan meja</a>
-        </div>
-      </div>
+      <a href="cashier/index.html" class="kp-role">
+        <span class="kp-role-swatch kp-sw-pandan">🧾</span>
+        <span>
+          <span class="kp-role-name d-block">Juruwang</span>
+          <span class="text-body-secondary">Skrin kaunter untuk jual, ambil bayaran dan cetak resit.</span>
+        </span>
+      </a>
+      <a href="waiter/index.html" class="kp-role">
+        <span class="kp-role-swatch kp-sw-kunyit">🍽️</span>
+        <span>
+          <span class="kp-role-name d-block">Waiter</span>
+          <span class="text-body-secondary">Di telefon. Lihat meja dan ambil pesanan, tanpa terima bayaran. Paling elok dibuka pada lebar 390px.</span>
+        </span>
+      </a>
+      <a href="admin/index.html" class="kp-role">
+        <span class="kp-role-swatch kp-sw-mint">📊</span>
+        <span>
+          <span class="kp-role-name d-block">Admin kedai</span>
+          <span class="text-body-secondary">Untuk tauke: jualan hari ini, produk, stok dan kakitangan setiap cawangan.</span>
+        </span>
+      </a>
+      <a href="superadmin/index.html" class="kp-role border-bottom">
+        <span class="kp-role-swatch kp-sw-ink">🛡️</span>
+        <span>
+          <span class="kp-role-name d-block">Superadmin</span>
+          <span class="text-body-secondary">Pengendali platform: vendor, pelan langganan dan invois.</span>
+        </span>
+      </a>
     </div>
-
-    <div class="col">
-      <div class="card h-100 shadow-sm">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-start mb-2">
-            <h2 class="h5 card-title mb-0">📊 Admin kedai</h2>
-            <span class="badge text-bg-warning">admin/</span>
-          </div>
-          <p class="card-text small text-body-secondary">
-            Tauke / pengurus satu vendor. Sidebar navigasi, pemilih kedai di
-            atas. Contoh: dashboard jualan hari ini.
-          </p>
-          <a href="admin/index.html" class="btn btn-warning btn-sm">Buka dashboard</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="col">
-      <div class="card h-100 shadow-sm">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-start mb-2">
-            <h2 class="h5 card-title mb-0">🛡️ Superadmin</h2>
-            <span class="badge text-bg-dark">superadmin/</span>
-          </div>
-          <p class="card-text small text-body-secondary">
-            Panel platform — layout berasingan, warna gelap supaya tidak
-            tertukar dengan admin kedai. Contoh: senarai vendor.
-          </p>
-          <a href="superadmin/index.html" class="btn btn-dark btn-sm">Buka senarai vendor</a>
-        </div>
-      </div>
-    </div>
-
   </div>
-
-  <h2 class="h6 fw-semibold mt-5">Peraturan reka bentuk yang dipakai</h2>
-  <ul class="small text-body-secondary">
-    <li>Bootstrap 5 sahaja — tiada inline CSS, tiada fail CSS tambahan</li>
-    <li>Setiap peranan ada layout sendiri: juruwang (skrin penuh), waiter
-        (mudah alih), admin (sidebar terang), superadmin (sidebar gelap)</li>
-    <li>Nama kedai dan kaunter sentiasa kelihatan — vendor berbilang kedai
-        tidak boleh tersilap kedai</li>
-    <li>Emoji dipapar pada skrin sahaja; resit bercetak tiada emoji</li>
-  </ul>
-</div>
+</main>
 
 <script src="../vendor/bootstrap/bootstrap.bundle.min.js"></script>
 </body>
