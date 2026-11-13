@@ -144,6 +144,27 @@ vendor mana, dan satu penyusuran yang terlepas menjadi kebocoran.
 `ValidateOutletJob` mengesahkan `outlet_id` milik vendor semasa. Setiap
 endpoint yang menerima `outlet_id` mesti memanggilnya.
 
+### 3.9 Halaman awam pesanan QR — satu-satunya pengecualian
+
+`order/` ialah satu-satunya bahagian sistem tanpa log masuk. Peraturan 3.1
+masih dipatuhi dalam semangatnya: `vendor_id` **tidak pernah** dihantar oleh
+pelanggan. Pelanggan hanya membawa `qr_token`, dan pelayan mencari
+`vendor_id`, `outlet_id` dan `table_id` daripadanya.
+
+- `qr_token` 32 aksara heks dari `random_bytes(16)` — tidak boleh diteka,
+  bukan id meja berjujukan
+- Token tidak sah, meja tidak aktif, modul `qr_order` tiada dalam pelan, atau
+  tetapan `qr_order_enabled` dimatikan → **halaman sama** "Pesanan QR tidak
+  tersedia", tanpa membezakan sebabnya
+- Pesanan masuk sebagai `status = pending`. **Stok tidak ditolak** dan dapur
+  tidak nampak apa-apa sehingga waiter/juruwang tekan **Terima**
+- Hanya **satu** pesanan `pending` setiap meja pada satu masa, had 20 baris
+  dan 20 unit setiap baris — menghalang usikan dari luar kedai
+- Harga, promosi dan cukai dikira semula di pelayan; harga dari pelayar diabaikan
+- Admin boleh **jana semula** token meja → QR lama yang dicetak terus mati
+- Pelanggan **tidak membayar** melalui QR — bayaran di kaunter seperti biasa
+  (gerbang pembayaran masih tertangguh)
+
 ## 4. Log masuk & keselamatan kata laluan
 
 **Dua laluan log masuk yang berbeza**, kerana dua jenis pengguna mempunyai
@@ -280,7 +301,8 @@ aksara, bcrypt 60. 255 memberi ruang untuk algoritma masa depan.
 | `superadmin` | **NULL** | Urus vendor, pelan, langganan merentas platform | Masuk POS mana-mana vendor |
 | `admin` | Ada | Semua dalam vendornya | Melihat vendor lain |
 | `cashier` | Ada | POS, bayaran, syif, sejarah syif sendiri | Katalog, laporan penuh, tetapan |
-| `waiter` | Ada | Buka meja, ambil & tambah pesanan | **Bayaran, tutup bil, void, refund, laporan** |
+| `waiter` | Ada | Buka meja, ambil & tambah pesanan, **terima pesanan QR** | **Bayaran, tutup bil, void, refund, laporan** |
+| *pelanggan* | *dari token meja* | Lihat menu, hantar pesanan untuk mejanya sahaja | Apa-apa selain itu — **bukan akaun**, tiada log masuk |
 
 > `superadmin` ialah pemilik platform (Sufi). `vendor_id` NULL menjadikannya
 > jelas dalam kod bahawa akaun ini tiada kedai — dan menjadikan mana-mana
@@ -289,14 +311,14 @@ aksara, bcrypt 60. 255 memberi ruang untuk algoritma masa depan.
 > Sekatan waiter **mesti disemak di dalam setiap endpoint**. Menyorok butang
 > di UI bukan kawalan keselamatan.
 
-## 6. Skema pangkalan data — 34 jadual
+## 6. Skema pangkalan data — 36 jadual
 
 Pangkalan data: `pos_saas` · `utf8mb4_unicode_ci` · InnoDB
 
 > **utf8mb4 wajib** pada pangkalan data, jadual, lajur DAN sambungan PDO.
 > **Setiap jadual perniagaan mempunyai `vendor_id`** kecuali yang ditanda.
 
-### A. Platform & Langganan (9)
+### A. Platform & Langganan (11)
 
 **`languages`** — code(PK, cth. `ms`, `en`), name, native_name,
 is_active, is_default, sort_order
@@ -321,10 +343,19 @@ is_active, opened_at, closed_at, created_at
 
 **`plans`** — id, code, name, **base_price**, **price_per_outlet**,
 max_outlets, max_terminals_per_outlet, max_users, max_products,
-features_json, is_active
+is_active
 
 **`plan_outlet_tiers`** — id, plan_id(FK), from_outlet, to_outlet,
 unit_price · lihat 9.2
+
+**`modules`** — code(PK, cth. `promotions`), name_key, description_key,
+is_core, requires_business_type ENUM(any/retail/restaurant), sort_order
+· *tiada vendor_id — peringkat platform*
+
+**`plan_modules`** — plan_id(FK), module_code(FK) · PK(plan_id, module_code)
+
+> Menggantikan `plans.features_json` yang asalnya tidak ditakrif. Superadmin
+> tanda modul mana yang termasuk dalam setiap pelan — lihat 9.4.
 
 **`subscriptions`** — id, vendor_id(FK), plan_id(FK),
 status ENUM(trial/active/past_due/cancelled),
@@ -396,8 +427,11 @@ price_delta, sort_order, is_active
 **`orders`** — id, **vendor_id**, **outlet_id**(FK), order_no, **business_day**(DATE),
 **order_type** ENUM(dine_in/takeaway/counter),
 table_id(FK, nullable), **takeaway_no**(nullable),
-status ENUM(open/billed/paid/cancelled), guest_count,
-opened_by(FK users), terminal_id(FK, nullable), note, opened_at, closed_at
+status ENUM(**pending**/open/billed/paid/cancelled), guest_count,
+**source** ENUM(staff/qr),
+opened_by(FK users, **nullable** — NULL bila `source = qr`),
+confirmed_by(FK users, nullable), confirmed_at,
+terminal_id(FK, nullable), note, opened_at, closed_at
 · UNIQUE(outlet_id, business_day, takeaway_no)
 
 > `order_type = counter` digunakan oleh mod kedai runcit — pesanan yang
@@ -413,12 +447,14 @@ note, added_by(FK users), added_at
 > separa oleh beberapa orang. Pesanan hanya `paid` bila setiap baris
 > mempunyai `paid_qty = qty`.
 > `note` untuk permintaan bebas ("kurang pedas") yang tiada dalam variasi.
+> `added_by` **nullable** — NULL untuk item yang dipesan pelanggan melalui QR.
 
 **`order_item_options`** — id, **vendor_id**, order_item_id(FK),
 **group_name**, **option_label**, **price_delta**
 
 **`dining_tables`** — id, **vendor_id**, **outlet_id**(FK), code, name, area, capacity,
-status ENUM(free/occupied/reserved), current_order_id, is_active, sort_order
+status ENUM(free/occupied/reserved), current_order_id, is_active, sort_order,
+**qr_token** CHAR(32) UNIQUE (global, rawak — lihat 3.9)
 
 ### D. Bayaran (4)
 
@@ -524,7 +560,8 @@ updated_by · PK(vendor_id, outlet_id, setting_key)
 > `printer_name`, `currency_prefix` (RM),
 > **`discount_tax_mode`** (`after_tax` — kekalkan kelakuan sekarang),
 > **`manual_discount_max_percent`** (0 = tiada had),
-> **`manual_discount_needs_approval`** (0), **`default_language`** (ms)
+> **`manual_discount_needs_approval`** (0), **`default_language`** (ms),
+> **`qr_order_enabled`** (0 — per kedai; hanya bermakna jika modul `qr_order` ada)
 >
 > `business_type` **tiada di sini** — ia dalam `vendors`, kerana ia menentukan
 > ciri yang dilanggan, bukan pilihan yang boleh ditukar sesuka hati.
@@ -745,6 +782,20 @@ WAITER / KAUNTER                KAUNTER
                                  BAYAR  -> resit
 ```
 
+### Kedai makan — pesanan QR pelanggan (modul `qr_order`)
+
+```
+PELANGGAN (telefon sendiri)        WAITER / JURUWANG
+  Imbas QR di meja 5
+  Lihat menu, pilih item
+  Hantar pesanan ------------->  Notifikasi: "Meja 5 — pesanan baharu"
+  "Menunggu disahkan"              Semak → TERIMA (atau tolak)
+                                   Stok ditolak, meja jadi berisi
+  "Pesanan diterima"
+  Tambah lagi → pending baharu -->  Terima → masuk pesanan terbuka sama
+                                 Pelanggan bayar di kaunter seperti biasa
+```
+
 ## 9. Langganan, had pelan & bil
 
 ### 9.1 Had pelan
@@ -812,6 +863,40 @@ Peraturan lain:
 - Bayaran dalam talian masih **ditangguhkan**. Superadmin menandakan
   `paid` secara manual buat masa ini
 
+### 9.4 Modul per pelan
+
+**Diputuskan Sufi, 13 Nov 2026:** superadmin tentukan modul mana yang
+tersedia dalam setiap pelan. Gaya ringkas — tanda kotak per pelan, tiada
+tambahan per vendor.
+
+| Kod | Modul | Teras? | Jenis perniagaan |
+|---|---|---|---|
+| `pos` | Jualan kaunter, katalog asas, resit, syif, dashboard | **Ya** — sentiasa ada | semua |
+| `promotions` | Promosi & diskaun automatik | | semua |
+| `stock` | Terima stok, pelarasan, log pergerakan, amaran stok rendah | | semua |
+| `reports` | Laporan lanjutan, Z-report, eksport CSV | | semua |
+| `csv_import` | Import produk pukal dari CSV | | semua |
+| `qr_order` | Pesanan QR pelanggan | | kedai makan |
+
+> Stok **tetap ditolak** semasa jualan walaupun tanpa modul `stock` — modul
+> itu hanya menambah alat pengurusannya. Menutup modul tidak boleh
+> merosakkan ketepatan data.
+
+**Penguatkuasaan — `core/Module.php`:**
+
+- `Module::enabled($vendorId, 'promotions')` — satu pertanyaan
+  `subscriptions → plan_modules`, di-cache untuk satu permintaan sahaja
+  (bukan dalam sesi, supaya perubahan pelan berkuat kuasa serta-merta)
+- Setiap endpoint modul panggil `Module::require()` → **403** jika tiada.
+  Menyorok menu di sidebar bukan kawalan keselamatan (sama seperti peranan)
+- `CalculateCartJob` **tidak** menilai promosi jika modul `promotions`
+  tiada — kalau tidak, promosi lama masih memberi diskaun selepas turun pelan
+- `requires_business_type` — `qr_order` tidak dipapar langsung untuk kedai runcit
+
+**Turun pelan:** data modul **disimpan, tidak dipadam**. Promosi tidak
+dinilai, menu tersorok, QR meja papar "tidak tersedia". Naik pelan semula →
+semuanya kembali seperti asal.
+
 ## 10. Barcode — lebih mudah daripada yang disangka
 
 Pengimbas barcode USB **berkelakuan sebagai papan kekunci**. Ia menaip digit
@@ -846,7 +931,7 @@ claude-learn1/
 ├── config/         database.php (.gitignore) · database.example.php · app.php
 ├── core/           Database.php · Auth.php · Csrf.php · Request.php
 │                   Response.php · Validator.php · Uploader.php
-│                   BusinessDay.php · VendorScope.php · PlanLimit.php · Lang.php
+│                   BusinessDay.php · VendorScope.php · PlanLimit.php · Module.php · Lang.php
 ├── jobs/           SATU KELAS = SATU KERJA — semua terima vendor_id
 │   ├── Auth/        LoginJob · LogoutJob · CheckSubscriptionJob · ThrottleJob
 │   │                PinLoginJob · RegisterDeviceJob · RevokeDeviceJob
@@ -857,6 +942,7 @@ claude-learn1/
 │   ├── Billing/     GenerateInvoiceJob · ListInvoicesJob · MarkPaidJob
 │   │                CalculateOutletPriceJob
 │   ├── Plan/        ListPlansJob · SavePlanJob · SaveSubscriptionJob
+│   │                SavePlanModulesJob
 │   ├── Product/     ListProductsJob · FindByBarcodeJob · SearchProductsJob
 │   │                SaveProductJob · DeleteProductJob · UploadProductImageJob
 │   │                ImportProductsCsvJob · LowStockJob
@@ -868,6 +954,9 @@ claude-learn1/
 │   │                CancelOrderItemJob · GetOpenOrdersJob · FindByTakeawayNoJob
 │   │                CloseOrderJob · CancelOrderJob
 │   ├── Table/       ListTablesJob · SaveTableJob · TableStatusJob
+│   │                RegenerateTableQrJob
+│   ├── QrOrder/     ResolveTableTokenJob · PublicMenuJob · SubmitQrOrderJob
+│   │                ListPendingQrOrdersJob · AcceptQrOrderJob · RejectQrOrderJob
 │   ├── Cart/        CalculateCartJob · ValidateStockJob
 │   ├── Transaction/ CreateTransactionJob · MergeBillJob · SplitBillJob
 │   │                ListTransactionsJob · GetReceiptJob
@@ -887,7 +976,9 @@ claude-learn1/
 ├── waiter/         index.php · login.php · tables.php · order.php · js/
 │                   (mobile-first — waiter guna telefon/tablet)
 ├── admin/          admin kedai (per vendor) — katalog, stok, laporan, tetapan
-├── superadmin/     panel platform — vendor, pelan, langganan
+├── superadmin/     panel platform — vendor, pelan, modul, langganan
+├── order/          AWAM — pesanan QR pelanggan, tiada log masuk (3.9)
+│                   index.php?t={qr_token} · mobile-first
 ├── print/          receipt.php
 ├── uploads/        products/{vendor_id}/ (.gitignore isinya)
 ├── assets/img/     product-default.png

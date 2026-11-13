@@ -123,6 +123,10 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, .kp-display {
 }
 *::-webkit-scrollbar-thumb:hover { background: rgba(24, 33, 29, .38); }
 
+/* Baris cip/kategori yang diseret mendatar — tiada bar skrol kelihatan */
+.kp-scroll-x { overflow-x: auto; scrollbar-width: none; }
+.kp-scroll-x::-webkit-scrollbar { display: none; }
+
 /* ---------- Butang: tiga saiz sahaja ---------- */
 .btn {
   --bs-btn-padding-y: .5rem;
@@ -210,6 +214,17 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, .kp-display {
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+
+.form-check-input:checked {
+  background-color: var(--kp-pandan-700);
+  border-color: var(--kp-pandan-700);
+}
+.form-check-input:focus {
+  border-color: var(--kp-pandan-500);
+  box-shadow: 0 0 0 .2rem rgba(35, 132, 94, .18);
+}
+.form-switch .form-check-input { width: 2.5em; height: 1.375em; cursor: pointer; }
+.form-switch .form-check-input:disabled { opacity: .7; cursor: not-allowed; }
 
 /* ---------- Dropdown ---------- */
 .dropdown-menu {
@@ -417,7 +432,7 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
   font-size: var(--kp-text-base);
   font-weight: 600;
   line-height: 1.3;
-  min-height: 2.6em;
+  margin-bottom: .25rem;
 }
 .kp-tile-price {
   font-family: var(--kp-font-display);
@@ -721,6 +736,103 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
   border-radius: .625rem;
   font-weight: 800;
   font-family: var(--kp-font-display);
+}
+
+/* Matriks modul × pelan (superadmin) */
+.kp-plan-head { min-width: 9rem; }
+.kp-plan-price {
+  font-family: var(--kp-font-display);
+  font-weight: 800;
+  font-size: 1.375rem;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  color: var(--kp-ink);
+}
+.kp-module-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: .625rem;
+  background: var(--kp-santan);
+  color: var(--kp-pandan-700);
+}
+.kp-core-tag {
+  font-size: var(--kp-text-xs);
+  font-weight: 700;
+  padding: .1rem .5rem;
+  border-radius: 999px;
+  background: var(--kp-pandan-100);
+  color: var(--kp-pandan-700);
+}
+
+/* =========================================================
+   PESANAN QR PELANGGAN (awam, telefon)
+   ========================================================= */
+.kp-order-head { background: #fff; border-bottom: 1px solid var(--kp-line); }
+.kp-table-badge {
+  flex-shrink: 0;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  min-height: var(--kp-control-sm);
+  padding: 0 .8rem;
+  border-radius: 999px;
+  background: var(--kp-pandan-900);
+  color: #fff;
+  font-size: var(--kp-text-sm);
+  font-weight: 700;
+}
+.kp-menu-item {
+  display: flex;
+  gap: .9rem;
+  align-items: center;
+  padding: .9rem 0;
+}
+.kp-menu-item + .kp-menu-item { border-top: 1px solid var(--kp-line); }
+.kp-thumb {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: .75rem;
+  background: #fff;
+  border: 1px solid var(--kp-line);
+  color: rgba(24, 33, 29, .22);
+  font-size: 1.4rem;
+  overflow: hidden;
+}
+.kp-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.kp-add {
+  flex-shrink: 0;
+  width: var(--kp-control);
+  height: var(--kp-control);
+  padding: 0;
+  border-radius: 50%;
+}
+.kp-qty-badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  padding: 0 .4rem;
+  border-radius: 999px;
+  background: var(--kp-ink);
+  color: #fff;
+  font-size: var(--kp-text-xs);
+  font-weight: 700;
+}
+.kp-cartbar {
+  padding: .75rem 1rem calc(.75rem + env(safe-area-inset-bottom));
+  background: linear-gradient(to top, var(--kp-santan) 70%, rgba(244, 246, 242, 0));
+}
+.kp-notice {
+  border-radius: .875rem;
+  background: var(--kp-pandan-100);
+  color: var(--kp-pandan-900);
 }
 
 /* Indeks mockup */

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Restoran Selera Kampung — Pesan</title>
+<link rel="stylesheet" href="../../vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="../../vendor/fontawesome/css/all.min.css">
+<link rel="stylesheet" href="../../css/theme.css">
+</head>
+<body>
+
+<!-- Halaman awam: pelanggan imbas QR di meja. Tiada log masuk. -->
+<header class="kp-order-head sticky-top">
+  <div class="container-fluid px-3 pt-3 pb-2">
+    <div class="d-flex justify-content-between align-items-start gap-2">
+      <div>
+        <h1 class="h4 fw-bold mb-0">Restoran Selera Kampung</h1>
+        <div class="small text-body-secondary">Cawangan Bangi</div>
+      </div>
+      <span class="kp-table-badge"><i class="fa-solid fa-chair"></i>Meja 5</span>
+    </div>
+    <div class="kp-search mt-3">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" class="form-control" placeholder="Cari menu" aria-label="Cari menu">
+    </div>
+  </div>
+  <nav class="d-flex flex-nowrap kp-scroll-x px-3" aria-label="Kategori">
+    <button class="kp-cat active">Makanan</button>
+    <button class="kp-cat">Minuman</button>
+    <button class="kp-cat">Kuih</button>
+    <button class="kp-cat">Promosi hari ini</button>
+  </nav>
+</header>
+
+<main class="container-fluid px-3 pt-3 pb-5 mb-5">
+
+  <div class="kp-notice d-flex gap-2 align-items-start p-3 mb-3 small">
+    <i class="fa-solid fa-circle-check mt-1"></i>
+    <div><strong>Pesanan pertama anda sudah diterima dapur.</strong> Mahu tambah lagi? Pilih di bawah.</div>
+  </div>
+
+  <h2 class="h5 fw-bold mb-1">Makanan</h2>
+  <div class="mb-4">
+    <div class="kp-menu-item">
+      <span class="kp-thumb"><i class="fa-solid fa-utensils"></i></span>
+      <div class="flex-grow-1 min-w-0">
+        <div class="fw-semibold">Nasi Lemak</div>
+        <div class="small text-body-secondary">Sambal, ikan bilis, kacang, telur. Boleh pilih lauk</div>
+        <div class="kp-tile-price mt-1">RM 4.50</div>
+      </div>
+      <button class="btn btn-primary kp-add" aria-label="Tambah Nasi Lemak"><i class="fa-solid fa-plus"></i></button>
+    </div>
+    <div class="kp-menu-item">
+      <span class="kp-thumb"><i class="fa-solid fa-utensils"></i></span>
+      <div class="flex-grow-1 min-w-0">
+        <div class="fw-semibold">Nasi Goreng Kampung</div>
+        <div class="small text-body-secondary">Ikan bilis, kangkung, cili padi</div>
+        <div class="kp-tile-price mt-1 text-danger">RM 6.00 <small class="text-body-secondary text-decoration-line-through fw-normal">7.00</small></div>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <span class="kp-qty-badge">2</span>
+        <button class="btn btn-primary kp-add" aria-label="Tambah Nasi Goreng Kampung"><i class="fa-solid fa-plus"></i></button>
+      </div>
+    </div>
+    <div class="kp-menu-item">
+      <span class="kp-thumb"><i class="fa-solid fa-utensils"></i></span>
+      <div class="flex-grow-1 min-w-0">
+        <div class="fw-semibold">Mee Goreng Mamak</div>
+        <div class="small text-body-secondary">Pedas sederhana</div>
+        <div class="kp-tile-price mt-1">RM 6.00</div>
+      </div>
+      <button class="btn btn-primary kp-add" aria-label="Tambah Mee Goreng Mamak"><i class="fa-solid fa-plus"></i></button>
+    </div>
+    <div class="kp-menu-item">
+      <span class="kp-thumb"><i class="fa-solid fa-utensils"></i></span>
+      <div class="flex-grow-1 min-w-0">
+        <div class="fw-semibold">Ayam Goreng Berempah</div>
+        <div class="small text-body-secondary">Seketul, peha atau dada</div>
+        <div class="kp-tile-price mt-1">RM 5.50</div>
+      </div>
+      <button class="btn btn-primary kp-add" aria-label="Tambah Ayam Goreng Berempah"><i class="fa-solid fa-plus"></i></button>
+    </div>
+  </div>
+
+  <h2 class="h5 fw-bold mb-1">Minuman</h2>
+  <div class="mb-4">
+    <div class="kp-menu-item">
+      <span class="kp-thumb"><i class="fa-solid fa-mug-hot"></i></span>
+      <div class="flex-grow-1 min-w-0">
+        <div class="fw-semibold">Teh Tarik</div>
+        <div class="small text-body-secondary">Panas atau ais, biasa atau besar</div>
+        <div class="kp-tile-price mt-1">RM 2.50</div>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <span class="kp-qty-badge">1</span>
+        <button class="btn btn-primary kp-add" aria-label="Tambah Teh Tarik"><i class="fa-solid fa-plus"></i></button>
+      </div>
+    </div>
+    <div class="kp-menu-item">
+      <span class="kp-thumb"><i class="fa-solid fa-mug-hot"></i></span>
+      <div class="flex-grow-1 min-w-0">
+        <div class="fw-semibold text-body-secondary">Milo Dinosaur</div>
+        <div class="small text-body-secondary">Habis untuk hari ini</div>
+        <div class="kp-tile-price mt-1 text-body-secondary">RM 5.00</div>
+      </div>
+      <button class="btn btn-light kp-add" disabled aria-label="Milo Dinosaur habis"><i class="fa-solid fa-ban"></i></button>
+    </div>
+  </div>
+
+  <p class="small text-body-secondary text-center"><i class="fa-solid fa-wallet me-1"></i>Bayar di kaunter selepas makan.</p>
+</main>
+
+<!-- Bar troli -->
+<div class="fixed-bottom kp-cartbar">
+  <button class="btn btn-kunyit btn-lg w-100 justify-content-between kp-pay">
+    <span><span class="kp-qty-badge me-2">3</span>Semak pesanan</span>
+    <span class="kp-num">RM 14.50</span>
+  </button>
+</div>
+
+<script src="../../vendor/bootstrap/bootstrap.bundle.min.js"></script>
+</body>
+</html>
