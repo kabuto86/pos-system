@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KedaiPOS — Pelan Langganan</title>
+<link rel="stylesheet" href="../../vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="../../vendor/fontawesome/css/all.min.css">
+<link rel="stylesheet" href="../../css/theme.css">
+</head>
+<body>
+
+<div class="d-flex min-vh-100">
+
+  <div class="kp-side-ink-wrap flex-shrink-0">
+  <aside class="offcanvas-lg offcanvas-start kp-side-ink h-100" tabindex="-1" id="sidebar" data-bs-theme="dark">
+    <div class="offcanvas-header">
+      <span class="kp-brand kp-brand-light">KedaiPOS</span>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Tutup"></button>
+    </div>
+    <div class="offcanvas-body d-flex flex-column px-3 pb-3">
+      <div class="d-none d-lg-block px-2 pt-4 pb-4">
+        <span class="kp-brand kp-brand-light">KedaiPOS</span>
+        <div class="small text-white-50">Pusat kawalan platform</div>
+      </div>
+      <nav class="nav flex-column gap-1">
+        <a class="nav-link" href="index.html"><i class="fa-solid fa-store fa-fw"></i>Vendor</a>
+        <a class="nav-link active" href="plans.html"><i class="fa-solid fa-layer-group fa-fw"></i>Pelan langganan</a>
+        <a class="nav-link" href="#"><i class="fa-solid fa-file-invoice-dollar fa-fw"></i>Invois</a>
+        <a class="nav-link" href="#"><i class="fa-solid fa-language fa-fw"></i>Bahasa</a>
+        <a class="nav-link" href="#"><i class="fa-solid fa-list-ul fa-fw"></i>Log platform</a>
+      </nav>
+      <div class="mt-auto px-2 pt-3 small">
+        <div class="text-white-50">Log masuk sebagai</div>
+        <div class="text-white fw-semibold">superadmin@kedaipos.my</div>
+        <a href="#" class="link-warning"><i class="fa-solid fa-arrow-right-from-bracket me-1"></i>Log keluar</a>
+      </div>
+    </div>
+  </aside>
+  </div>
+
+  <main class="flex-grow-1 min-w-0 px-3 px-lg-5 py-4">
+
+    <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+      <button class="btn btn-light kp-btn-icon d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+      <h1 class="h2 fw-bold mb-0 me-2">Pelan langganan</h1>
+      <span class="kp-mockup-tag">Mockup</span>
+      <div class="ms-auto d-flex gap-2">
+        <button class="btn btn-light"><i class="fa-solid fa-plus"></i>Pelan baharu</button>
+        <button class="btn btn-primary"><i class="fa-solid fa-check"></i>Simpan perubahan</button>
+      </div>
+    </div>
+    <p class="text-body-secondary mb-4">Tanda modul yang termasuk dalam setiap pelan. Perubahan berkuat kuasa serta-merta untuk semua vendor dalam pelan itu.</p>
+
+    <section class="kp-panel mb-4">
+      <div class="table-responsive">
+        <table class="table kp-table-clean mb-0 align-middle">
+          <thead>
+            <tr>
+              <th class="w-50">Modul</th>
+              <th class="text-center kp-plan-head">
+                <div class="fw-bold text-body fs-6">Asas</div>
+                <div class="kp-plan-price">RM 49</div>
+                <div class="small fw-normal">sebulan, 18 vendor</div>
+              </th>
+              <th class="text-center kp-plan-head">
+                <div class="fw-bold text-body fs-6">Pro</div>
+                <div class="kp-plan-price">RM 99</div>
+                <div class="small fw-normal">sebulan, 24 vendor</div>
+              </th>
+              <th class="text-center kp-plan-head">
+                <div class="fw-bold text-body fs-6">Percubaan</div>
+                <div class="kp-plan-price">RM 0</div>
+                <div class="small fw-normal">14 hari, 7 vendor</div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="d-flex align-items-center gap-3">
+                  <span class="kp-module-icon"><i class="fa-solid fa-cash-register"></i></span>
+                  <div>
+                    <div class="fw-semibold">Jualan kaunter <span class="kp-core-tag ms-1">Teras</span></div>
+                    <div class="small text-body-secondary">Troli, bayaran, resit, syif, katalog dan dashboard asas</div>
+                  </div>
+                </div>
+              </td>
+              <td class="text-center"><div class="form-check form-switch d-inline-block m-0"><input class="form-check-input" type="checkbox" role="switch" checked disabled aria-label="Jualan kaunter dalam Asas"></div></td>
+              <td class="text-center"><div class="form-check form-switch d-inline-block m-0"><input class="form-check-input" type="checkbox" role="switch" checked disabled aria-label="Jualan kaunter dalam Pro"></div></td>
+              <td class="text-center"><div class="form-check form-switch d-inline-block m-0"><input class="form-check-input" type="checkbox" role="switch" checked disabled aria-label="Jualan kaunter dalam Percubaan"></div></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="d-flex align-items-center gap-3">
+                  <span class="kp-module-icon"><i class="fa-solid fa-tags"></i></span>
+                  <div>
+                    <div class="fw-semibold">Promosi &amp; diskaun</div>
+                    <div class="small text-body-secondary">Harga promosi, happy hour, diskaun kategori</div>
+                  </div>
+                </div>
+              </td>
+              <td class="text-center"><div class="form-check form-switch d-inline-block m-0"><input class="form-check-input" type="checkbox" role="switch" aria-label="Promosi dalam Asas"></div></td>
+              <td class="text-center"><div class="form-check form-switch d-inline-block m-0"><input class="form-check-input" type="checkbox" role="switch" checked aria-label="Promosi dalam Pro"></div></td>
+              <td class="text-center"><div class="form-check form-switch d-inline-block m-0"><input class="form-check-input" type="checkbox" role="switch" checked aria-label="Promosi dalam Percubaan"></div></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="d-flex align-items-center gap-3">
+                  <span class="kp-module-icon"><i class="fa-solid fa-boxes-stacked"></i></span>
+                  <div>
+                    <div class="fw-semibold">Pengurusan stok</div>
+                    <div class="small text-body-secondary">Terima stok, pelarasan, log pergerakan, amaran stok rendah</div>
+                  </div>
+                </div>
+              </td>
+              <td class="text-center"><div class="form-check form-switch d-inline-block m-0"><input class="form-check-input" type="checkbox" role="switch" checked aria-label="Stok dalam Asas"></div></td>
+              <td class="text-center"><div class="form-check form-switch d-inline-block m-0"><input class="form-check-input" type="checkbox" role="switch" checked aria-label="Stok dalam Pro"></div></td>
+              <td class="text-center"><div class="form-check form-switch d-inline-block m-0"><input class="form-check-input" type="checkbox" role="switch" checked aria-label="Stok dalam Percubaan"></div></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="d-flex align-items-center gap-3">
+                  <span class="kp-module-icon"><i class="fa-solid fa-chart-line"></i></span>
+                  <div>
+                    <div class="fw-semibold">Laporan lanjutan</div>
+                    <div class="small text-body-secondary">Laporan bulanan, Z-report, ikut juruwang, eksport CSV</div>
+                  </div>
+                </div>
+              </td>
+              <td class="text-center"><div class="form-check form-switch d-inline-block m-0"><input class="form-check-input" type="checkbox" role="switch" aria-label="Laporan dalam Asas"></div></td>
+              <td class="text-center"><div class="form-check form-switch d-inline-block m-0"><input class="form-check-input" type="checkbox" role="switch" checked aria-label="Laporan dalam Pro"></div></td>
+              <td class="text-center"><div class="form-check form-switch d-inline-block m-0"><input class="form-check-input" type="checkbox" role="switch" checked aria-label="Laporan dalam Percubaan"></div></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="d-flex align-items-center gap-3">
+                  <span class="kp-module-icon"><i class="fa-solid fa-file-csv"></i></span>
+                  <div>
+                    <div class="fw-semibold">Import produk CSV</div>
+                    <div class="small text-body-secondary">Masukkan ratusan produk sekali gus dari fail Excel</div>
+                  </div>
+                </div>
+              </td>
+              <td class="text-center"><div class="form-check form-switch d-inline-block m-0"><input class="form-check-input" type="checkbox" role="switch" checked aria-label="Import CSV dalam Asas"></div></td>
+              <td class="text-center"><div class="form-check form-switch d-inline-block m-0"><input class="form-check-input" type="checkbox" role="switch" checked aria-label="Import CSV dalam Pro"></div></td>
+              <td class="text-center"><div class="form-check form-switch d-inline-block m-0"><input class="form-check-input" type="checkbox" role="switch" aria-label="Import CSV dalam Percubaan"></div></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="d-flex align-items-center gap-3">
+                  <span class="kp-module-icon"><i class="fa-solid fa-qrcode"></i></span>
+                  <div>
+                    <div class="fw-semibold">Pesanan QR pelanggan</div>
+                    <div class="small text-body-secondary">Pelanggan imbas QR di meja dan pesan sendiri. Kedai makan sahaja</div>
+                  </div>
+                </div>
+              </td>
+              <td class="text-center"><div class="form-check form-switch d-inline-block m-0"><input class="form-check-input" type="checkbox" role="switch" aria-label="Pesanan QR dalam Asas"></div></td>
+              <td class="text-center"><div class="form-check form-switch d-inline-block m-0"><input class="form-check-input" type="checkbox" role="switch" checked aria-label="Pesanan QR dalam Pro"></div></td>
+              <td class="text-center"><div class="form-check form-switch d-inline-block m-0"><input class="form-check-input" type="checkbox" role="switch" checked aria-label="Pesanan QR dalam Percubaan"></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <h2 class="h5 fw-bold mb-3">Had setiap pelan</h2>
+    <section class="kp-panel">
+      <div class="table-responsive">
+        <table class="table kp-table-clean mb-0 align-middle">
+          <thead>
+            <tr><th class="w-50">Had</th><th class="text-center">Asas</th><th class="text-center">Pro</th><th class="text-center">Percubaan</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="fw-semibold">Cawangan</td>
+              <td><input type="text" inputmode="numeric" class="form-control text-center" value="1" aria-label="Had cawangan Asas"></td>
+              <td><input type="text" inputmode="numeric" class="form-control text-center" value="5" aria-label="Had cawangan Pro"></td>
+              <td><input type="text" inputmode="numeric" class="form-control text-center" value="1" aria-label="Had cawangan Percubaan"></td>
+            </tr>
+            <tr>
+              <td class="fw-semibold">Kaunter setiap cawangan</td>
+              <td><input type="text" inputmode="numeric" class="form-control text-center" value="2" aria-label="Had kaunter Asas"></td>
+              <td><input type="text" inputmode="numeric" class="form-control text-center" value="5" aria-label="Had kaunter Pro"></td>
+              <td><input type="text" inputmode="numeric" class="form-control text-center" value="1" aria-label="Had kaunter Percubaan"></td>
+            </tr>
+            <tr>
+              <td class="fw-semibold">Kakitangan</td>
+              <td><input type="text" inputmode="numeric" class="form-control text-center" value="5" aria-label="Had kakitangan Asas"></td>
+              <td><input type="text" inputmode="numeric" class="form-control text-center" value="30" aria-label="Had kakitangan Pro"></td>
+              <td><input type="text" inputmode="numeric" class="form-control text-center" value="3" aria-label="Had kakitangan Percubaan"></td>
+            </tr>
+            <tr>
+              <td class="fw-semibold">Produk</td>
+              <td><input type="text" inputmode="numeric" class="form-control text-center" value="300" aria-label="Had produk Asas"></td>
+              <td><input type="text" inputmode="numeric" class="form-control text-center" value="5000" aria-label="Had produk Pro"></td>
+              <td><input type="text" inputmode="numeric" class="form-control text-center" value="50" aria-label="Had produk Percubaan"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="../../vendor/bootstrap/bootstrap.bundle.min.js"></script>
+</body>
+</html>

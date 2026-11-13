@@ -28,14 +28,15 @@
 kepada `cp850`, merosakkan emoji semasa import `seed.sql` **tanpa sebarang
 amaran**. Resepi pembetulan dalam PELAN.md 15.1 — baca sebelum Fasa 1.
 
-**Struktur:** 19 fasa merentas 7 session (Session 1 dipecah 1A + 1B).
+**Struktur:** 20 fasa merentas 7 session (Session 1 dipecah 1A + 1B; Fasa 9B ditambah).
 
 Sejarah skop:
 9 fasa/3 session → 13 fasa/5 session (dua jenis perniagaan, waiter, meja)
 → 16 fasa/6 session (SaaS multi-tenant)
 → 17 fasa/6 session (modul promosi & diskaun)
 → 18 fasa/6 session (dwibahasa & modul terjemahan)
-→ **19 fasa/7 session** (kedai berbilang, PIN, bil; Session 1 dipecah, 27 Ogos 2026).
+→ 19 fasa/7 session (kedai berbilang, PIN, bil; Session 1 dipecah, 27 Ogos 2026)
+→ **20 fasa/7 session** (modul per pelan + pesanan QR pelanggan, Fasa 9B, 13 Nov 2026).
 
 ---
 
@@ -80,8 +81,11 @@ HTML statik dalam `mockup/`, Bootstrap sahaja, data palsu. Buka di
       fon & ikon disimpan dalam `vendor/`; tiga saiz butang standard
       (32/40/48px); bar skrol nipis; dropdown tanpa avatar; diskaun manual
       jadi togol RM/% + input teks perpuluhan; jubin produk ruang gambar 4:3
-- [ ] **Gambar produk sebenar** — belum ada; jubin papar ikon kelabu
-      sebagai keadaan "tiada gambar"
+- [x] Gambar produk: **kekal ikon kelabu dalam mockup** (keputusan Sufi).
+      Gambar sebenar dimuat naik oleh admin vendor — Fasa 6, PELAN.md 11
+- [x] `kp-tile-name` tanpa `min-height` — jimat ruang
+- [x] `mockup/superadmin/plans.html` — pelan & tanda modul
+- [x] `mockup/order/index.html` — menu pesanan QR pelanggan (telefon)
 - [ ] **Sufi setuju rangka & gaya** sebelum pusingan 2
 
 **Pusingan 2 — skrin Session 1A/1B** (sebelum Fasa 1 dimulakan)
@@ -99,7 +103,7 @@ HTML statik dalam `mockup/`, Bootstrap sahaja, data palsu. Buka di
 ### Fasa 1 — Skema & teras
 - [ ] Cipta pangkalan data `pos_saas` (utf8mb4_unicode_ci)
 - [ ] Cipta pengguna MySQL `pos_user` (akses `pos_saas` sahaja)
-- [ ] `database/schema.sql` — **34 jadual**, `vendor_id` pada setiap jadual
+- [ ] `database/schema.sql` — **36 jadual**, `vendor_id` pada setiap jadual
       perniagaan, setiap UNIQUE jadi unik per vendor (PELAN.md 3.5),
       setiap indeks bermula dengan `vendor_id` (PELAN.md 3.6)
 - [ ] Jadual promosi wujud sejak sekarang walaupun UI dibina di Fasa 10:
@@ -113,6 +117,13 @@ HTML statik dalam `mockup/`, Bootstrap sahaja, data palsu. Buka di
       (restaurant), setiap satu dengan 18 produk, kategori, kaedah bayaran,
       tetapan, admin, kaunter; KEDAI02 dapat meja contoh
 - [ ] Satu akaun `superadmin` (vendor_id NULL)
+- [ ] **`modules` + `plan_modules`** (PELAN.md 9.4). Seed 6 modul dan dua
+      pelan: **Asas** (`pos` sahaja) · **Pro** (semua). KEDAI01 = Asas,
+      KEDAI02 = Pro — supaya sekatan modul teruji sejak awal, sama sebabnya
+      seperti dua vendor
+- [ ] `orders.status` tambah `pending`, `orders.source`, `confirmed_by`;
+      `opened_by` dan `order_items.added_by` jadi nullable;
+      `dining_tables.qr_token` (untuk Fasa 9B)
 - [ ] Jadual bahasa: `languages` (ms lalai, en aktif), `translations`
 - [ ] `login_attempts` + lajur `users.failed_attempts`, `locked_until`,
       `pin_hash`, `outlet_id`; `email` dan `password_hash` jadi **nullable**
@@ -142,6 +153,10 @@ HTML statik dalam `mockup/`, Bootstrap sahaja, data palsu. Buka di
 - [ ] `core/Auth.php` — sesi menyimpan `vendor_id`, `user_id`, `role`,
       `language`; `vendor_id` diperoleh dari baris pengguna, bukan borang
 - [ ] `core/Csrf.php`
+- [ ] `core/Module.php` — `enabled()` dan `require()` (PELAN.md 9.4).
+      Wujud sekarang supaya setiap fasa modul selepas ini memanggilnya
+- [ ] Sahkan: KEDAI01 (Asas) panggil endpoint bermodul → **403**;
+      KEDAI02 (Pro) → berjaya
 - [ ] `jobs/Auth/LoginJob.php` — **e-mel + kata laluan** (admin/tauke sahaja)
 - [ ] `jobs/Auth/PinLoginJob.php` — **nama + PIN** untuk juruwang & waiter
 - [ ] `jobs/Auth/RegisterDeviceJob.php`, `RevokeDeviceJob.php` — peranti
@@ -412,6 +427,32 @@ Uji sebagai vendor **KEDAI02** (restaurant).
 - [ ] Sahkan: **item sama tidak boleh dibayar dua kali**
 - [ ] Sahkan: **mustahil gabung pesanan merentas vendor**
 
+### Fasa 9B — Pesanan QR pelanggan (modul `qr_order`)
+
+> Ditambah 13 Nov 2026. Baca PELAN.md 3.9 dahulu — ini satu-satunya halaman
+> awam tanpa log masuk, jadi sasaran serangan paling jelas dalam sistem.
+
+- [ ] `order/index.php?t={qr_token}` — menu mobile-first, troli, hantar
+- [ ] `jobs/QrOrder/ResolveTableTokenJob.php` — token → vendor, outlet, meja;
+      semak modul `qr_order`, tetapan `qr_order_enabled`, meja aktif
+- [ ] `PublicMenuJob` — produk aktif + harga kedai + promosi semasa
+      (hanya medan yang perlu — **tiada** `cost_price`, tiada stok sebenar)
+- [ ] `SubmitQrOrderJob` — `status = pending`, `source = qr`, harga dikira
+      semula di pelayan, **stok belum ditolak**
+- [ ] `ListPendingQrOrdersJob`, `AcceptQrOrderJob` (tolak stok, gabung ke
+      pesanan terbuka meja itu), `RejectQrOrderJob`
+- [ ] Notifikasi pesanan QR baharu di skrin waiter dan juruwang (tinjau
+      setiap 10 saat — tiada WebSocket)
+- [ ] `admin/tables.php`: cetak kad QR setiap meja, **jana semula** token
+- [ ] Sahkan: token rawak / token meja vendor lain → halaman "tidak tersedia"
+      yang sama, tiada kebocoran nama kedai
+- [ ] Sahkan: harga diubah dalam pelayar → diabaikan, harga pelayan digunakan
+- [ ] Sahkan: pesanan kedua semasa satu masih `pending` → ditolak
+- [ ] Sahkan: stok tidak berubah sehingga **Terima** ditekan
+- [ ] Sahkan: token dijana semula → QR lama terus "tidak tersedia"
+- [ ] Sahkan: KEDAI01 (pelan Asas / runcit) → modul tiada langsung
+- [ ] Sahkan pada viewport telefon (390x844)
+
 **Hujung Session 3: kedai makan boleh guna sistem ini sepenuhnya.**
 
 ---
@@ -442,6 +483,10 @@ Uji sebagai vendor **KEDAI02** (restaurant).
       `transaction_items.promotion_name`
 - [ ] Resit papar baris diskaun dan nama promosi
 - [ ] Laporan promosi: berapa kali digunakan, berapa jumlah diskaun diberi
+- [ ] Semua endpoint promosi panggil `Module::require('promotions')`;
+      `CalculateCartJob` langkau promosi jika modul tiada
+- [ ] Sahkan: vendor turun ke pelan tanpa `promotions` → promosi aktif
+      **berhenti** memberi diskaun, datanya kekal
 
 **Pengesahan**
 
@@ -501,7 +546,10 @@ Uji sebagai vendor **KEDAI02** (restaurant).
 ### Fasa 14 — Panel superadmin
 - [ ] `superadmin/` — login berasingan, layout berasingan
 - [ ] `superadmin/vendors.php` — senarai, cari, lihat penggunaan
-- [ ] `superadmin/plans.php` — pelan, harga, had
+- [ ] `superadmin/plans.php` — pelan, harga, had, **tanda modul per pelan**
+      (`SavePlanModulesJob`; modul teras `pos` tidak boleh dinyahtanda)
+- [ ] Sahkan: superadmin buang modul dari pelan → vendor pelan itu terus
+      kena 403 pada permintaan **seterusnya**, tanpa log keluar
 - [ ] `superadmin/subscriptions.php` — status, tempoh, tandakan bayar
 - [ ] `jobs/Vendor/…`, `jobs/Plan/…`
 - [ ] Dashboard platform: jumlah vendor, aktif vs suspended, jualan agregat
@@ -518,6 +566,10 @@ Uji sebagai vendor **KEDAI02** (restaurant).
 - [ ] Sahkan: vendor baharu boleh terus berjualan selepas provision, tanpa
       sebarang langkah manual dalam DB
 - [ ] Sahkan: had pelan ditolak melalui API terus, bukan hanya butang disable
+- [ ] Audit modul: setiap endpoint `stock`, `reports`, `csv_import`,
+      `promotions`, `qr_order` memanggil `Module::require()` — grep, bukan anggapan
+- [ ] Sidebar admin sorok menu modul yang tiada; halaman "Naik taraf pelan"
+      bila URL modul dibuka terus
 
 ### Fasa 16 — Kedai berbilang, langganan & bil
 
@@ -622,15 +674,16 @@ Uji sebagai vendor **KEDAI02** (restaurant).
 
 ---
 
-## Perkara tertangguh (bukan sebahagian 19 fasa)
+## Perkara tertangguh (bukan sebahagian 20 fasa)
 
 - **Bayaran langganan dalam talian** — superadmin tandakan status secara
   manual buat masa ini. Gerbang pembayaran belum dibincangkan
 - **Set semula kata laluan melalui e-mel** — perlukan SMTP. Buat masa ini
   admin vendor set semula untuk kakitangannya, superadmin untuk admin vendor
-- **PIN pendek untuk waiter** — menaip e-mel penuh berpuluh kali sehari pada
-  tablet berkongsi menyusahkan. Corak lazim POS ialah PIN selepas log masuk
-  pertama pada peranti itu
+- **Modul tambahan per vendor** (add-on di luar pelan) — gaya ringkas dipilih:
+  modul ikut pelan sahaja. `vendor_modules` boleh ditambah kemudian
+- **Bayaran dalam talian untuk pesanan QR** — perlu gerbang pembayaran
+- **Pesanan QR untuk take away / tanpa meja** — versi pertama untuk meja sahaja
 - **`user_vendors`** — satu e-mel menguruskan beberapa kedai. Hanya perlu
   bila ada pelanggan sebenar dengan dua cawangan (PELAN.md 4.1)
 - **`product_translations`** — terjemahan nama produk (PELAN.md 7.10)
@@ -665,4 +718,6 @@ Uji sebagai vendor **KEDAI02** (restaurant).
 | 27 Ogos 2026 | Kedai tambahan dicaj mengikut **peringkat**, bukan diskaun % tetap | Caj per lokasi ialah norma industri POS SaaS. Peringkat dipilih kerana peratus tetap tidak menjawab kedai ke-5 atau ke-20, dan peringkat boleh menghasilkan peratus rata juga |
 | 13 Nov 2026 | **Lebar resit jadi tetapan vendor** (`paper_width` 58/80, tindihan per kedai), bukan satu lalai sistem | Keputusan Sufi. Kedai berbeza guna printer berbeza; satu vendor boleh ada kaunter 58mm dan 80mm |
 | 13 Nov 2026 | **Emoji dibuang dari resit bercetak**, kekal pada skrin | Keputusan Sufi. Driver termal murah cetak emoji sebagai kotak hitam |
+| 13 Nov 2026 | **Modul per pelan** — `plans.features_json` diganti `modules` + `plan_modules`. 34 jadual → 36 | Keputusan Sufi: superadmin tentukan modul dalam setiap pelan, gaya ringkas. Jadual sebenar boleh di-JOIN dan disemak dengan kekunci asing; JSON tidak |
+| 13 Nov 2026 | **Pesanan QR pelanggan** ditambah sebagai modul `qr_order` — Fasa 9B, 19 → 20 fasa | Permintaan Sufi. Pesanan masuk `pending` dan perlu diterima kakitangan supaya QR yang diimbas dari luar kedai tidak boleh menolak stok |
 | 27 Ogos 2026 | Kedai dibuka pertengahan kitaran diprorata | Jangkaan pelanggan, dan menghapuskan insentif menunggu awal bulan sebelum membuka kedai |
