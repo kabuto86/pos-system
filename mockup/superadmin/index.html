@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KedaiPOS — Superadmin</title>
+<link rel="stylesheet" href="../../vendor/bootstrap/bootstrap.min.css">
+</head>
+<body class="bg-body-tertiary">
+
+<div class="d-flex min-vh-100">
+
+  <!-- SIDEBAR GELAP: beza jelas dari admin kedai -->
+  <aside class="offcanvas-lg offcanvas-start bg-dark text-white" tabindex="-1" id="sidebar" data-bs-theme="dark">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title">Menu</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebar"></button>
+    </div>
+    <div class="offcanvas-body d-flex flex-column p-3">
+      <div class="fs-5 fw-semibold mb-1 d-none d-lg-block">🛡️ Platform</div>
+      <div class="small text-white-50 mb-3 d-none d-lg-block">KedaiPOS Superadmin</div>
+      <nav class="nav nav-pills flex-column gap-1">
+        <a class="nav-link active" href="#">🏬 Vendor</a>
+        <a class="nav-link text-white" href="#">📦 Pelan langganan</a>
+        <a class="nav-link text-white" href="#">🧮 Invois</a>
+        <a class="nav-link text-white" href="#">🌐 Bahasa &amp; terjemahan</a>
+        <a class="nav-link text-white" href="#">📜 Log platform</a>
+      </nav>
+      <div class="mt-auto pt-3 border-top border-secondary small">
+        <div>superadmin@kedaipos.my</div>
+        <a href="#" class="link-danger">Log keluar</a>
+      </div>
+    </div>
+  </aside>
+
+  <main class="flex-grow-1 p-3 p-lg-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-outline-secondary btn-sm d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#sidebar">☰</button>
+        <h1 class="h4 fw-semibold mb-0">Vendor <span class="badge text-bg-warning align-middle fs-6">MOCKUP</span></h1>
+      </div>
+      <button class="btn btn-dark btn-sm">+ Daftar vendor baharu</button>
+    </div>
+
+    <div class="row row-cols-2 row-cols-lg-4 g-3 mb-3">
+      <div class="col"><div class="card shadow-sm"><div class="card-body py-2">
+        <div class="small text-body-secondary">Vendor aktif</div><div class="fs-5 fw-bold">42</div>
+      </div></div></div>
+      <div class="col"><div class="card shadow-sm"><div class="card-body py-2">
+        <div class="small text-body-secondary">Percubaan</div><div class="fs-5 fw-bold">7</div>
+      </div></div></div>
+      <div class="col"><div class="card shadow-sm"><div class="card-body py-2">
+        <div class="small text-body-secondary">Digantung</div><div class="fs-5 fw-bold text-danger">3</div>
+      </div></div></div>
+      <div class="col"><div class="card shadow-sm"><div class="card-body py-2">
+        <div class="small text-body-secondary">Invois tertunggak</div><div class="fs-5 fw-bold">RM 1,140</div>
+      </div></div></div>
+    </div>
+
+    <div class="card shadow-sm">
+      <div class="card-header bg-white d-flex flex-wrap gap-2">
+        <input type="search" class="form-control form-control-sm w-auto flex-grow-1" placeholder="Cari kod, nama atau e-mel vendor...">
+        <select class="form-select form-select-sm w-auto">
+          <option>Semua status</option><option>Aktif</option><option>Percubaan</option>
+          <option>Digantung</option><option>Dibatalkan</option>
+        </select>
+        <select class="form-select form-select-sm w-auto">
+          <option>Semua jenis</option><option>Runcit</option><option>Kedai makan</option>
+        </select>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Kod</th><th>Nama</th><th>Jenis</th><th>Pelan</th>
+              <th class="text-center">Kedai</th><th>Status</th><th>Tamat</th><th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="font-monospace">KEDAI01</td><td>Kedai Runcit Pak Mat</td>
+              <td><span class="badge text-bg-info">Runcit</span></td><td>Asas</td>
+              <td class="text-center">1</td><td><span class="badge text-bg-success">Aktif</span></td>
+              <td class="small">31/12/2026</td>
+              <td class="text-end"><button class="btn btn-outline-secondary btn-sm">Urus</button></td>
+            </tr>
+            <tr>
+              <td class="font-monospace">KEDAI02</td><td>Restoran Selera Kampung</td>
+              <td><span class="badge text-bg-primary">Kedai makan</span></td><td>Pro</td>
+              <td class="text-center">2</td><td><span class="badge text-bg-success">Aktif</span></td>
+              <td class="small">15/01/2027</td>
+              <td class="text-end"><button class="btn btn-outline-secondary btn-sm">Urus</button></td>
+            </tr>
+            <tr>
+              <td class="font-monospace">KEDAI03</td><td>Kafe Sudut Biru</td>
+              <td><span class="badge text-bg-primary">Kedai makan</span></td><td>Percubaan</td>
+              <td class="text-center">1</td><td><span class="badge text-bg-warning">Percubaan</span></td>
+              <td class="small">20/11/2026</td>
+              <td class="text-end"><button class="btn btn-outline-secondary btn-sm">Urus</button></td>
+            </tr>
+            <tr>
+              <td class="font-monospace">KEDAI04</td><td>Mini Mart Seri Indah</td>
+              <td><span class="badge text-bg-info">Runcit</span></td><td>Asas</td>
+              <td class="text-center">1</td><td><span class="badge text-bg-danger">Digantung</span></td>
+              <td class="small text-danger">01/11/2026</td>
+              <td class="text-end"><button class="btn btn-outline-secondary btn-sm">Urus</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card-footer bg-white d-flex justify-content-between align-items-center small">
+        <span class="text-body-secondary">Papar 1–4 daripada 52</span>
+        <nav><ul class="pagination pagination-sm mb-0">
+          <li class="page-item disabled"><a class="page-link" href="#">‹</a></li>
+          <li class="page-item active"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">›</a></li>
+        </ul></nav>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="../../vendor/bootstrap/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KedaiPOS — Mockup UI</title>
+<link rel="stylesheet" href="../vendor/bootstrap/bootstrap.min.css">
+</head>
+<body class="bg-body-tertiary">
+
+<div class="container py-5">
+  <h1 class="h3 fw-semibold mb-1">KedaiPOS — Mockup UI</h1>
+  <p class="text-body-secondary mb-4">
+    Rangka setiap bahagian sistem, dipecah ikut peranan. HTML statik dengan
+    data palsu — tiada backend. Untuk dipersetujui sebelum kod API ditulis.
+  </p>
+
+  <div class="row row-cols-1 row-cols-md-2 g-3">
+
+    <div class="col">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <h2 class="h5 card-title mb-0">🧾 Juruwang</h2>
+            <span class="badge text-bg-primary">cashier/</span>
+          </div>
+          <p class="card-text small text-body-secondary">
+            Skrin POS kaunter — desktop/tablet landskap. Produk di kiri, troli
+            di kanan, bayaran dalam modal. Satu-satunya peranan yang boleh
+            terima bayaran.
+          </p>
+          <a href="cashier/index.html" class="btn btn-primary btn-sm">Buka skrin POS</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <h2 class="h5 card-title mb-0">🍽️ Waiter</h2>
+            <span class="badge text-bg-success">waiter/</span>
+          </div>
+          <p class="card-text small text-body-secondary">
+            Mobile-first untuk telefon. Paparan meja dan take-away, ambil
+            pesanan. <strong>Tiada UI bayaran langsung.</strong> Buka dengan
+            lebar telefon (390px) untuk rupa sebenar.
+          </p>
+          <a href="waiter/index.html" class="btn btn-success btn-sm">Buka paparan meja</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <h2 class="h5 card-title mb-0">📊 Admin kedai</h2>
+            <span class="badge text-bg-warning">admin/</span>
+          </div>
+          <p class="card-text small text-body-secondary">
+            Tauke / pengurus satu vendor. Sidebar navigasi, pemilih kedai di
+            atas. Contoh: dashboard jualan hari ini.
+          </p>
+          <a href="admin/index.html" class="btn btn-warning btn-sm">Buka dashboard</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <h2 class="h5 card-title mb-0">🛡️ Superadmin</h2>
+            <span class="badge text-bg-dark">superadmin/</span>
+          </div>
+          <p class="card-text small text-body-secondary">
+            Panel platform — layout berasingan, warna gelap supaya tidak
+            tertukar dengan admin kedai. Contoh: senarai vendor.
+          </p>
+          <a href="superadmin/index.html" class="btn btn-dark btn-sm">Buka senarai vendor</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <h2 class="h6 fw-semibold mt-5">Peraturan reka bentuk yang dipakai</h2>
+  <ul class="small text-body-secondary">
+    <li>Bootstrap 5 sahaja — tiada inline CSS, tiada fail CSS tambahan</li>
+    <li>Setiap peranan ada layout sendiri: juruwang (skrin penuh), waiter
+        (mudah alih), admin (sidebar terang), superadmin (sidebar gelap)</li>
+    <li>Nama kedai dan kaunter sentiasa kelihatan — vendor berbilang kedai
+        tidak boleh tersilap kedai</li>
+    <li>Emoji dipapar pada skrin sahaja; resit bercetak tiada emoji</li>
+  </ul>
+</div>
+
+<script src="../vendor/bootstrap/bootstrap.bundle.min.js"></script>
+</body>
+</html>
