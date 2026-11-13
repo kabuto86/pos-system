@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KedaiPOS — Dapur</title>
+<link rel="stylesheet" href="../../vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="../../vendor/fontawesome/css/all.min.css">
+<link rel="stylesheet" href="../../css/theme.css">
+</head>
+<body class="kp-kitchen">
+
+<div class="d-flex flex-column vh-100">
+
+  <!-- Bar atas: kedai, status cetak, jam -->
+  <header class="kp-kitchen-bar d-flex align-items-center gap-3 px-4 py-2 flex-shrink-0">
+    <span class="kp-brand kp-brand-light">KedaiPOS</span>
+    <span class="kp-mockup-tag">Mockup</span>
+    <div class="lh-sm">
+      <div class="fw-bold">Dapur</div>
+      <div class="small text-body-secondary">Cawangan Bangi</div>
+    </div>
+    <div class="ms-auto d-flex align-items-center gap-3 small">
+      <span><i class="fa-solid fa-print me-1"></i>Cetak automatik hidup</span>
+      <span class="kp-status kp-status-live">Bersambung</span>
+      <span class="fs-5 fw-bold kp-num">1:42 ptg</span>
+    </div>
+  </header>
+
+  <div class="row g-3 flex-grow-1 overflow-hidden px-3 py-3 m-0">
+
+    <!-- BAHARU -->
+    <section class="col-4 d-flex flex-column h-100 kp-kcol-new">
+      <h2 class="kp-kcol-head mb-3">Baharu <span class="kp-kcol-count">2</span></h2>
+      <div class="flex-grow-1 overflow-y-auto d-flex flex-column gap-3">
+
+        <article class="kp-kticket kp-kticket-late">
+          <div class="d-flex justify-content-between align-items-start px-3 pt-3">
+            <div>
+              <div class="kp-kticket-no">#014</div>
+              <div class="kp-kticket-where">Meja 6</div>
+            </div>
+            <div class="text-end">
+              <div class="kp-kticket-time"><i class="fa-regular fa-clock me-1"></i>16 min</div>
+              <div class="small text-body-secondary">masuk 1:26</div>
+            </div>
+          </div>
+          <div class="px-3 py-2">
+            <div class="kp-kitem"><span class="kp-kqty">2×</span><div><div class="kp-kname">Nasi Lemak</div><div class="kp-knote">Rendang daging</div></div></div>
+            <div class="kp-kitem"><span class="kp-kqty">1×</span><div><div class="kp-kname">Mee Goreng Mamak</div><div class="kp-knote kp-knote-alert"><i class="fa-solid fa-triangle-exclamation me-1"></i>Tak nak udang — alahan</div></div></div>
+          </div>
+          <div class="px-3 pb-3"><button class="btn btn-kunyit btn-lg w-100">Mula masak</button></div>
+        </article>
+
+        <article class="kp-kticket">
+          <div class="d-flex justify-content-between align-items-start px-3 pt-3">
+            <div>
+              <div class="kp-kticket-no">#015</div>
+              <div class="kp-kticket-where">Meja 5 <span class="kp-kticket-qr ms-1">QR</span></div>
+            </div>
+            <div class="text-end">
+              <div class="kp-kticket-time"><i class="fa-regular fa-clock me-1"></i>2 min</div>
+              <div class="small text-body-secondary">masuk 1:40</div>
+            </div>
+          </div>
+          <div class="px-3 py-2">
+            <div class="kp-kitem"><span class="kp-kqty">2×</span><div><div class="kp-kname">Nasi Goreng Kampung</div><div class="kp-knote">Kurang pedas</div></div></div>
+            <div class="kp-kitem"><span class="kp-kqty">1×</span><div><div class="kp-kname">Teh Tarik</div><div class="kp-knote">Besar, ais</div></div></div>
+          </div>
+          <div class="px-3 pb-3"><button class="btn btn-kunyit btn-lg w-100">Mula masak</button></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- SEDANG DIMASAK -->
+    <section class="col-4 d-flex flex-column h-100">
+      <h2 class="kp-kcol-head mb-3">Sedang dimasak <span class="kp-kcol-count">1</span></h2>
+      <div class="flex-grow-1 overflow-y-auto d-flex flex-column gap-3">
+        <article class="kp-kticket kp-kticket-cooking">
+          <div class="d-flex justify-content-between align-items-start px-3 pt-3">
+            <div>
+              <div class="kp-kticket-no">#013</div>
+              <div class="kp-kticket-where">Take away 007</div>
+            </div>
+            <div class="text-end">
+              <div class="kp-kticket-time"><i class="fa-regular fa-clock me-1"></i>9 min</div>
+              <div class="small text-body-secondary">masuk 1:33</div>
+            </div>
+          </div>
+          <div class="px-3 py-2">
+            <div class="kp-kitem"><span class="kp-kqty">3×</span><div><div class="kp-kname">Ayam Goreng Berempah</div><div class="kp-knote">Peha</div></div></div>
+            <div class="kp-kitem"><span class="kp-kqty">1×</span><div><div class="kp-kname">Nasi Putih</div></div></div>
+          </div>
+          <div class="px-3 pb-3"><button class="btn btn-primary btn-lg w-100"><i class="fa-solid fa-bell"></i>Siap</button></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- SIAP -->
+    <section class="col-4 d-flex flex-column h-100 kp-kcol-ready">
+      <h2 class="kp-kcol-head mb-3">Siap, tunggu dihidang <span class="kp-kcol-count">1</span></h2>
+      <div class="flex-grow-1 overflow-y-auto d-flex flex-column gap-3">
+        <article class="kp-kticket kp-kticket-ready">
+          <div class="d-flex justify-content-between align-items-start px-3 pt-3">
+            <div>
+              <div class="kp-kticket-no">#012</div>
+              <div class="kp-kticket-where">Meja 2</div>
+            </div>
+            <div class="text-end">
+              <div class="kp-kticket-time"><i class="fa-solid fa-check me-1"></i>siap 1:39</div>
+            </div>
+          </div>
+          <div class="px-3 py-2">
+            <div class="kp-kitem"><span class="kp-kqty">1×</span><div><div class="kp-kname">Mee Goreng Mamak</div></div></div>
+            <div class="kp-kitem"><span class="kp-kqty">2×</span><div><div class="kp-kname">Sirap Bandung</div></div></div>
+          </div>
+          <div class="px-3 pb-3"><button class="btn btn-light btn-lg w-100">Sudah dihidang</button></div>
+        </article>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script src="../../vendor/bootstrap/bootstrap.bundle.min.js"></script>
+</body>
+</html>

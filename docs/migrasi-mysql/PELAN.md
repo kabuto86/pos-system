@@ -311,7 +311,7 @@ aksara, bcrypt 60. 255 memberi ruang untuk algoritma masa depan.
 > Sekatan waiter **mesti disemak di dalam setiap endpoint**. Menyorok butang
 > di UI bukan kawalan keselamatan.
 
-## 6. Skema pangkalan data — 36 jadual
+## 6. Skema pangkalan data — 37 jadual
 
 Pangkalan data: `pos_saas` · `utf8mb4_unicode_ci` · InnoDB
 
@@ -375,7 +375,11 @@ outlet_id (nullable), qty, unit_price, amount, is_prorated
 
 ### B. Katalog (5)
 
-**`categories`** — id, **vendor_id**, name, sort_order, is_active, created_at
+**`categories`** — id, **vendor_id**, name, sort_order, is_active,
+**send_to_kitchen** (1), created_at
+
+> `send_to_kitchen = 0` untuk barang siap yang tidak perlu dimasak (air
+> kotak, kuih dalam bekas) — ia tidak masuk tiket dapur.
 
 **`products`** — id, **vendor_id**, category_id(FK), name, icon, image_path,
 barcode, sku, **price** (lalai), **cost_price**, **unit**,
@@ -422,7 +426,7 @@ price_delta, sort_order, is_active
 > Lajur `code` (contoh: lauk, ayam) **mesti dikekalkan**. `makeLineId()`
 > bergantung padanya untuk kunci troli yang stabil.
 
-### C. Pesanan (4) — teras mod kedai makan
+### C. Pesanan (5) — teras mod kedai makan
 
 **`orders`** — id, **vendor_id**, **outlet_id**(FK), order_no, **business_day**(DATE),
 **order_type** ENUM(dine_in/takeaway/counter),
@@ -441,6 +445,7 @@ terminal_id(FK, nullable), note, opened_at, closed_at
 **`order_items`** — id, **vendor_id**, order_id(FK), product_id,
 **product_name**, **icon**, **base_price**, **unit_price**, variant_label,
 qty, **paid_qty**, line_total, status ENUM(ordered/served/cancelled),
+**kitchen_ticket_id**(FK, nullable),
 note, added_by(FK users), added_at
 
 > `paid_qty` yang membolehkan pecah bil: satu baris pesanan boleh dibayar
@@ -448,6 +453,17 @@ note, added_by(FK users), added_at
 > mempunyai `paid_qty = qty`.
 > `note` untuk permintaan bebas ("kurang pedas") yang tiada dalam variasi.
 > `added_by` **nullable** — NULL untuk item yang dipesan pelanggan melalui QR.
+
+**`kitchen_tickets`** — id, **vendor_id**, **outlet_id**(FK), order_id(FK),
+ticket_no, business_day,
+status ENUM(new/preparing/ready/done/cancelled),
+created_at, started_at, ready_at, printed_at
+· UNIQUE(outlet_id, business_day, ticket_no)
+
+> Satu tiket = satu **hantaran** ke dapur, bukan satu pesanan. Meja 5 pesan
+> nasi lemak, 20 minit kemudian tambah teh tarik → dua tiket, kerana dapur
+> perlu tahu apa yang **baru** masuk. `printed_at` menghalang slip dicetak
+> dua kali bila skrin dapur dimuat semula. Lihat 9.5.
 
 **`order_item_options`** — id, **vendor_id**, order_item_id(FK),
 **group_name**, **option_label**, **price_delta**
@@ -517,7 +533,9 @@ promotion_id, **promotion_name**, **promotion_type**, discount_amount
 ### F. Operasi (8)
 
 **`terminals`** — id, **vendor_id**, **outlet_id**(FK), code, name,
-**type** ENUM(cashier/waiter), receipt_prefix, is_active, last_seen_at
+**type** ENUM(cashier/waiter/**kitchen**), receipt_prefix,
+**auto_print** (0 — peranti dapur sahaja: cetak slip bila tiket baharu masuk),
+is_active, last_seen_at
 · UNIQUE(outlet_id, code)
 
 **`shifts`** — id, **vendor_id**, **outlet_id**(FK), terminal_id(FK), user_id(FK), business_day,
@@ -878,6 +896,7 @@ tambahan per vendor.
 | `csv_import` | Import produk pukal dari CSV | | semua |
 | `waiter_app` | Aplikasi waiter — ambil pesanan di meja dari telefon | | kedai makan |
 | `qr_order` | Pesanan QR pelanggan | | kedai makan |
+| `kitchen` | Dapur — skrin pesanan + slip automatik | | kedai makan |
 
 > **Tanpa `waiter_app`:** kedai makan masih boleh buka meja dan ambil pesanan
 > dari **skrin juruwang** (Fasa 7). Peranan `waiter` tidak boleh log masuk,
@@ -905,6 +924,49 @@ tambahan per vendor.
 **Turun pelan:** data modul **disimpan, tidak dipadam**. Promosi tidak
 dinilai, menu tersorok, QR meja papar "tidak tersedia". Naik pelan semula →
 semuanya kembali seperti asal.
+
+### 9.5 Modul dapur (`kitchen`)
+
+**Diputuskan Sufi, 13 Nov 2026.** Satu halaman `kitchen/` yang papar pesanan
+masuk, dan — jika peranti itu ada printer — cetak slip secara automatik.
+Skrin dan slip ialah **satu modul**, bukan dua.
+
+**Kenapa dapur perlukan peranti sendiri.** Pelayar hanya boleh mencetak ke
+printer komputer yang membukanya, dan pelayan SaaS di internet tidak boleh
+sampai ke printer dalam WiFi kedai. Jadi kaunter tidak boleh mencetak ke
+dapur. Dapur perlukan tablet atau PC kecil sendiri; printer termal pada
+peranti itu adalah pilihan.
+
+**Peranti dapur** = `terminals.type = kitchen`, didaftarkan seperti peranti
+lain (4.3). Skrin dapur **tidak memerlukan PIN** — ia menyala sepanjang hari
+dan tidak menyentuh wang. Token peranti sahaja memberi capaian kepada tiket
+kedai itu, dan **tiada lagi**: tiada harga, tiada bayaran, tiada laporan.
+
+**Bila tiket dicipta:**
+
+| Sumber | Tiket dicipta bila |
+|---|---|
+| Waiter / juruwang | Pesanan **dihantar** |
+| Pelanggan QR | Kakitangan tekan **Terima** — bukan semasa pelanggan hantar |
+| Kaunter runcit | Tidak pernah — modul ini kedai makan sahaja |
+
+Hanya item dari kategori `send_to_kitchen = 1` masuk tiket. Tiket tanpa
+item yang perlu dimasak tidak dicipta langsung.
+
+**Aliran tiket:** `new` → (tukang masak tekan) `preparing` → `ready` →
+(waiter/juruwang hantar ke meja) `done`. Status `ready` memaparkan lencana
+"Siap dihidang" pada skrin waiter dan juruwang. Item dibatalkan selepas
+tiket dicipta → tiket ditanda dan slip **BATAL** dicetak.
+
+**Slip dapur** (`print/kitchen-slip.php`, guna `paper_width` kedai):
+nombor tiket besar, Meja 5 / Take away 007, masa, item + pilihan + nota
+dalam huruf besar. **Tiada harga.** Tiada emoji (sama seperti resit).
+
+**Cetak automatik:** skrin dapur meninjau setiap 5 saat. Tiket `new` dengan
+`printed_at` NULL → cetak melalui iframe tersembunyi (cara Fasa 5) → tanda
+`printed_at`. Chrome dibuka dengan `--kiosk-printing` supaya tiada dialog.
+`printed_at` ditanda **di pelayan dalam satu UPDATE bersyarat**
+(`… WHERE printed_at IS NULL`) supaya dua tab dapur tidak mencetak dua kali.
 
 ## 10. Barcode — lebih mudah daripada yang disangka
 
@@ -966,6 +1028,8 @@ claude-learn1/
 │   │                RegenerateTableQrJob
 │   ├── QrOrder/     ResolveTableTokenJob · PublicMenuJob · SubmitQrOrderJob
 │   │                ListPendingQrOrdersJob · AcceptQrOrderJob · RejectQrOrderJob
+│   ├── Kitchen/     ListKitchenTicketsJob · CreateKitchenTicketJob
+│   │                AdvanceTicketJob · ClaimTicketPrintJob · CancelTicketItemJob
 │   ├── Cart/        CalculateCartJob · ValidateStockJob
 │   ├── Transaction/ CreateTransactionJob · MergeBillJob · SplitBillJob
 │   │                ListTransactionsJob · GetReceiptJob
@@ -986,9 +1050,10 @@ claude-learn1/
 │                   (mobile-first — waiter guna telefon/tablet)
 ├── admin/          admin kedai (per vendor) — katalog, stok, laporan, tetapan
 ├── superadmin/     panel platform — vendor, pelan, modul, langganan
+├── kitchen/        skrin dapur — peranti dapur berdaftar, tiada PIN (9.5)
 ├── order/          AWAM — pesanan QR pelanggan, tiada log masuk (3.9)
 │                   index.php?t={qr_token} · mobile-first
-├── print/          receipt.php
+├── print/          receipt.php · kitchen-slip.php
 ├── uploads/        products/{vendor_id}/ (.gitignore isinya)
 ├── assets/img/     product-default.png
 ├── lang/           ms.php · en.php (cache terjemahan, dijana dari DB)
@@ -1147,7 +1212,7 @@ tangan dalam phpMyAdmin.
 | `php database/migrate.php superadmin` | Cipta akaun superadmin — tanya e-mel & kata laluan di terminal. Untuk pelayan sebenar, di mana seed demo tidak dijalankan |
 
 - Rekod migrasi dalam jadual sistem **`schema_migrations`**(version PK,
-  applied_at) — jadual ke-37, bukan sebahagian model aplikasi
+  applied_at) — jadual ke-38, bukan sebahagian model aplikasi
 - **Migrasi tidak disunting selepas di-commit.** Ubah skema = fail baharu
   (`008_add_xxx.sql`). Inilah yang membolehkan pelayan sebenar dinaik taraf
   tanpa kehilangan data
@@ -1165,7 +1230,7 @@ tangan dalam phpMyAdmin.
 
 | `seeds/core/` — wajib, semua persekitaran | `seeds/demo/` — `local` sahaja |
 |---|---|
-| `modules` (7 modul, 9.4) | `plans` Asas / Pro / Percubaan — **harga contoh**, Sufi tetapkan sebenar melalui panel superadmin |
+| `modules` (8 modul, 9.4) | `plans` Asas / Pro / Percubaan — **harga contoh**, Sufi tetapkan sebenar melalui panel superadmin |
 | `languages` (ms, en) | `plan_modules`, `plan_outlet_tiers` |
 | `translations` rentetan sistem | KEDAI01 (runcit, Asas, 1 kedai) · KEDAI02 (kedai makan, Pro, 2 kedai) |
 | | 18 produk setiap vendor, kategori, variasi, kaedah bayaran, tetapan |
