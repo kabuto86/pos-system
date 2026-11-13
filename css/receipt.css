@@ -1,0 +1,34 @@
+/* =========================================================
+   KedaiPOS — resit bercetak (pencetak terma)
+   Lebar ikut tetapan paper_width vendor / kedai: 58 atau 80.
+   Fon monospace supaya lajur nombor sejajar seperti di kertas.
+   Tiada emoji, tiada warna — pencetak terma hanya hitam.
+   ========================================================= */
+
+.kp-receipt {
+  background: #fff;
+  color: #000;
+  font-family: ui-monospace, "Cascadia Mono", Consolas, "Courier New", monospace;
+  line-height: 1.35;
+  font-variant-numeric: tabular-nums;
+}
+.kp-receipt-58 { width: 58mm; padding: 4mm 3mm; font-size: 10.5px; }
+.kp-receipt-80 { width: 80mm; padding: 5mm 4mm; font-size: 12px; }
+
+.kp-receipt-shop { font-weight: 700; font-size: 1.25em; text-align: center; }
+.kp-receipt-center { text-align: center; }
+.kp-receipt-rule { border: 0; border-top: 1px dashed #000; margin: .6em 0; opacity: 1; }
+.kp-receipt-row { display: flex; justify-content: space-between; gap: 1em; }
+.kp-receipt-row > :last-child { text-align: right; white-space: nowrap; }
+.kp-receipt-sub { padding-left: 2ch; }
+.kp-receipt-total { font-weight: 700; font-size: 1.35em; }
+.kp-receipt-void { text-align: center; font-weight: 700; font-size: 1.5em; border: 2px solid #000; margin: .4em 0; }
+
+/* Pratonton di skrin: kertas terapung di atas latar */
+.kp-receipt-paper { box-shadow: 0 .75rem 2rem rgba(14, 51, 38, .14); }
+
+@media print {
+  @page { margin: 0; }
+  body { background: #fff; }
+  .kp-receipt-paper { box-shadow: none; }
+}

@@ -91,13 +91,14 @@ HTML statik dalam `mockup/`, Bootstrap sahaja, data palsu. Buka di
 - [x] `mockup/kitchen/index.html` — skrin dapur (tablet landskap, 3 lajur)
 - [x] `mockup/shop/index.html` — kedai online peniaga dari rumah: semak, masa ambil, cara bayar
 - [x] Amaran berlapis: sepanduk merah di `cashier/`, lajur "Menunggu disahkan" di `kitchen/`
-- [ ] **Sufi setuju rangka & gaya** sebelum pusingan 2
+- [x] **Sufi setuju rangka & gaya** sebelum pusingan 2 (13 Nov 2026)
 
 **Pusingan 2 — skrin Session 1A/1B** (sebelum Fasa 1 dimulakan)
 
-- [ ] Log masuk e-mel (admin) · log masuk PIN (juruwang/waiter)
-- [ ] Pemilih kedai selepas log masuk · buka/tutup syif
-- [ ] Modal variasi · sejarah transaksi juruwang · resit (58mm & 80mm)
+- [x] Log masuk e-mel (`auth/login.html`) · PIN kakitangan (`cashier/login.html`)
+- [x] Pemilih kedai + daftar peranti (`auth/outlet.html`) · buka/tutup syif (`cashier/shift.html`)
+- [x] Modal variasi (`cashier/index.html`) · sejarah + void (`cashier/history.html`) · resit 58mm, 80mm & void (`receipt/index.html`, `css/receipt.css`)
+- [ ] **Sufi setuju pusingan 2** sebelum Fasa 1 dimulakan
 
 > Skrin session lain dimockup pada permulaan session masing-masing.
 

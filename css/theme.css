@@ -272,6 +272,7 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
   letter-spacing: -.03em;
   color: var(--kp-pandan-900);
   text-decoration: none;
+  white-space: nowrap;
 }
 .kp-brand::after {
   content: "";
@@ -1006,3 +1007,177 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
   .kp-tile { transition: none; }
   .kp-tile:active { transform: none; }
 }
+
+/* =========================================================
+   PUSINGAN 2 — log masuk, PIN, syif, variasi, sejarah
+   ========================================================= */
+
+/* Log masuk e-mel: panel jenama + borang */
+.kp-auth-brand {
+  background: var(--kp-pandan-900);
+  color: #fff;
+  --bs-secondary-color: rgba(255, 255, 255, .65);
+}
+.kp-auth-headline {
+  font-family: var(--kp-font-display);
+  font-weight: 800;
+  font-size: clamp(2rem, 3.6vw, 3rem);
+  line-height: 1.05;
+  letter-spacing: -.035em;
+}
+.kp-auth-point { display: flex; gap: .85rem; align-items: flex-start; }
+.kp-auth-point .fa-solid {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: .625rem;
+  background: rgba(255, 255, 255, .08);
+  color: var(--kp-kunyit);
+}
+.kp-auth-form { max-width: 24rem; }
+.kp-input-group .form-control { border-right: 0; }
+.kp-input-group .btn { border-color: var(--kp-line); border-left: 0; background: #fff; }
+
+/* Pemilih kedai */
+.kp-outlet {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  padding: 1rem 1.25rem;
+  background: #fff;
+  border: 1.5px solid var(--kp-line);
+  border-radius: .875rem;
+  text-decoration: none;
+  color: var(--kp-ink);
+}
+.kp-outlet:hover { border-color: var(--kp-pandan-500); }
+.kp-outlet-figure {
+  font-family: var(--kp-font-display);
+  font-weight: 800;
+  font-size: var(--kp-text-md);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Skrin PIN */
+.kp-staff {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .5rem;
+  width: 100%;
+  padding: 1rem .5rem;
+  background: #fff;
+  border: 1.5px solid var(--kp-line);
+  border-radius: .875rem;
+  font-weight: 600;
+  color: var(--kp-ink);
+}
+.kp-staff .kp-initial { width: 3rem; height: 3rem; font-size: 1.125rem; background: var(--kp-pandan-100); color: var(--kp-pandan-700); }
+.kp-staff-role { font-size: var(--kp-text-xs); font-weight: 500; color: rgba(24, 33, 29, .55); }
+.btn-check:checked + .kp-staff { border-color: var(--kp-pandan-700); box-shadow: 0 0 0 3px var(--kp-pandan-100); }
+.btn-check:checked + .kp-staff .kp-initial { background: var(--kp-pandan-900); color: #fff; }
+.btn-check:disabled + .kp-staff { opacity: .55; }
+.kp-pinpad-wrap { background: var(--kp-pandan-900); color: #fff; --bs-secondary-color: rgba(255, 255, 255, .62); }
+.kp-pin-dots { display: flex; justify-content: center; gap: .9rem; }
+.kp-pin-dot {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, .45);
+}
+.kp-pin-dot-on { background: var(--kp-kunyit); border-color: var(--kp-kunyit); }
+.kp-pinpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; width: 100%; max-width: 20rem; margin: 0 auto; }
+.kp-key {
+  height: 4rem;
+  border: 0;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, .08);
+  color: #fff;
+  font-family: var(--kp-font-display);
+  font-weight: 700;
+  font-size: 1.5rem;
+  font-variant-numeric: tabular-nums;
+}
+.kp-key:hover { background: rgba(255, 255, 255, .14); }
+.kp-key:active { background: rgba(255, 255, 255, .2); }
+.kp-key-muted { font-size: 1.125rem; color: rgba(255, 255, 255, .7); }
+.kp-key-go { background: var(--kp-kunyit); color: var(--kp-ink); font-size: 1.125rem; }
+.kp-key-go:hover { background: var(--kp-kunyit-600); }
+
+/* Syif: kiraan wang mengikut nilai */
+.kp-denom {
+  display: grid;
+  grid-template-columns: 5rem 1fr 6.5rem;
+  align-items: center;
+  gap: .75rem;
+  padding: .5rem 0;
+}
+.kp-denom + .kp-denom { border-top: 1px solid var(--kp-line); }
+.kp-denom-label { font-weight: 700; font-variant-numeric: tabular-nums; }
+.kp-denom .form-control { max-width: 6rem; text-align: center; font-variant-numeric: tabular-nums; }
+.kp-variance { border-radius: .875rem; background: var(--kp-cili-100); color: #8E2318; }
+.kp-variance-figure {
+  font-family: var(--kp-font-display);
+  font-weight: 800;
+  font-size: 1.75rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Modal variasi */
+.kp-option {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  width: 100%;
+  min-height: var(--kp-control-lg);
+  padding: .5rem .9rem;
+  border: 1.5px solid var(--kp-line);
+  border-radius: .75rem;
+  background: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+.kp-option-mark {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 1.5px solid #B9C4BC;
+  border-radius: 50%;
+  color: transparent;
+  font-size: .625rem;
+}
+.kp-option-multi .kp-option-mark { border-radius: .3rem; }
+.kp-option-delta { margin-left: auto; font-weight: 500; font-variant-numeric: tabular-nums; color: rgba(24, 33, 29, .6); }
+.btn-check:checked + .kp-option { border-color: var(--kp-pandan-700); background: var(--kp-pandan-100); }
+.btn-check:checked + .kp-option .kp-option-mark { background: var(--kp-pandan-700); border-color: var(--kp-pandan-700); color: #fff; }
+.btn-check:disabled + .kp-option { opacity: .45; cursor: not-allowed; }
+.btn-check:focus-visible + .kp-option { outline: 2px solid var(--kp-kunyit); outline-offset: 2px; }
+.kp-group-rule { font-size: var(--kp-text-xs); font-weight: 600; color: rgba(24, 33, 29, .55); }
+.kp-group-rule-req { color: var(--kp-cili); }
+.kp-stepper-light { background: var(--kp-santan); border: 1px solid var(--kp-line); }
+.kp-stepper-light button { color: var(--kp-ink); width: var(--kp-control); height: var(--kp-control); }
+.kp-stepper-light button:hover { background: var(--kp-pandan-100); }
+
+/* Sejarah transaksi */
+.kp-txn-row { cursor: pointer; }
+.kp-txn-row.kp-txn-active > * { --bs-table-bg-state: var(--kp-pandan-100); }
+.kp-txn-void td { color: rgba(24, 33, 29, .45); }
+.kp-txn-void .kp-txn-total { text-decoration: line-through; }
+.kp-tag {
+  display: inline-block;
+  font-size: var(--kp-text-xs);
+  font-weight: 700;
+  padding: .1rem .5rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.kp-tag-paid { background: var(--kp-pandan-100); color: var(--kp-pandan-700); }
+.kp-tag-void { background: var(--kp-cili-100); color: #8E2318; }
+.kp-tag-online { background: var(--kp-kunyit-100); color: #7A5308; }
+.kp-receipt-stage { background: var(--kp-santan); }

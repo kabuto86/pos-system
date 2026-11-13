@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KedaiPOS — Pilih kedai</title>
+<link rel="stylesheet" href="../../vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="../../vendor/fontawesome/css/all.min.css">
+<link rel="stylesheet" href="../../css/theme.css">
+</head>
+<body>
+
+<header class="kp-topbar">
+  <div class="container d-flex align-items-center gap-3 py-2">
+    <span class="kp-brand">KedaiPOS</span>
+    <span class="kp-mockup-tag">Mockup</span>
+    <div class="ms-auto dropdown">
+      <button class="btn btn-light kp-pill dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fa-regular fa-user"></i>Pak Mat
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li><a class="dropdown-item" href="#"><i class="fa-solid fa-key fa-fw"></i>Tukar kata laluan</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item text-danger" href="login.html"><i class="fa-solid fa-arrow-right-from-bracket fa-fw"></i>Log keluar</a></li>
+      </ul>
+    </div>
+  </div>
+</header>
+
+<!-- Dipapar selepas log masuk e-mel jika vendor ada lebih daripada satu kedai.
+     outlet_id yang dipilih disahkan milik vendor sesi sebelum disimpan. -->
+<main class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-7 col-xl-6">
+      <h1 class="h2 fw-bold mb-1">Pilih kedai</h1>
+      <p class="text-body-secondary mb-4">Restoran Selera Kampung ada 3 kedai. Anda boleh tukar kedai bila-bila masa dari menu atas.</p>
+
+      <div class="d-flex flex-column gap-2 mb-5">
+        <a href="../admin/index.html" class="kp-outlet">
+          <span class="kp-initial kp-sw-pandan">B</span>
+          <span class="flex-grow-1 overflow-hidden">
+            <span class="fw-bold d-block">Cawangan Bangi</span>
+            <span class="small text-body-secondary d-block text-truncate">No 12, Jalan 7/1, Seksyen 7, Bangi</span>
+          </span>
+          <span class="text-end">
+            <span class="kp-outlet-figure d-block">RM 1,284.50</span>
+            <span class="kp-status kp-status-live">2 kaunter dibuka</span>
+          </span>
+        </a>
+        <a href="../admin/index.html" class="kp-outlet">
+          <span class="kp-initial kp-sw-kunyit">K</span>
+          <span class="flex-grow-1 overflow-hidden">
+            <span class="fw-bold d-block">Cawangan Kajang</span>
+            <span class="small text-body-secondary d-block text-truncate">Lot 4, Jalan Reko, Kajang</span>
+          </span>
+          <span class="text-end">
+            <span class="kp-outlet-figure d-block">RM 918.00</span>
+            <span class="kp-status kp-status-live">1 kaunter dibuka</span>
+          </span>
+        </a>
+        <a href="../admin/index.html" class="kp-outlet">
+          <span class="kp-initial kp-sw-mint">S</span>
+          <span class="flex-grow-1 overflow-hidden">
+            <span class="fw-bold d-block">Cawangan Seri Kembangan</span>
+            <span class="small text-body-secondary d-block text-truncate">Jalan SK 3/2, Taman Sri Serdang</span>
+          </span>
+          <span class="text-end">
+            <span class="kp-outlet-figure d-block">RM 0.00</span>
+            <span class="kp-status kp-status-off">Belum dibuka</span>
+          </span>
+        </a>
+      </div>
+
+      <!-- Pendaftaran peranti (PELAN.md 4.3) -->
+      <div class="kp-panel p-4 d-flex flex-column flex-sm-row gap-3 align-items-sm-center">
+        <span class="kp-module-icon"><i class="fa-solid fa-tablet-screen-button"></i></span>
+        <div class="flex-grow-1">
+          <div class="fw-bold">Guna peranti ini sebagai kaunter?</div>
+          <div class="small text-body-secondary">Daftar sekali sahaja. Selepas itu peranti ini terus buka skrin PIN kakitangan.</div>
+        </div>
+        <button class="btn btn-light text-nowrap" data-bs-toggle="modal" data-bs-target="#deviceModal">Daftar peranti</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- MODAL DAFTAR PERANTI -->
+<div class="modal fade kp-modal" id="deviceModal" tabindex="-1" aria-labelledby="deviceTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content p-2">
+      <div class="modal-header border-0">
+        <div>
+          <h2 class="h5 fw-bold mb-0" id="deviceTitle">Daftar peranti ini</h2>
+          <div class="small text-body-secondary">Kaunter 2 daripada 3 yang dibenarkan oleh pelan anda</div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+      </div>
+      <div class="modal-body pt-0">
+        <div class="mb-3">
+          <label for="deviceOutlet" class="form-label">Kedai</label>
+          <select class="form-select" id="deviceOutlet">
+            <option selected>Cawangan Bangi</option>
+            <option>Cawangan Kajang</option>
+            <option>Cawangan Seri Kembangan</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <span class="form-label d-block">Jenis peranti</span>
+          <div class="row g-2">
+            <div class="col-4">
+              <input type="radio" class="btn-check" name="deviceType" id="dtCashier" checked>
+              <label class="btn kp-method" for="dtCashier"><i class="fa-solid fa-cash-register"></i>Kaunter</label>
+            </div>
+            <div class="col-4">
+              <input type="radio" class="btn-check" name="deviceType" id="dtWaiter">
+              <label class="btn kp-method" for="dtWaiter"><i class="fa-solid fa-mobile-screen"></i>Waiter</label>
+            </div>
+            <div class="col-4">
+              <input type="radio" class="btn-check" name="deviceType" id="dtKitchen">
+              <label class="btn kp-method" for="dtKitchen"><i class="fa-solid fa-fire-burner"></i>Dapur</label>
+            </div>
+          </div>
+        </div>
+        <div class="mb-2">
+          <label for="deviceName" class="form-label">Nama peranti</label>
+          <input type="text" class="form-control" id="deviceName" value="Kaunter 2">
+          <div class="form-text">Nama ini dicetak pada resit dan laporan syif.</div>
+        </div>
+      </div>
+      <div class="modal-footer border-0">
+        <button class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+        <a href="../cashier/login.html" class="btn btn-primary">Daftar peranti</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../../vendor/bootstrap/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KedaiPOS — Log masuk</title>
+<link rel="stylesheet" href="../../vendor/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="../../vendor/fontawesome/css/all.min.css">
+<link rel="stylesheet" href="../../css/theme.css">
+</head>
+<body>
+
+<!-- Log masuk e-mel: tauke, admin, superadmin (PELAN.md 4.1).
+     Juruwang & waiter tidak guna skrin ini — mereka guna PIN pada peranti. -->
+<div class="row g-0 min-vh-100">
+
+  <aside class="col-lg-6 kp-auth-brand d-none d-lg-flex flex-column p-5">
+    <div class="d-flex align-items-center gap-2">
+      <span class="kp-brand kp-brand-light">KedaiPOS</span>
+      <span class="kp-mockup-tag">Mockup</span>
+    </div>
+    <div class="my-auto">
+      <h1 class="kp-auth-headline mb-4">Semua kedai anda,<br>satu log masuk.</h1>
+      <div class="d-flex flex-column gap-4 mb-2">
+        <div class="kp-auth-point">
+          <i class="fa-solid fa-store"></i>
+          <div>
+            <div class="fw-bold">Pilih kedai selepas masuk</div>
+            <div class="small text-body-secondary">Tiga cawangan, satu e-mel. Tukar kedai bila-bila masa dari menu.</div>
+          </div>
+        </div>
+        <div class="kp-auth-point">
+          <i class="fa-solid fa-tablet-screen-button"></i>
+          <div>
+            <div class="fw-bold">Daftar kaunter dan tablet</div>
+            <div class="small text-body-secondary">Selepas didaftar, kakitangan hanya tekan nama dan PIN.</div>
+          </div>
+        </div>
+        <div class="kp-auth-point">
+          <i class="fa-solid fa-user-lock"></i>
+          <div>
+            <div class="fw-bold">Peranti hilang? Batalkan dari jauh</div>
+            <div class="small text-body-secondary">Peranti yang dibatalkan terus kembali ke skrin daftar.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="small text-body-secondary">Bantuan: 03-8925 0000, Isnin hingga Sabtu</div>
+  </aside>
+
+  <main class="col-lg-6 d-flex flex-column px-4 py-5">
+    <div class="d-flex d-lg-none align-items-center gap-2 mb-5">
+      <span class="kp-brand">KedaiPOS</span>
+      <span class="kp-mockup-tag">Mockup</span>
+    </div>
+
+    <div class="kp-auth-form w-100 mx-auto my-auto">
+      <h2 class="h3 fw-bold mb-1">Log masuk</h2>
+      <p class="text-body-secondary mb-4">Untuk tauke dan admin kedai.</p>
+
+      <!-- Mesej sama untuk e-mel salah dan kata laluan salah (PELAN.md 4.5) -->
+      <div class="alert alert-danger d-flex gap-2 small py-2 mb-4" role="alert">
+        <i class="fa-solid fa-circle-exclamation mt-1"></i>
+        <span>E-mel atau kata laluan salah. Cuba lagi.</span>
+      </div>
+
+      <form>
+        <div class="mb-3">
+          <label for="email" class="form-label">E-mel</label>
+          <input type="email" class="form-control form-control-lg" id="email" autocomplete="username" value="pakmat@seleramakan.my">
+        </div>
+        <div class="mb-2">
+          <div class="d-flex justify-content-between">
+            <label for="password" class="form-label">Kata laluan</label>
+            <a href="#" class="small fw-semibold">Lupa kata laluan?</a>
+          </div>
+          <div class="input-group kp-input-group">
+            <input type="password" class="form-control form-control-lg" id="password" autocomplete="current-password" value="rahsia1234">
+            <button class="btn btn-light kp-btn-icon" type="button" aria-label="Tunjuk kata laluan" title="Tunjuk kata laluan"><i class="fa-regular fa-eye"></i></button>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg w-100 mt-4">Log masuk</button>
+      </form>
+
+      <hr class="my-4">
+
+      <div class="d-flex gap-3 small text-body-secondary">
+        <i class="fa-solid fa-circle-info mt-1"></i>
+        <span>Juruwang dan waiter tidak perlu e-mel. Tekan nama anda dan masukkan PIN pada <a href="../cashier/login.html">kaunter atau tablet kedai</a>.</span>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="../../vendor/bootstrap/bootstrap.bundle.min.js"></script>
+</body>
+</html>
