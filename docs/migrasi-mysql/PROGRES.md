@@ -4,9 +4,9 @@
 > satu-satunya sumber kebenaran tentang di mana kerja terhenti.
 > Baca [PELAN.md](PELAN.md) untuk keputusan reka bentuk.
 
-**Status keseluruhan:** Pelan siap · **persekitaran sudah disemak dan lulus**
-**Fasa terakhir siap:** —
-**Fasa seterusnya:** Fasa 1
+**Status keseluruhan:** Session 1A sedang berjalan · Fasa 1 siap
+**Fasa terakhir siap:** Fasa 1 — skema 39 jadual, pelari migrasi, seed teras & demo (17 Nov 2026)
+**Fasa seterusnya:** Fasa 2 — auth, vendor, peranan, kaunter & syif
 
 ### Semakan kesediaan — 26 Ogos 2026 (mesin pejabat)
 
@@ -98,7 +98,7 @@ HTML statik dalam `mockup/`, Bootstrap sahaja, data palsu. Buka di
 - [x] Log masuk e-mel (`auth/login.html`) · PIN kakitangan (`cashier/login.html`)
 - [x] Pemilih kedai + daftar peranti (`auth/outlet.html`) · buka/tutup syif (`cashier/shift.html`)
 - [x] Modal variasi (`cashier/index.html`) · sejarah + void (`cashier/history.html`) · resit 58mm, 80mm & void (`receipt/index.html`, `css/receipt.css`)
-- [ ] **Sufi setuju pusingan 2** sebelum Fasa 1 dimulakan
+- [x] **Sufi setuju pusingan 2** sebelum Fasa 1 dimulakan (17 Nov 2026)
 
 > Skrin session lain dimockup pada permulaan session masing-masing.
 
@@ -107,64 +107,78 @@ HTML statik dalam `mockup/`, Bootstrap sahaja, data palsu. Buka di
 ## Session 1A — Skema, Teras & Auth (Fasa 1–2)
 
 ### Fasa 1 — Skema & teras
-- [ ] Cipta pangkalan data `pos_saas` (utf8mb4_unicode_ci)
-- [ ] Cipta pengguna MySQL `pos_user` (akses `pos_saas` sahaja)
-- [ ] `database/migrate.php` — pelari migrasi CLI (PELAN.md 15.2):
+- [x] Cipta pangkalan data `pos_saas` (utf8mb4_unicode_ci)
+- [x] Cipta pengguna MySQL `pos_user` (akses `pos_saas` sahaja)
+- [x] `database/migrate.php` — pelari migrasi CLI (PELAN.md 15.2):
       `up`, `status`, `seed [--demo]`, `fresh --demo`, `dump`, `superadmin`;
       jadual `schema_migrations`; `fresh`/`--demo` ditolak bila `env` bukan `local`
-- [ ] `database/migrations/001…007_*.sql` — **39 jadual**, `vendor_id` pada
+- [x] `database/migrations/001…007_*.sql` — **39 jadual**, `vendor_id` pada
       setiap jadual perniagaan, setiap UNIQUE jadi unik per vendor
       (PELAN.md 3.5), setiap indeks bermula dengan `vendor_id` (PELAN.md 3.6)
-- [ ] `database/schema.sql` — dijana dengan `migrate.php dump`, bukan ditulis tangan
-- [ ] Jadual promosi wujud sejak sekarang walaupun UI dibina di Fasa 10:
+- [x] `database/schema.sql` — dijana dengan `migrate.php dump`, bukan ditulis tangan
+- [x] Jadual promosi wujud sejak sekarang walaupun UI dibina di Fasa 10:
       `promotions`, `promotion_products`, `promotion_categories`,
       `transaction_promotions`
-- [ ] Lajur produk penuh: `cost_price`, `unit`, `min_stock`, `is_tax_exempt`
-- [ ] Lajur diskaun pada `transactions`: `promo_discount`, `manual_discount`,
+- [x] Lajur produk penuh: `cost_price`, `unit`, `min_stock`, `is_tax_exempt`
+- [x] Lajur diskaun pada `transactions`: `promo_discount`, `manual_discount`,
       `discount_tax_mode`; pada `transaction_items`: `promotion_id`,
       `promotion_name`, `discount_amount`
-- [ ] `database/seeds/core/` — 10 modul (PELAN.md 9.4), bahasa ms/en,
+- [x] `database/seeds/core/` — 10 modul (PELAN.md 9.4), bahasa ms/en,
       rentetan terjemahan sistem
-- [ ] `database/seeds/demo/` — **DUA vendor**: KEDAI01 (retail), KEDAI02
+- [x] `database/seeds/demo/` — **DUA vendor**: KEDAI01 (retail), KEDAI02
       (restaurant), setiap satu dengan 18 produk, kategori, kaedah bayaran,
       tetapan, admin, kaunter; KEDAI02 dapat meja contoh **dengan `qr_token`**
       dan akaun waiter; satu `superadmin` demo (vendor_id NULL); beberapa
       transaksi lepas supaya dashboard berisi
-- [ ] Vendor demo ketiga **KEDAI03 — peniaga dari rumah** (restaurant, tiada
+- [x] Vendor demo ketiga **KEDAI03 — peniaga dari rumah** (restaurant, tiada
       meja, `shop_slug = kak-ani`, modul `online_order` + `online_payment`),
       gerbang sandbox dengan kunci kosong untuk KEDAI02 & KEDAI03
-- [ ] Akaun demo dalam seed `.php` (Argon2id melalui `password_hash()`);
+- [x] Akaun demo dalam seed `.php` (Argon2id melalui `password_hash()`);
       senarai log masuk dicetak hujung `fresh --demo` + `seeds/demo/README.md`
-- [ ] Pelan demo dengan **harga contoh**: **Asas** (`pos` sahaja) ·
+- [x] Pelan demo dengan **harga contoh**: **Asas** (`pos` sahaja) ·
       **Pro** (semua 10 modul) · **Percubaan**. KEDAI01 = Asas, KEDAI02 = Pro —
       supaya sekatan modul teruji sejak awal, sama sebabnya seperti dua vendor
-- [ ] Sahkan: `fresh --demo` dua kali berturut-turut → hasil sama, tiada
+- [x] Sahkan: `fresh --demo` dua kali berturut-turut → hasil sama, tiada
       data berganda, tiada ralat
-- [ ] Sahkan: emoji produk selepas `fresh --demo` → `HEX(icon)` = `F09F8D9B`
+- [x] Sahkan: emoji produk selepas `fresh --demo` → `HEX(icon)` = `F09F8D9B`
       (pelari guna PDO, jadi perangkap `cp850` dalam 15.1 tidak berlaku)
-- [ ] `orders.status` tambah `pending`, `orders.source`, `confirmed_by`;
+- [x] `orders.status` tambah `pending`, `orders.source`, `confirmed_by`;
       `opened_by` dan `order_items.added_by` jadi nullable;
       `dining_tables.qr_token` (untuk Fasa 9B)
-- [ ] Jadual bahasa: `languages` (ms lalai, en aktif), `translations`
-- [ ] `login_attempts` + lajur `users.failed_attempts`, `locked_until`,
+- [x] Jadual bahasa: `languages` (ms lalai, en aktif), `translations`
+- [x] `login_attempts` + lajur `users.failed_attempts`, `locked_until`,
       `pin_hash`, `outlet_id`; `email` dan `password_hash` jadi **nullable**
-- [ ] **`outlets`** + `outlet_id` pada orders, transactions, dining_tables,
+- [x] **`outlets`** + `outlet_id` pada orders, transactions, dining_tables,
       terminals, shifts, stock_movements
-- [ ] **`product_outlets`** — stok berpindah dari `products` ke sini
-- [ ] `plan_outlet_tiers`, `invoices`, `invoice_lines`
-- [ ] Seed: KEDAI01 satu kedai · **KEDAI02 DUA kedai** — supaya isu kedai
+- [x] **`product_outlets`** — stok berpindah dari `products` ke sini
+- [x] `plan_outlet_tiers`, `invoices`, `invoice_lines`
+- [x] Seed: KEDAI01 satu kedai · **KEDAI02 DUA kedai** — supaya isu kedai
       berbilang terserlah awal, sama sebabnya seperti dua vendor (3.4)
-- [ ] Seed `paper_width`: lalai `58` setiap vendor · kedai kedua KEDAI02
+- [x] Seed `paper_width`: lalai `58` setiap vendor · kedai kedua KEDAI02
       ada baris tindihan `80` (untuk ujian lebar resit di Fasa 5)
-- [ ] `config/database.php` + `.example.php` + kemas kini `.gitignore`
-- [ ] `core/Database.php` (PDO utf8mb4), `Response.php`, `Request.php`,
+- [x] `config/database.php` + `.example.php` + kemas kini `.gitignore`
+- [x] `core/Database.php` (PDO utf8mb4), `Response.php`, `Request.php`,
       `Validator.php`, `BusinessDay.php`, **`VendorScope.php`**,
       **`Lang.php`** dengan helper `t()`
-- [ ] Sahkan: `t()` berfungsi dan pulangkan kunci itu sendiri kalau
+- [x] Sahkan: `t()` berfungsi dan pulangkan kunci itu sendiri kalau
       terjemahan hilang — **jangan sekali-kali pulangkan kosong**
-- [ ] Sahkan: query CLI pulangkan 18 produk **setiap vendor**, emoji tidak rosak
-- [ ] Sahkan: `BusinessDay` pulangkan tarikh semalam bila jam 01:00 dan
+- [x] Sahkan: query CLI pulangkan 18 produk **setiap vendor**, emoji tidak rosak
+- [x] Sahkan: `BusinessDay` pulangkan tarikh semalam bila jam 01:00 dan
       cutoff 04:00 — punca pepijat nombor take-away kalau silap
+
+> **Hasil Fasa 1 (17 Nov 2026).** `fresh --demo` siap dalam ~7 saat: 40 jadual,
+> 3 vendor, 44 produk, 12 akaun, 253 transaksi sejarah 7 hari. 23 semakan lulus,
+> termasuk indeks bermula `vendor_id`, barcode sama di dua vendor, Argon2id
+> 19456/2/1, `t()` jatuh balik, `Request` menolak `vendor_id`.
+> `seed --demo` dua kali → setiap jadual sama termasuk `qr_token`.
+> `fresh --demo` dua kali → sama kecuali `qr_token` (dijana rawak, memang dijangka).
+> `fresh` dan `seed --demo` ditolak bila `env = production`.
+>
+> Tambahan kecil di luar senarai: `core/bootstrap.php` (zon waktu, autoload,
+> `t()`), `core/Password.php` (Argon2id, dipakai seed dan Fasa 2).
+> **Sambungan PHP `sodium` tiada** pada XAMPP ini. Tidak diperlukan sehingga
+> Fasa 9D (penyulitan kunci gerbang). Hidupkan `extension=sodium` dalam
+> `php.ini` sebelum fasa itu.
 
 ### Fasa 2 — Auth, vendor, peranan, kaunter & syif
 
@@ -843,4 +857,8 @@ dari rumah.**
 | 13 Nov 2026 | **`waiter_app` jadi modul** (7 modul) | Keputusan Sufi. Tanpanya kedai makan masih ambil pesanan meja dari skrin juruwang |
 | 13 Nov 2026 | `schema.sql` + `seed.sql` tulisan tangan → **`database/migrate.php`** + migrasi bernombor + seed `core`/`demo` | Keputusan Sufi: persediaan satu arahan, dan skema boleh berubah di pelayan sebenar tanpa sunting tangan. Bonus: PDO utf8mb4 mengelak perangkap `cp850` |
 | 13 Nov 2026 | **Pesanan QR pelanggan** ditambah sebagai modul `qr_order` — Fasa 9B, 19 → 20 fasa | Permintaan Sufi. Pesanan masuk `pending` dan perlu diterima kakitangan supaya QR yang diimbas dari luar kedai tidak boleh menolak stok |
+| 17 Nov 2026 | **Juruwang boleh void resit sendiri** dengan sebab wajib (mockup `cashier/history.html`) | Keputusan Sufi semasa setuju pusingan 2. Resit kekal dalam rekod dengan cap VOID; stok dipulangkan |
+| 17 Nov 2026 | `settings`: PK(vendor_id, outlet_id, setting_key) → `id` + UNIQUE(vendor_id, **`outlet_scope`**, setting_key), `outlet_scope = IFNULL(outlet_id, 0)` lajur jana | MySQL tidak benarkan lajur NULL dalam PRIMARY KEY, dan UNIQUE biasa benarkan berbilang NULL (lalai vendor berganda). Makna `outlet_id` NULL = lalai vendor kekal sama |
+| 17 Nov 2026 | `terminals` + `device_token_hash`, `registered_at`, `registered_by` | PELAN 4.3 menyebut token peranti dalam kuki tetapi skema tiada tempat menyimpannya. Hash SHA-256 sahaja disimpan, token mentah dalam kuki |
+| 17 Nov 2026 | `orders`: UNIQUE(outlet_id, business_day, order_no) ditambah | Nombor pesanan harian tidak boleh bertembung dalam satu kedai, sama seperti `takeaway_no` |
 | 27 Ogos 2026 | Kedai dibuka pertengahan kitaran diprorata | Jangkaan pelanggan, dan menghapuskan insentif menunggu awal bulan sebelum membuka kedai |
