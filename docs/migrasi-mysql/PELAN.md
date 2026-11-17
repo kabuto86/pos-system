@@ -571,6 +571,8 @@ promotion_id, **promotion_name**, **promotion_type**, discount_amount
 **`terminals`** — id, **vendor_id**, **outlet_id**(FK), code, name,
 **type** ENUM(cashier/waiter/**kitchen**), receipt_prefix,
 **auto_print** (0 — peranti dapur sahaja: cetak slip bila tiket baharu masuk),
+**device_token_hash** CHAR(64) UNIQUE (SHA-256 token kuki peranti, 4.3),
+registered_at, registered_by,
 is_active, last_seen_at
 · UNIQUE(outlet_id, code)
 
@@ -598,9 +600,14 @@ attempted_at · INDEX(email, attempted_at), INDEX(ip_address, attempted_at)
 > Tiada `vendor_id` — semasa cubaan log masuk, sistem belum tahu vendor mana.
 > Berguna untuk audit dan mengesan serangan meneka kata laluan.
 
-**`settings`** — **vendor_id**, **outlet_id (NULL = lalai vendor)**,
+**`settings`** — id, **vendor_id**, **outlet_id (NULL = lalai vendor)**,
+**outlet_scope** (lajur jana `IFNULL(outlet_id, 0)`),
 setting_key, setting_value, updated_at,
-updated_by · PK(vendor_id, outlet_id, setting_key)
+updated_by · UNIQUE(vendor_id, outlet_scope, setting_key)
+
+> MySQL tidak benarkan lajur NULL dalam PRIMARY KEY, dan UNIQUE biasa
+> membenarkan berbilang NULL, jadi lalai vendor boleh berganda. `outlet_scope`
+> menutup lubang itu tanpa mengubah makna `outlet_id` NULL (17 Nov 2026).
 
 > `outlet_id` NULL bermakna nilai lalai untuk seluruh vendor. Baris dengan
 > `outlet_id` ditetapkan menindihnya untuk kedai itu — corak yang sama
@@ -1157,7 +1164,7 @@ disimpan dalam `uploads/products/{vendor_id}/`,
 ```
 claude-learn1/
 ├── config/         database.php (.gitignore) · database.example.php · app.php
-├── core/           Database.php · Auth.php · Csrf.php · Request.php
+├── core/           bootstrap.php · Database.php · Auth.php · Csrf.php · Request.php · Password.php
 │                   Response.php · Validator.php · Uploader.php · Crypto.php
 │                   Payment/ — PaymentGateway · ToyyibPayGateway · BillplzGateway
 │                              SenangPayGateway · StripeGateway

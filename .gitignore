@@ -17,3 +17,11 @@ Desktop.ini
 
 # Output Playwright MCP
 .playwright-mcp/
+
+# Konfigurasi tempatan — kredensial & kunci
+config/database.php
+config/app.php
+
+# Muat naik vendor
+uploads/*
+!uploads/.gitkeep
